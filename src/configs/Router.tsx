@@ -9,6 +9,7 @@ import { TopicListPage } from '../pages/TopicPage';
 import { CategoryListPage } from '../pages/CategoryPage';
 import { CategoryCreatePage } from '../pages/CategoryPage/Create';
 import { CategoryDetailPage } from '../pages/CategoryPage/Detail';
+import { ErrorPage } from '../pages/ErrorPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -58,6 +59,7 @@ export const AppRouter = () => {
         <Route path={FHPath.topics.link} element={<TopicListPage />} />
         <Route path={FHPath.topicsCreate.link} element={<TopicCreatePage />} />
         <Route path={FHPath.topicsDetail.link} element={<TopicDetailPage />} />
+        <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
