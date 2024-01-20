@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom';
 export const CategoryDetailPage = () => {
   const { id } = useParams();
   const categoryId = Number(id);
-  const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState('');
 
   const handleTextChange =
@@ -22,7 +21,6 @@ export const CategoryDetailPage = () => {
     };
 
   const initRequest = () => {
-    setIsLoading(true);
     const data = categoryAPI.show({
       id: categoryId,
     });
@@ -30,8 +28,6 @@ export const CategoryDetailPage = () => {
     if (data) {
       setName(data.name ?? '');
     }
-
-    setIsLoading(false);
   };
 
   const handleSubmit = () => {

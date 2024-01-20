@@ -5,7 +5,6 @@ import { categoryAPI } from '../../api/category';
 
 export const CategoryListPage = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [list, setList] = useState<
     { key?: number; no?: number; name?: string }[]
@@ -41,7 +40,6 @@ export const CategoryListPage = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const initRequest = () => {
-    setIsLoading(true);
     const { list, totalDocuments } = categoryAPI.list({
       page: currentPage,
       listSize: 10,
@@ -61,7 +59,6 @@ export const CategoryListPage = () => {
     }));
 
     setList(dataSource);
-    setIsLoading(false);
   };
 
   const handleSearch = () => {
@@ -69,7 +66,7 @@ export const CategoryListPage = () => {
   };
 
   const handleTextChange =
-    (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(e.target.value);
     };
 

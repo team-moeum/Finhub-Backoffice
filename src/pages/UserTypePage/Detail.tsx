@@ -6,11 +6,11 @@ import { FHButton } from '../../components/atoms/Button';
 import { useEffect, useState } from 'react';
 import { userTypeAPI } from '../../api/userType';
 import { useParams } from 'react-router-dom';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const UserTypeDetailPage = () => {
   const { id } = useParams();
   const userTypeId = Number(id);
-  const [isLoading, setIsLoading] = useState(true);
   const [name, setName] = useState('');
   const [avatar, setAvatar] = useState('');
 
@@ -23,7 +23,6 @@ export const UserTypeDetailPage = () => {
     };
 
   const initRequest = () => {
-    setIsLoading(true);
     const data = userTypeAPI.show({
       id: userTypeId,
     });
@@ -31,8 +30,6 @@ export const UserTypeDetailPage = () => {
     if (data) {
       setName(data.name ?? '');
     }
-
-    setIsLoading(false);
   };
 
   const handleSubmit = () => {
@@ -51,6 +48,11 @@ export const UserTypeDetailPage = () => {
   }, [initRequest]);
   return (
     <CreatePageTemplate label="유저유형 수정">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="아바타">
+          <FHUploader thumbnail={avatar} setThumbnail={setAvatar} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="유저유형명">
           <FHTextInput

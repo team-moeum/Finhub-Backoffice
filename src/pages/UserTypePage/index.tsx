@@ -5,7 +5,6 @@ import { userTypeAPI } from '../../api/userType';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [list, setList] = useState<
     { key?: number; no?: number; name?: string }[]
@@ -39,9 +38,7 @@ export const UserTypeListPage = () => {
     },
   ];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initRequest = () => {
-    setIsLoading(true);
     const { list, totalDocuments } = userTypeAPI.list({
       page: currentPage,
       listSize: 10,
@@ -61,7 +58,6 @@ export const UserTypeListPage = () => {
     }));
 
     setList(dataSource);
-    setIsLoading(false);
   };
 
   const handleSearch = () => {

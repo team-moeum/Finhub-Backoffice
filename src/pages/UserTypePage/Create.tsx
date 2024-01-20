@@ -5,6 +5,7 @@ import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { userTypeAPI } from '../../api/userType';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const UserTypeCreatePage = () => {
   const [name, setName] = useState('');
@@ -33,6 +34,11 @@ export const UserTypeCreatePage = () => {
 
   return (
     <CreatePageTemplate label="유저유형 추가">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="아바타">
+          <FHUploader thumbnail={avatar} setThumbnail={setAvatar} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="유저유형명">
           <FHTextInput

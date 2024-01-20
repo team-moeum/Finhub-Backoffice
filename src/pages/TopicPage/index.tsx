@@ -5,7 +5,6 @@ import { topicAPI } from '../../api/topic';
 
 export const TopicListPage = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [keyword, setKeyword] = useState('');
   const [list, setList] = useState<
     { key?: number; no?: number; name?: string }[]
@@ -39,9 +38,7 @@ export const TopicListPage = () => {
     },
   ];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initRequest = () => {
-    setIsLoading(true);
     const { list, totalDocuments } = topicAPI.list({
       page: currentPage,
       listSize: 10,
@@ -61,7 +58,6 @@ export const TopicListPage = () => {
     }));
 
     setList(dataSource);
-    setIsLoading(false);
   };
 
   const handleSearch = () => {
@@ -69,7 +65,7 @@ export const TopicListPage = () => {
   };
 
   const handleTextChange =
-    (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(e.target.value);
     };
 

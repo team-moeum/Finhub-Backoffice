@@ -6,11 +6,11 @@ import { FHButton } from '../../components/atoms/Button';
 import { useEffect, useState } from 'react';
 import { topicAPI } from '../../api/topic';
 import { useParams } from 'react-router-dom';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
   const topicId = Number(id);
-  const [isLoading, setIsLoading] = useState(true);
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
 
@@ -23,7 +23,6 @@ export const TopicDetailPage = () => {
     };
 
   const initRequest = () => {
-    setIsLoading(true);
     const data = topicAPI.show({
       id: topicId,
     });
@@ -31,8 +30,6 @@ export const TopicDetailPage = () => {
     if (data) {
       setTitle(data.title ?? '');
     }
-
-    setIsLoading(false);
   };
 
   const handleSubmit = () => {
@@ -51,6 +48,11 @@ export const TopicDetailPage = () => {
   }, [initRequest]);
   return (
     <CreatePageTemplate label="주제 수정">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="썸네일">
+          <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="주제명">
           <FHTextInput

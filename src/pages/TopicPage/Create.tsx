@@ -5,6 +5,7 @@ import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { topicAPI } from '../../api/topic';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const TopicCreatePage = () => {
   const [title, setTitle] = useState('');
@@ -33,6 +34,11 @@ export const TopicCreatePage = () => {
 
   return (
     <CreatePageTemplate label="주제 추가">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="썸네일">
+          <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="주제명">
           <FHTextInput
