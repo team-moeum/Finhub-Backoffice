@@ -2,19 +2,19 @@ const dataSource = [
   {
     id: 1,
     title: 'ETF란',
-    thumbnail: '/vite.svg',
+    thumbnail: '/logo.svg',
     modifiedAt: '2024-01-01',
   },
   {
     id: 2,
     title: 'FUND란',
-    thumbnail: '/vite.svg',
+    thumbnail: '/logo.svg',
     modifiedAt: '2024-01-13',
   },
   {
     id: 3,
     title: 'IRP란',
-    thumbnail: '/vite.svg',
+    thumbnail: '/logo.svg',
     modifiedAt: '2024-01-14',
   },
 ];

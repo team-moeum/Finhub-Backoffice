@@ -2,17 +2,17 @@ const dataSource = [
   {
     id: 1,
     name: '디자이너',
-    avatar: '/vite.svg',
+    avatar: '/logo.svg',
   },
   {
     id: 2,
     name: 'PM',
-    avatar: '/vite.svg',
+    avatar: '/logo.svg',
   },
   {
     id: 3,
     name: '개발자',
-    avatar: '/vite.svg',
+    avatar: '/logo.svg',
   },
 ];
 
