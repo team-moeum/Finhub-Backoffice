@@ -65,7 +65,7 @@ export const UserTypeListPage = () => {
   };
 
   const handleTextChange =
-    (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setKeyword(e.target.value);
     };
 
