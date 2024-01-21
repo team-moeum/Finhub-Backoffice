@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ListPageTemplate } from '../../components/templates/List';
 import { topicAPI } from '../../api/topic';
+import styled from '@emotion/styled';
+import { FHFormItem } from '../../components/organisms/FormItem';
+import { FHSelect } from '../../components/atoms/Select';
+import { dataSource as categoryDataSource } from '../../api/category';
 
 export const TopicListPage = () => {
   const navigate = useNavigate();
@@ -11,6 +15,7 @@ export const TopicListPage = () => {
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
+  const [category, setCategory] = useState('전체');
 
   const columns = [
     {
@@ -31,6 +36,13 @@ export const TopicListPage = () => {
       ),
     },
     {
+      width: 100,
+      align: 'center',
+      title: '카테고리',
+      dataIndex: 'category',
+      key: 'category',
+    },
+    {
       ellipsis: true,
       title: '주제명',
       dataIndex: 'title',
@@ -42,6 +54,7 @@ export const TopicListPage = () => {
     const { list, totalDocuments } = topicAPI.list({
       page: currentPage,
       listSize: 10,
+      category,
       keyword,
     });
 
@@ -55,6 +68,7 @@ export const TopicListPage = () => {
       key: item.id,
       no: totalDocuments - idx,
       title: item.title,
+      category: item.category,
     }));
 
     setList(dataSource);
@@ -73,9 +87,13 @@ export const TopicListPage = () => {
     setCurrentPage(current ?? 1);
   };
 
+  const handleCategoryChange = (value: string) => {
+    setCategory(value);
+  };
+
   useEffect(() => {
     initRequest();
-  }, [currentPage, initRequest]);
+  }, [currentPage, category, initRequest]);
 
   return (
     <ListPageTemplate
@@ -89,6 +107,25 @@ export const TopicListPage = () => {
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
       isSearch
-    />
+    >
+      <S.formItemWrapper>
+        <FHFormItem direction="horizontal" label="카테고리">
+          <FHSelect
+            value={category}
+            onChange={handleCategoryChange}
+            items={['전체', ...categoryDataSource.map((item) => item.name)]}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+    </ListPageTemplate>
   );
+};
+
+const S = {
+  formItemWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 24px;
+  `,
 };

@@ -7,12 +7,15 @@ import { useEffect, useState } from 'react';
 import { topicAPI } from '../../api/topic';
 import { useParams } from 'react-router-dom';
 import { FHUploader } from '../../components/atoms/Uploader';
+import { FHSelect } from '../../components/atoms/Select';
+import { dataSource as categoryDataSource } from '../../api/category';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
   const topicId = Number(id);
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
+  const [category, setCategory] = useState('');
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +32,7 @@ export const TopicDetailPage = () => {
 
     if (data) {
       setTitle(data.title ?? '');
+      setCategory(data.category ?? 'ETF');
     }
   };
 
@@ -36,11 +40,16 @@ export const TopicDetailPage = () => {
     topicAPI.update({
       id: topicId,
       title,
+      category,
       thumbnail,
     });
 
     alert('반영되었습니다.');
     initRequest();
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCategory(value);
   };
 
   useEffect(() => {
@@ -59,6 +68,15 @@ export const TopicDetailPage = () => {
             type="text"
             value={title}
             onChange={handleTextChange('title')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="카테고리">
+          <FHSelect
+            value={category}
+            onChange={handleCategoryChange}
+            items={categoryDataSource.map((item) => item.name)}
           />
         </FHFormItem>
       </S.formItemWrapper>

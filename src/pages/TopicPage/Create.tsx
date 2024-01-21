@@ -6,10 +6,13 @@ import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { topicAPI } from '../../api/topic';
 import { FHUploader } from '../../components/atoms/Uploader';
+import { FHSelect } from '../../components/atoms/Select';
+import { dataSource as categoryDataSource } from '../../api/category';
 
 export const TopicCreatePage = () => {
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
+  const [category, setCategory] = useState('ETF');
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,10 +29,15 @@ export const TopicCreatePage = () => {
     }
     topicAPI.create({
       title,
+      category,
       thumbnail,
     });
 
     alert('반영되었습니다.');
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setCategory(value);
   };
 
   return (
@@ -45,6 +53,15 @@ export const TopicCreatePage = () => {
             type="text"
             value={title}
             onChange={handleTextChange('title')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="카테고리">
+          <FHSelect
+            value={category}
+            onChange={handleCategoryChange}
+            items={categoryDataSource.map((item) => item.name)}
           />
         </FHFormItem>
       </S.formItemWrapper>
