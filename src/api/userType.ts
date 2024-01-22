@@ -1,4 +1,4 @@
-const dataSource = [
+export const dataSource = [
   {
     id: 1,
     name: '디자이너',

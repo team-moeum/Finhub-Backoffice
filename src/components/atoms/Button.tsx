@@ -10,7 +10,11 @@ interface ButtonProps {
 
 export const FHButton = ({ type, onClick, width, children }: ButtonProps) => {
   return (
-    <Button type={type} onClick={onClick} style={{ width }}>
+    <Button
+      type={type}
+      onClick={onClick}
+      style={{ width, textAlign: 'center' }}
+    >
       {children}
     </Button>
   );

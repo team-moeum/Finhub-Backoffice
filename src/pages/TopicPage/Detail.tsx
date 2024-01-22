@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSelect } from '../../components/atoms/Select';
 import { dataSource as categoryDataSource } from '../../api/category';
+import { GPTCard } from '../../components/organisms/GPTCard';
+import { produce } from 'immer';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
@@ -16,6 +18,14 @@ export const TopicDetailPage = () => {
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('');
+  const [gptContent, setGptContent] = useState<
+    {
+      id: number;
+      name: string;
+      avatar: string;
+      content: string;
+    }[]
+  >([]);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +43,7 @@ export const TopicDetailPage = () => {
     if (data) {
       setTitle(data.title ?? '');
       setCategory(data.category ?? 'ETF');
+      setGptContent(data.gptContent ?? []);
     }
   };
 
@@ -42,6 +53,7 @@ export const TopicDetailPage = () => {
       title,
       category,
       thumbnail,
+      gptContent,
     });
 
     alert('반영되었습니다.');
@@ -52,9 +64,23 @@ export const TopicDetailPage = () => {
     setCategory(value);
   };
 
+  const handleGPTCardClick = (idx: number) => () => {
+    window.confirm(`${gptContent[idx].name} GPT를 재생성하시겠습니까?`);
+  };
+
+  const handleGPTCardChange =
+    (idx: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setGptContent((prevGptContent) => {
+        return produce(prevGptContent, (draft) => {
+          draft[idx].content = e.target.value;
+        });
+      });
+    };
+
   useEffect(() => {
     initRequest();
-  }, [initRequest]);
+  }, []);
+
   return (
     <CreatePageTemplate label="주제 수정">
       <S.formItemWrapper>
@@ -81,6 +107,21 @@ export const TopicDetailPage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="GPT">
+          {gptContent.map((gpt, index) => (
+            <S.cardWrapper key={gpt.id}>
+              <GPTCard
+                avatar={gpt.avatar}
+                content={gpt.content}
+                name={gpt.name}
+                onClick={handleGPTCardClick(index)}
+                onChange={handleGPTCardChange(index)}
+              />
+            </S.cardWrapper>
+          ))}
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
         <FHButton width="100%" onClick={handleSubmit} type="primary">
           주제 수정
         </FHButton>
@@ -92,6 +133,10 @@ export const TopicDetailPage = () => {
 const S = {
   formItemWrapper: styled.div`
     width: 360px;
+    margin-bottom: 32px;
+  `,
+  cardWrapper: styled.div`
+    width: 100%;
     margin-bottom: 32px;
   `,
 };

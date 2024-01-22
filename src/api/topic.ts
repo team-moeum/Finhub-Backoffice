@@ -5,6 +5,26 @@ const dataSource = [
     category: 'ETF',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-01',
+    gptContent: [
+      {
+        id: 1,
+        name: '디자이너',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
+      },
+      {
+        id: 2,
+        name: 'PM',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
+      },
+      {
+        id: 3,
+        name: '개발자',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
+      },
+    ],
   },
   {
     id: 2,
@@ -12,6 +32,26 @@ const dataSource = [
     category: 'FUND',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-13',
+    gptContent: [
+      {
+        id: 4,
+        name: '디자이너',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
+      },
+      {
+        id: 5,
+        name: 'PM',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
+      },
+      {
+        id: 6,
+        name: '개발자',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
+      },
+    ],
   },
   {
     id: 3,
@@ -19,6 +59,26 @@ const dataSource = [
     category: 'IRP',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-14',
+    gptContent: [
+      {
+        id: 7,
+        name: '디자이너',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
+      },
+      {
+        id: 8,
+        name: 'PM',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
+      },
+      {
+        id: 9,
+        name: '개발자',
+        avatar: '/logo.svg',
+        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
+      },
+    ],
   },
 ];
 
@@ -70,6 +130,7 @@ const create = ({
     thumbnail,
     category,
     modifiedAt: new Date().toISOString(),
+    gptContent: [],
   };
 
   dataSource.push(data);
@@ -82,11 +143,18 @@ function update({
   title,
   category,
   thumbnail,
+  gptContent,
 }: {
   id: number;
   title: string;
   category: string;
   thumbnail: string;
+  gptContent: {
+    id: number;
+    name: string;
+    avatar: string;
+    content: string;
+  }[];
 }) {
   const data = {
     id,
@@ -94,6 +162,7 @@ function update({
     thumbnail,
     category,
     modifiedAt: new Date().toISOString(),
+    gptContent,
   };
 
   dataSource[id - 1] = data;
