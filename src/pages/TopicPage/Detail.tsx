@@ -11,6 +11,7 @@ import { FHSelect } from '../../components/atoms/Select';
 import { dataSource as categoryDataSource } from '../../api/category';
 import { GPTCard } from '../../components/organisms/GPTCard';
 import { produce } from 'immer';
+import { FHSwitch } from '../../components/atoms/Switch';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export const TopicDetailPage = () => {
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('');
+  const [useYN, setUseYN] = useState(false);
   const [gptContent, setGptContent] = useState<
     {
       id: number;
@@ -44,6 +46,7 @@ export const TopicDetailPage = () => {
       setTitle(data.title ?? '');
       setCategory(data.category ?? 'ETF');
       setGptContent(data.gptContent ?? []);
+      setUseYN(data.useYN === 'Y');
     }
   };
 
@@ -54,6 +57,7 @@ export const TopicDetailPage = () => {
       category,
       thumbnail,
       gptContent,
+      useYN,
     });
 
     alert('반영되었습니다.');
@@ -77,6 +81,10 @@ export const TopicDetailPage = () => {
       });
     };
 
+  const handleUseYNChange = (value: boolean) => {
+    setUseYN(value);
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -89,6 +97,15 @@ export const TopicDetailPage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="카테고리">
+          <FHSelect
+            value={category}
+            onChange={handleCategoryChange}
+            items={categoryDataSource.map((item) => item.name)}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
         <FHFormItem direction="vertical" label="주제명">
           <FHTextInput
             type="text"
@@ -98,12 +115,8 @@ export const TopicDetailPage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="카테고리">
-          <FHSelect
-            value={category}
-            onChange={handleCategoryChange}
-            items={categoryDataSource.map((item) => item.name)}
-          />
+        <FHFormItem direction="vertical" label="노출여부">
+          <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>

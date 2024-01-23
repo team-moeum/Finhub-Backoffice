@@ -3,6 +3,7 @@ const dataSource = [
     id: 1,
     title: 'ETF란',
     category: 'ETF',
+    useYN: 'Y',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-01',
     gptContent: [
@@ -30,6 +31,7 @@ const dataSource = [
     id: 2,
     title: 'FUND란',
     category: 'FUND',
+    useYN: 'N',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-13',
     gptContent: [
@@ -57,6 +59,7 @@ const dataSource = [
     id: 3,
     title: 'IRP란',
     category: 'IRP',
+    useYN: 'Y',
     thumbnail: '/logo.svg',
     modifiedAt: '2024-01-14',
     gptContent: [
@@ -87,18 +90,22 @@ const list = ({
   listSize,
   keyword,
   category,
+  useYN,
 }: {
   page: number;
   listSize: number;
   keyword: string;
   category: string;
+  useYN: string;
 }) => {
   const currentPage = page ?? 1;
 
-  const origin =
+  let origin =
     category === '전체'
       ? dataSource
       : dataSource.filter((item) => item.category === category);
+  origin =
+    useYN === '전체' ? origin : origin.filter((item) => item.useYN === useYN);
 
   const data = origin.slice(
     (currentPage - 1) * listSize,
@@ -114,14 +121,17 @@ const list = ({
 const show = ({ id }: { id: number }) => {
   return dataSource.find((item) => item.id === id);
 };
+
 const create = ({
   title,
   thumbnail,
   category,
+  useYN,
 }: {
   title: string;
   thumbnail: string;
   category: string;
+  useYN: boolean;
 }) => {
   const len = dataSource.length;
   const data = {
@@ -131,6 +141,7 @@ const create = ({
     category,
     modifiedAt: new Date().toISOString(),
     gptContent: [],
+    useYN: useYN ? 'Y' : 'N',
   };
 
   dataSource.push(data);
@@ -144,6 +155,7 @@ function update({
   category,
   thumbnail,
   gptContent,
+  useYN,
 }: {
   id: number;
   title: string;
@@ -155,6 +167,7 @@ function update({
     avatar: string;
     content: string;
   }[];
+  useYN: boolean;
 }) {
   const data = {
     id,
@@ -163,6 +176,7 @@ function update({
     category,
     modifiedAt: new Date().toISOString(),
     gptContent,
+    useYN: useYN ? 'Y' : 'N',
   };
 
   dataSource[id - 1] = data;

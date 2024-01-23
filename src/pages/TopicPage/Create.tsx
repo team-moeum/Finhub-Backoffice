@@ -8,11 +8,13 @@ import { topicAPI } from '../../api/topic';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSelect } from '../../components/atoms/Select';
 import { dataSource as categoryDataSource } from '../../api/category';
+import { FHSwitch } from '../../components/atoms/Switch';
 
 export const TopicCreatePage = () => {
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('ETF');
+  const [useYN, setUseYN] = useState(false);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +33,7 @@ export const TopicCreatePage = () => {
       title,
       category,
       thumbnail,
+      useYN,
     });
 
     alert('반영되었습니다.');
@@ -40,11 +43,24 @@ export const TopicCreatePage = () => {
     setCategory(value);
   };
 
+  const handleUseYNChange = (value: boolean) => {
+    setUseYN(value);
+  };
+
   return (
     <CreatePageTemplate label="주제 추가">
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="썸네일">
           <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="카테고리">
+          <FHSelect
+            value={category}
+            onChange={handleCategoryChange}
+            items={categoryDataSource.map((item) => item.name)}
+          />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
@@ -57,12 +73,8 @@ export const TopicCreatePage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="카테고리">
-          <FHSelect
-            value={category}
-            onChange={handleCategoryChange}
-            items={categoryDataSource.map((item) => item.name)}
-          />
+        <FHFormItem direction="vertical" label="노출여부">
+          <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>

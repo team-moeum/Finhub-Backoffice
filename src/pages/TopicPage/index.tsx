@@ -16,6 +16,7 @@ export const TopicListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [category, setCategory] = useState('전체');
+  const [useYN, setUseYN] = useState('전체');
 
   const columns = [
     {
@@ -43,6 +44,13 @@ export const TopicListPage = () => {
       key: 'category',
     },
     {
+      width: 100,
+      align: 'center',
+      title: '노출여부',
+      dataIndex: 'useYN',
+      key: 'useYN',
+    },
+    {
       ellipsis: true,
       title: '주제명',
       dataIndex: 'title',
@@ -56,6 +64,7 @@ export const TopicListPage = () => {
       listSize: 10,
       category,
       keyword,
+      useYN,
     });
 
     setTotalDocuments(totalDocuments);
@@ -69,6 +78,7 @@ export const TopicListPage = () => {
       no: totalDocuments - idx,
       title: item.title,
       category: item.category,
+      useYN: item.useYN,
     }));
 
     setList(dataSource);
@@ -91,9 +101,13 @@ export const TopicListPage = () => {
     setCategory(value);
   };
 
+  const handleUseYNChange = (value: string) => {
+    setUseYN(value);
+  };
+
   useEffect(() => {
     initRequest();
-  }, [currentPage, category, keyword]);
+  }, [currentPage, category, keyword, useYN]);
 
   return (
     <ListPageTemplate
@@ -108,24 +122,39 @@ export const TopicListPage = () => {
       onTablePageChange={handleTablePageChange}
       isSearch
     >
-      <S.formItemWrapper>
-        <FHFormItem direction="horizontal" label="카테고리">
-          <FHSelect
-            value={category}
-            onChange={handleCategoryChange}
-            items={['전체', ...categoryDataSource.map((item) => item.name)]}
-          />
-        </FHFormItem>
-      </S.formItemWrapper>
+      <S.formWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="카테고리">
+            <FHSelect
+              value={category}
+              onChange={handleCategoryChange}
+              items={['전체', ...categoryDataSource.map((item) => item.name)]}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="노출여부">
+            <FHSelect
+              value={useYN}
+              onChange={handleUseYNChange}
+              items={['전체', 'Y', 'N']}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+      </S.formWrapper>
     </ListPageTemplate>
   );
 };
 
 const S = {
-  formItemWrapper: styled.div`
+  formWrapper: styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     margin-bottom: 24px;
+  `,
+  formItemWrapper: styled.div`
+    margin-right: 24px;
   `,
 };

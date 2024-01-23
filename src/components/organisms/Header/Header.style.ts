@@ -19,6 +19,10 @@ export const headerInnerWrapper = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+
+  a {
+    color: unset;
+  }
 `;
 
 export const logo = styled.div`
