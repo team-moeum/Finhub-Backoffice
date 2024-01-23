@@ -1,9 +1,9 @@
 import { Divider } from 'antd';
 
 export interface DividerProps {
-  type?: 'horizontal' | 'vertical';
+  direction?: 'horizontal' | 'vertical';
 }
 
-export const FHDivider = ({ type = 'horizontal' }: DividerProps) => {
-  return <Divider type={type} />;
+export const FHDivider = ({ direction = 'horizontal' }: DividerProps) => {
+  return <Divider type={direction} />;
 };

@@ -3,16 +3,58 @@ export const dataSource = [
     id: 1,
     name: 'ETF',
     useYN: 'Y',
+    topicList: [
+      {
+        id: 1,
+        title: 'ETF란',
+      },
+      {
+        id: 2,
+        title: 'FUND란',
+      },
+      {
+        id: 3,
+        title: 'IRP란',
+      },
+    ],
   },
   {
     id: 2,
     name: 'FUND',
     useYN: 'N',
+    topicList: [
+      {
+        id: 1,
+        title: 'ETF란',
+      },
+      {
+        id: 2,
+        title: 'FUND란',
+      },
+      {
+        id: 3,
+        title: 'IRP란',
+      },
+    ],
   },
   {
     id: 3,
     name: 'IRP',
     useYN: 'N',
+    topicList: [
+      {
+        id: 1,
+        title: 'ETF란',
+      },
+      {
+        id: 2,
+        title: 'FUND란',
+      },
+      {
+        id: 3,
+        title: 'IRP란',
+      },
+    ],
   },
 ];
 
@@ -54,6 +96,20 @@ const create = ({ name, useYN }: { name: string; useYN: boolean }) => {
     id: len + 1,
     name,
     useYN: useYN ? 'Y' : 'N',
+    topicList: [
+      {
+        id: 1,
+        title: 'ETF란',
+      },
+      {
+        id: 2,
+        title: 'FUND란',
+      },
+      {
+        id: 3,
+        title: 'IRP란',
+      },
+    ],
   };
 
   dataSource.push(data);
@@ -65,16 +121,21 @@ function update({
   id,
   name,
   useYN,
+  topicList,
 }: {
   id: number;
   name: string;
   useYN: boolean;
+  topicList: { id: number; title: string; categoryId: number }[];
 }) {
   const data = {
     id,
     name,
     useYN: useYN ? 'Y' : 'N',
+    topicList,
   };
+
+  console.log(data);
 
   dataSource[id - 1] = data;
 
