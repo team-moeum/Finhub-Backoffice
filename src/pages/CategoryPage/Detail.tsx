@@ -6,11 +6,13 @@ import { FHButton } from '../../components/atoms/Button';
 import { useEffect, useState } from 'react';
 import { categoryAPI } from '../../api/category';
 import { useParams } from 'react-router-dom';
+import { FHSwitch } from '../../components/atoms/Switch';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
   const categoryId = Number(id);
   const [name, setName] = useState('');
+  const [useYN, setUseYN] = useState(false);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +29,7 @@ export const CategoryDetailPage = () => {
 
     if (data) {
       setName(data.name ?? '');
+      setUseYN(data.useYN === 'Y');
     }
   };
 
@@ -34,15 +37,21 @@ export const CategoryDetailPage = () => {
     categoryAPI.update({
       id: categoryId,
       name,
+      useYN,
     });
 
     alert('반영되었습니다.');
     initRequest();
   };
 
+  const handleUseYNChange = (value: boolean) => {
+    setUseYN(value);
+  };
+
   useEffect(() => {
     initRequest();
-  }, [initRequest]);
+  }, []);
+
   return (
     <CreatePageTemplate label="카테고리 수정">
       <S.formItemWrapper>
@@ -52,6 +61,11 @@ export const CategoryDetailPage = () => {
             value={name}
             onChange={handleTextChange('name')}
           />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="노출여부">
+          <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>

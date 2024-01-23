@@ -93,7 +93,7 @@ export const TopicListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage, category, initRequest]);
+  }, [currentPage, category, keyword]);
 
   return (
     <ListPageTemplate

@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import { ListPageTemplate } from '../../components/templates/List';
 import { useNavigate } from 'react-router-dom';
 import { categoryAPI } from '../../api/category';
+import styled from '@emotion/styled';
+import { FHSelect } from '../../components/atoms/Select';
+import { FHFormItem } from '../../components/organisms/FormItem';
 
 export const CategoryListPage = () => {
   const navigate = useNavigate();
@@ -11,6 +14,7 @@ export const CategoryListPage = () => {
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
+  const [useYN, setUseYN] = useState('전체');
 
   const columns = [
     {
@@ -31,6 +35,13 @@ export const CategoryListPage = () => {
       ),
     },
     {
+      width: 100,
+      align: 'center',
+      title: '노출여부',
+      dataIndex: 'useYN',
+      key: 'useYN',
+    },
+    {
       ellipsis: true,
       title: '카테고리명',
       dataIndex: 'name',
@@ -38,12 +49,12 @@ export const CategoryListPage = () => {
     },
   ];
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const initRequest = () => {
     const { list, totalDocuments } = categoryAPI.list({
       page: currentPage,
       listSize: 10,
       keyword,
+      useYN,
     });
 
     setTotalDocuments(totalDocuments);
@@ -52,10 +63,12 @@ export const CategoryListPage = () => {
       key?: number;
       no?: number;
       name?: string;
+      useYN?: string;
     }[] = list.map((item, idx) => ({
       key: item.id,
       no: totalDocuments - idx,
       name: item.name,
+      useYN: item.useYN,
     }));
 
     setList(dataSource);
@@ -74,9 +87,13 @@ export const CategoryListPage = () => {
     setCurrentPage(current ?? 1);
   };
 
+  const handleUseYNChange = (value: string) => {
+    setUseYN(value);
+  };
+
   useEffect(() => {
     initRequest();
-  }, [currentPage, initRequest]);
+  }, [currentPage, useYN, keyword]);
 
   return (
     <ListPageTemplate
@@ -90,6 +107,25 @@ export const CategoryListPage = () => {
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
       isSearch
-    />
+    >
+      <S.formItemWrapper>
+        <FHFormItem direction="horizontal" label="노출여부">
+          <FHSelect
+            value={useYN}
+            onChange={handleUseYNChange}
+            items={['전체', 'Y', 'N']}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+    </ListPageTemplate>
   );
+};
+
+const S = {
+  formItemWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 24px;
+  `,
 };
