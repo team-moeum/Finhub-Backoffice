@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
-const baseURL = process.env.VITE_API_BASE_URL || '';
+const prefix = '/api/v1/admin/';
+const baseURL = prefix;
+
+export interface ApiResposne {
+  status: 'SUCCESS' | 'FAIL';
+  errorMsg?: string;
+  data: any;
+}
 
 const instance = axios.create({
   baseURL,

@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
-import { initMsw } from './api/mocks/initMsw';
+import { initMsw } from './mocks/initMsw.ts';
 
 initMsw();
 
