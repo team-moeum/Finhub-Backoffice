@@ -95,8 +95,6 @@ const update = async ({
     topicList,
   });
 
-  console.log(response);
-
   if (response.status === 'FAIL') {
     return {
       errorMsg: response.errorMsg,

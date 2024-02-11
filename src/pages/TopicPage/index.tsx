@@ -69,7 +69,7 @@ export const TopicListPage = () => {
     });
     setCategories(listData.list);
 
-    const { list, totalDocuments } = topicAPI.list({
+    const { list, totalDocuments } = await topicAPI.list({
       page: currentPage,
       listSize: 10,
       category,
@@ -84,10 +84,10 @@ export const TopicListPage = () => {
       no?: number;
       name?: string;
     }[] = list.map((item, idx) => ({
-      key: item.id,
+      key: item.topicId,
       no: totalDocuments - idx,
       title: item.title,
-      category: item.category,
+      category: item.categoryName,
       useYN: item.useYN,
     }));
 

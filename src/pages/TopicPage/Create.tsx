@@ -10,19 +10,31 @@ import { FHSelect } from '../../components/atoms/Select';
 import { FHSwitch } from '../../components/atoms/Switch';
 import { ICategory } from '../../types/Category';
 import { categoryAPI } from '../../api/category';
+import { FHTextArea } from '../../components/atoms/TextArea';
 
 export const TopicCreatePage = () => {
   const [title, setTitle] = useState('');
+  const [definition, setDefinition] = useState('');
+  const [shortDefinition, setShortDefinition] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('ETF');
   const [useYN, setUseYN] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
 
   const handleTextChange =
-    (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (type: string) =>
+    (
+      e:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
       const { value } = e.target;
       if (type === 'title') {
         setTitle(value);
+      } else if (type === 'definition') {
+        setDefinition(value);
+      } else if (type === 'shortDefinition') {
+        setShortDefinition(value);
       }
     };
 
@@ -33,8 +45,10 @@ export const TopicCreatePage = () => {
     }
     topicAPI.create({
       title,
-      category,
-      thumbnail,
+      categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
+      thumbnailImgPath: thumbnail,
+      definition,
+      shortDefinition,
       useYN,
     });
 
@@ -54,7 +68,7 @@ export const TopicCreatePage = () => {
       page: 1,
       listSize: 20,
       keyword: '',
-      useYN: '',
+      useYN: '전체',
     });
     setCategories(listData.list);
   };
@@ -85,6 +99,22 @@ export const TopicCreatePage = () => {
             type="text"
             value={title}
             onChange={handleTextChange('title')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="요약내용">
+          <FHTextArea
+            value={definition}
+            onChange={handleTextChange('definition')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="원본내용">
+          <FHTextArea
+            value={shortDefinition}
+            onChange={handleTextChange('shortDefinition')}
           />
         </FHFormItem>
       </S.formItemWrapper>

@@ -57,7 +57,7 @@ export const CategoryDetailPage = () => {
     categoryAPI.update({
       id: categoryId,
       name,
-      thumbnailImgPath: '',
+      thumbnailImgPath: './logo.svg',
       useYN,
       topicList: topicList.map(({ id, categoryId, title }) => ({
         id,
