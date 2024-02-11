@@ -1,4 +1,4 @@
-import { IUsertype } from '../types/UserType';
+import { IUsertype } from '../types/Usertype';
 import { ApiResposne, client } from './client';
 
 const list = async ({
