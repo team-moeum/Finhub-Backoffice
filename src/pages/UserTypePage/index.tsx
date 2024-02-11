@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
-import { ListPageTemplate } from '../../components/templates/List';
 import { useNavigate } from 'react-router-dom';
-import { userTypeAPI } from '../../api/userType';
+import { ListPageTemplate } from '../../components/templates/List';
+import { usertypeAPI } from '../../api/usertype';
+import { FHFormItem } from '../../components/organisms/FormItem';
+import { FHSelect } from '../../components/atoms/Select';
+import styled from '@emotion/styled';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();
@@ -11,6 +14,7 @@ export const UserTypeListPage = () => {
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
+  const [useYN, setUseYN] = useState('전체');
 
   const columns = [
     {
@@ -38,11 +42,12 @@ export const UserTypeListPage = () => {
     },
   ];
 
-  const initRequest = () => {
-    const { list, totalDocuments } = userTypeAPI.list({
+  const initRequest = async () => {
+    const { list, totalDocuments } = await usertypeAPI.list({
       page: currentPage,
       listSize: 10,
       keyword,
+      useYN,
     });
 
     setTotalDocuments(totalDocuments);
@@ -73,9 +78,13 @@ export const UserTypeListPage = () => {
     setCurrentPage(current ?? 1);
   };
 
+  const handleUseYNChange = (value: string) => {
+    setUseYN(value);
+  };
+
   useEffect(() => {
     initRequest();
-  }, [currentPage, initRequest]);
+  }, [currentPage]);
 
   return (
     <ListPageTemplate
@@ -89,6 +98,31 @@ export const UserTypeListPage = () => {
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
       isSearch
-    />
+    >
+      <S.formWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="노출여부">
+            <FHSelect
+              value={useYN}
+              onChange={handleUseYNChange}
+              items={['전체', 'Y', 'N']}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+      </S.formWrapper>
+    </ListPageTemplate>
   );
+};
+
+const S = {
+  formWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 24px;
+  `,
+  formItemWrapper: styled.div`
+    margin-right: 24px;
+  `,
 };

@@ -49,8 +49,8 @@ export const CategoryListPage = () => {
     },
   ];
 
-  const initRequest = () => {
-    const { list, totalDocuments } = categoryAPI.list({
+  const initRequest = async () => {
+    const { list, totalDocuments } = await categoryAPI.list({
       page: currentPage,
       listSize: 10,
       keyword,

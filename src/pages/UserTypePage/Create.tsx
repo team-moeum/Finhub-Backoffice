@@ -4,12 +4,12 @@ import { CreatePageTemplate } from '../../components/templates/Create';
 import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
-import { userTypeAPI } from '../../api/userType';
+import { usertypeAPI } from '../../api/usertype';
 import { FHUploader } from '../../components/atoms/Uploader';
 
 export const UserTypeCreatePage = () => {
   const [name, setName] = useState('');
-  const [avatar, setAvatar] = useState('');
+  const [avatarImgPath, setAvatarImgPath] = useState('');
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,9 +24,9 @@ export const UserTypeCreatePage = () => {
       alert('유저유형명을 입력해주세요');
       return;
     }
-    userTypeAPI.create({
+    usertypeAPI.create({
       name,
-      avatar,
+      avatarImgPath,
     });
 
     alert('반영되었습니다.');
@@ -36,7 +36,10 @@ export const UserTypeCreatePage = () => {
     <CreatePageTemplate label="유저유형 추가">
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="아바타">
-          <FHUploader thumbnail={avatar} setThumbnail={setAvatar} />
+          <FHUploader
+            thumbnail={avatarImgPath}
+            setThumbnail={setAvatarImgPath}
+          />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>

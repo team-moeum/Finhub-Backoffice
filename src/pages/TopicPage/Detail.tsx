@@ -8,55 +8,87 @@ import { topicAPI } from '../../api/topic';
 import { useParams } from 'react-router-dom';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSelect } from '../../components/atoms/Select';
-import { dataSource as categoryDataSource } from '../../api/category';
 import { GPTCard } from '../../components/organisms/GPTCard';
 import { produce } from 'immer';
 import { FHSwitch } from '../../components/atoms/Switch';
+import { ICategory } from '../../types/Category';
+import { categoryAPI } from '../../api/category';
+import { FHTextArea } from '../../components/atoms/TextArea';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
   const topicId = Number(id);
   const [title, setTitle] = useState('');
+  const [definition, setDefinition] = useState('');
+  const [shortDefinition, setShortDefinition] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('');
   const [useYN, setUseYN] = useState(false);
-  const [gptContent, setGptContent] = useState<
+  const [gptList, setGptList] = useState<
     {
-      id: number;
-      name: string;
-      avatar: string;
+      gptId: number;
+      userTypeId: number;
+      usertypeName: string;
+      avatarImgPath: string;
       content: string;
+      useYN: string;
     }[]
   >([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const handleTextChange =
-    (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    (type: string) =>
+    (
+      e:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
       const { value } = e.target;
       if (type === 'title') {
         setTitle(value);
+      } else if (type === 'definition') {
+        setDefinition(value);
+      } else if (type === 'shortDefinition') {
+        setShortDefinition(value);
       }
     };
 
-  const initRequest = () => {
-    const data = topicAPI.show({
+  const initRequest = async () => {
+    const listData = await categoryAPI.list({
+      page: 1,
+      listSize: 20,
+      keyword: '',
+      useYN: '전체',
+    });
+    setCategories(listData.list);
+
+    const data = await topicAPI.show({
       id: topicId,
     });
 
     if (data) {
       setTitle(data.title ?? '');
-      setCategory(data.category ?? 'ETF');
-      setGptContent(data.gptContent ?? []);
+      setCategory(data.categoryName ?? 'ETF');
+      setDefinition(data.definition ?? '');
+      setShortDefinition(data.shortDefinition ?? '');
+      setGptList(data.gptList ?? []);
       setUseYN(data.useYN === 'Y');
     }
   };
 
   const handleSubmit = () => {
     topicAPI.update({
-      id: topicId,
+      topicId,
       title,
-      category,
-      thumbnail,
-      gptContent,
+      definition,
+      shortDefinition,
+      categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
+      thumbnailImgPath: './logo.svg',
+      gptList: gptList.map((gpt) => ({
+        gptId: gpt.gptId,
+        content: gpt.content,
+        useYN: gpt.useYN,
+      })),
       useYN,
     });
 
@@ -69,13 +101,13 @@ export const TopicDetailPage = () => {
   };
 
   const handleGPTCardClick = (idx: number) => () => {
-    window.confirm(`${gptContent[idx].name} GPT를 재생성하시겠습니까?`);
+    window.confirm(`${gptList[idx].usertypeName} GPT를 재생성하시겠습니까?`);
   };
 
   const handleGPTCardChange =
     (idx: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setGptContent((prevGptContent) => {
-        return produce(prevGptContent, (draft) => {
+      setGptList((prevGptList) => {
+        return produce(prevGptList, (draft) => {
           draft[idx].content = e.target.value;
         });
       });
@@ -101,7 +133,7 @@ export const TopicDetailPage = () => {
           <FHSelect
             value={category}
             onChange={handleCategoryChange}
-            items={categoryDataSource.map((item) => item.name)}
+            items={categories.map((item) => item.name)}
           />
         </FHFormItem>
       </S.formItemWrapper>
@@ -115,18 +147,34 @@ export const TopicDetailPage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="요약내용">
+          <FHTextArea
+            value={definition}
+            onChange={handleTextChange('definition')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="원본내용">
+          <FHTextArea
+            value={shortDefinition}
+            onChange={handleTextChange('shortDefinition')}
+          />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
         <FHFormItem direction="vertical" label="노출여부">
           <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="GPT">
-          {gptContent.map((gpt, index) => (
-            <S.cardWrapper key={gpt.id}>
+          {gptList.map((gpt, index) => (
+            <S.cardWrapper key={gpt.gptId}>
               <GPTCard
-                avatar={gpt.avatar}
+                avatar={gpt.avatarImgPath}
                 content={gpt.content}
-                name={gpt.name}
+                name={gpt.usertypeName}
                 onClick={handleGPTCardClick(index)}
                 onChange={handleGPTCardChange(index)}
               />
