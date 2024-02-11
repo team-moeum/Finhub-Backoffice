@@ -10,21 +10,8 @@ import { FHSwitch } from '../../components/atoms/Switch';
 import { TopicCard } from '../../components/organisms/TopicCard';
 import { produce } from 'immer';
 import { FHDivider } from '../../components/atoms/Divider';
-
-export const categoryDataSource = [
-  {
-    id: 1,
-    name: 'ETF',
-  },
-  {
-    id: 2,
-    name: 'FUND',
-  },
-  {
-    id: 3,
-    name: 'IRP',
-  },
-];
+import { ICategory } from '../../types/Category';
+import { ITopic } from '../../types/Topic';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -34,6 +21,7 @@ export const CategoryDetailPage = () => {
   const [topicList, setTopicList] = useState<
     { id: number; title: string; categoryId: number; categoryName: string }[]
   >([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,16 +31,22 @@ export const CategoryDetailPage = () => {
       }
     };
 
-  const initRequest = () => {
-    const data = categoryAPI.show({
-      id: categoryId,
+  const initRequest = async () => {
+    const listData = await categoryAPI.list({
+      page: 1,
+      listSize: 20,
+      keyword: '',
+      useYN: '전체',
     });
+    setCategories(listData.list);
 
-    if (data) {
-      setName(data.name ?? '');
-      setUseYN(data.useYN === 'Y');
-      const list = data.topicList.map((topic) => {
-        const category = categoryDataSource.find((ct) => ct.id === categoryId);
+    const showData = await categoryAPI.show({ id: categoryId });
+
+    if (showData) {
+      setName(showData.name ?? '');
+      setUseYN(showData.useYN === 'Y');
+      const list = showData.topicList.map((topic: ITopic) => {
+        const category = listData.list.find((ct) => ct.id === categoryId);
         return { ...topic, categoryId, categoryName: category?.name ?? '' };
       });
       setTopicList(list);
@@ -63,6 +57,7 @@ export const CategoryDetailPage = () => {
     categoryAPI.update({
       id: categoryId,
       name,
+      thumbnailImgPath: '',
       useYN,
       topicList: topicList.map(({ id, categoryId, title }) => ({
         id,
@@ -78,7 +73,7 @@ export const CategoryDetailPage = () => {
   const handleTopicCardChange = (idx: number) => (value: string) => {
     setTopicList((prevTopicList) => {
       return produce(prevTopicList, (draft) => {
-        const category = categoryDataSource.find((ct) => ct.name === value);
+        const category = categories.find((ct) => ct.name === value);
 
         if (category) {
           draft[idx].categoryName = value;
@@ -121,9 +116,7 @@ export const CategoryDetailPage = () => {
                   title={topic.title}
                   onChange={handleTopicCardChange(index)}
                   categoryName={topic.categoryName}
-                  categoryItems={categoryDataSource.map(
-                    (category) => category.name,
-                  )}
+                  categoryItems={categories.map((category) => category.name)}
                 />
               </S.cardWrapper>
               <FHDivider direction="horizontal" />

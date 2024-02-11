@@ -5,21 +5,27 @@ import {
 } from '../utils/storage';
 import { ApiResposne, client } from './client';
 
+const EXPIRED_TIME = 1000 * 60 * 30;
+
 const login = async (email: string, password: string) => {
-  const response: ApiResposne = await client.post('auth/login', {
+  const response: ApiResposne = await client.post('/auth/login', {
     email,
     password,
   });
 
+  const cur = new Date().getTime();
+
   setStorageItem(
     'access-token',
-    response.status === 'SUCCESS' ? new Date().getTime().toString() : '0',
+    response.status === 'SUCCESS'
+      ? cur.toString()
+      : (cur + EXPIRED_TIME).toString(),
   );
 };
 
 const verifyToken = async () => {
   const accessTime = Number(getStorageItem('access-token') ?? '0');
-  return new Date().getTime() - accessTime < 1000 * 60 * 30;
+  return new Date().getTime() - accessTime < EXPIRED_TIME;
 };
 
 const logout = () => {

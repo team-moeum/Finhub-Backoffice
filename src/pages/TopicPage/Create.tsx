@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '../../components/templates/Create';
 import { FHTextInput } from '../../components/atoms/TextInput';
@@ -7,14 +7,16 @@ import { FHFormItem } from '../../components/organisms/FormItem';
 import { topicAPI } from '../../api/topic';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSelect } from '../../components/atoms/Select';
-import { dataSource as categoryDataSource } from '../../api/category';
 import { FHSwitch } from '../../components/atoms/Switch';
+import { ICategory } from '../../types/Category';
+import { categoryAPI } from '../../api/category';
 
 export const TopicCreatePage = () => {
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('ETF');
   const [useYN, setUseYN] = useState(false);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,6 +49,20 @@ export const TopicCreatePage = () => {
     setUseYN(value);
   };
 
+  const initRequest = async () => {
+    const listData = await categoryAPI.list({
+      page: 1,
+      listSize: 20,
+      keyword: '',
+      useYN: '',
+    });
+    setCategories(listData.list);
+  };
+
+  useEffect(() => {
+    initRequest();
+  }, []);
+
   return (
     <CreatePageTemplate label="주제 추가">
       <S.formItemWrapper>
@@ -59,7 +75,7 @@ export const TopicCreatePage = () => {
           <FHSelect
             value={category}
             onChange={handleCategoryChange}
-            items={categoryDataSource.map((item) => item.name)}
+            items={categories.map((item) => item.name)}
           />
         </FHFormItem>
       </S.formItemWrapper>

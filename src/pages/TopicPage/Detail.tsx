@@ -8,10 +8,11 @@ import { topicAPI } from '../../api/topic';
 import { useParams } from 'react-router-dom';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSelect } from '../../components/atoms/Select';
-import { dataSource as categoryDataSource } from '../../api/category';
 import { GPTCard } from '../../components/organisms/GPTCard';
 import { produce } from 'immer';
 import { FHSwitch } from '../../components/atoms/Switch';
+import { ICategory } from '../../types/Category';
+import { categoryAPI } from '../../api/category';
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export const TopicDetailPage = () => {
       content: string;
     }[]
   >([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +39,15 @@ export const TopicDetailPage = () => {
       }
     };
 
-  const initRequest = () => {
+  const initRequest = async () => {
+    const listData = await categoryAPI.list({
+      page: 1,
+      listSize: 20,
+      keyword: '',
+      useYN: '',
+    });
+    setCategories(listData.list);
+
     const data = topicAPI.show({
       id: topicId,
     });
@@ -101,7 +111,7 @@ export const TopicDetailPage = () => {
           <FHSelect
             value={category}
             onChange={handleCategoryChange}
-            items={categoryDataSource.map((item) => item.name)}
+            items={categories.map((item) => item.name)}
           />
         </FHFormItem>
       </S.formItemWrapper>

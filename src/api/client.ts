@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
 
-const prefix = '/api/v1/admin/';
+const prefix = '/api/v1/admin';
 const baseURL = prefix;
 
 export interface ApiResposne {
   status: 'SUCCESS' | 'FAIL';
   errorMsg?: string;
-  data: any;
+  data?: any;
 }
 
 const instance = axios.create({
@@ -23,7 +23,7 @@ export interface FetchInstance {
     url: string,
     body: { [key: string]: any },
   ) => Promise<Response>;
-  patch: <Response = unknown>(
+  put: <Response = unknown>(
     url: string,
     body: { [key: string]: any },
   ) => Promise<Response>;
@@ -42,11 +42,11 @@ export const client: FetchInstance = {
     const res = await instance.post<Response>(url, body);
     return res.data;
   },
-  patch: async function fetch<Response = unknown>(
+  put: async function fetch<Response = unknown>(
     url: string,
     body: { [key: string]: any },
   ) {
-    const res = await instance.patch<Response>(url, body);
+    const res = await instance.put<Response>(url, body);
     return res.data;
   },
   delete: async function fetch<Response = unknown>(url: string) {

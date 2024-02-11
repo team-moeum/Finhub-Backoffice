@@ -5,7 +5,8 @@ import { topicAPI } from '../../api/topic';
 import styled from '@emotion/styled';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { FHSelect } from '../../components/atoms/Select';
-import { dataSource as categoryDataSource } from '../../api/category';
+import { ICategory } from '../../types/Category';
+import { categoryAPI } from '../../api/category';
 
 export const TopicListPage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ export const TopicListPage = () => {
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [category, setCategory] = useState('전체');
   const [useYN, setUseYN] = useState('전체');
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
   const columns = [
     {
@@ -58,7 +60,15 @@ export const TopicListPage = () => {
     },
   ];
 
-  const initRequest = () => {
+  const initRequest = async () => {
+    const listData = await categoryAPI.list({
+      page: 1,
+      listSize: 20,
+      keyword: '',
+      useYN: '',
+    });
+    setCategories(listData.list);
+
     const { list, totalDocuments } = topicAPI.list({
       page: currentPage,
       listSize: 10,
@@ -128,7 +138,7 @@ export const TopicListPage = () => {
             <FHSelect
               value={category}
               onChange={handleCategoryChange}
-              items={['전체', ...categoryDataSource.map((item) => item.name)]}
+              items={['전체', ...categories.map((item) => item.name)]}
             />
           </FHFormItem>
         </S.formItemWrapper>
