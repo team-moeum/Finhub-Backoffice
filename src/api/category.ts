@@ -57,7 +57,7 @@ const create = async ({
   useYN: boolean;
   thumbnailImgPath: string;
 }) => {
-  const response: ApiResposne = await client.post('category', {
+  const response: ApiResposne = await client.post('/category', {
     name,
     useYN,
     thumbnailImgPath,

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const prefix = '/api/v1/admin';
-const baseURL = prefix;
+const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
 
 export interface ApiResposne {
   status: 'SUCCESS' | 'FAIL';
