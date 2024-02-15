@@ -6,9 +6,11 @@ import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { categoryAPI } from '../../api/category';
 import { FHSwitch } from '../../components/atoms/Switch';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const CategoryCreatePage = () => {
   const [name, setName] = useState('');
+  const [thumbnail, setThumbnail] = useState('');
   const [useYN, setUseYN] = useState(false);
 
   const handleTextChange =
@@ -26,6 +28,7 @@ export const CategoryCreatePage = () => {
     }
     categoryAPI.create({
       name,
+      thumbnailImgPath: '',
       useYN,
     });
 
@@ -38,6 +41,11 @@ export const CategoryCreatePage = () => {
 
   return (
     <CreatePageTemplate label="카테고리 추가">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="썸네일">
+          <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="카테고리명">
           <FHTextInput

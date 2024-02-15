@@ -1,5 +1,6 @@
-export interface UserType {
+export interface IUsertype {
   id: number;
   name: string;
-  avatar: string;
+  avatarImgPath: string;
+  useYN: string;
 }

@@ -1,91 +1,7 @@
-const dataSource = [
-  {
-    id: 1,
-    title: 'ETF란',
-    category: 'ETF',
-    useYN: 'Y',
-    thumbnail: '/logo.svg',
-    modifiedAt: '2024-01-01',
-    gptContent: [
-      {
-        id: 1,
-        name: '디자이너',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
-      },
-      {
-        id: 2,
-        name: 'PM',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
-      },
-      {
-        id: 3,
-        name: '개발자',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
-      },
-    ],
-  },
-  {
-    id: 2,
-    title: 'FUND란',
-    category: 'FUND',
-    useYN: 'N',
-    thumbnail: '/logo.svg',
-    modifiedAt: '2024-01-13',
-    gptContent: [
-      {
-        id: 4,
-        name: '디자이너',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
-      },
-      {
-        id: 5,
-        name: 'PM',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
-      },
-      {
-        id: 6,
-        name: '개발자',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: 'IRP란',
-    category: 'IRP',
-    useYN: 'Y',
-    thumbnail: '/logo.svg',
-    modifiedAt: '2024-01-14',
-    gptContent: [
-      {
-        id: 7,
-        name: '디자이너',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
-      },
-      {
-        id: 8,
-        name: 'PM',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 PM입니다',
-      },
-      {
-        id: 9,
-        name: '개발자',
-        avatar: '/logo.svg',
-        content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
-      },
-    ],
-  },
-];
+import { ITopic } from '../types/Topic';
+import { ApiResposne, client } from './client';
 
-const list = ({
+const list = async ({
   page,
   listSize,
   keyword,
@@ -98,12 +14,25 @@ const list = ({
   category: string;
   useYN: string;
 }) => {
+  const response: ApiResposne = await client.get('/topic');
+
+  if (response.status === 'FAIL') {
+    return {
+      list: [],
+      totalDocuments: 0,
+    };
+  }
+
+  const dataSource: {
+    topicList: ITopic[];
+  } = response.data;
+
   const currentPage = page ?? 1;
 
   let origin =
     category === '전체'
-      ? dataSource
-      : dataSource.filter((item) => item.category === category);
+      ? dataSource.topicList
+      : dataSource.topicList.filter((item) => item.categoryName === category);
   origin =
     useYN === '전체' ? origin : origin.filter((item) => item.useYN === useYN);
 
@@ -114,75 +43,93 @@ const list = ({
 
   return {
     list: data.filter((item) => item.title.includes(keyword)),
-    totalDocuments: origin.length,
+    totalDocuments: dataSource.topicList.length,
   };
 };
 
-const show = ({ id }: { id: number }) => {
-  return dataSource.find((item) => item.id === id);
+const show = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.get(`/topic/${id}`);
+  const dataSource = response.data;
+  return dataSource;
 };
 
-const create = ({
+const create = async ({
   title,
-  thumbnail,
-  category,
+  definition,
+  shortDefinition,
+  thumbnailImgPath,
+  categoryId,
   useYN,
 }: {
   title: string;
-  thumbnail: string;
-  category: string;
+  definition: string;
+  shortDefinition: string;
+  thumbnailImgPath: string;
+  categoryId: number;
   useYN: boolean;
 }) => {
-  const len = dataSource.length;
-  const data = {
-    id: len + 1,
+  const response: ApiResposne = await client.post('/topic', {
     title,
-    thumbnail,
-    category,
-    modifiedAt: new Date().toISOString(),
-    gptContent: [],
+    definition,
+    shortDefinition,
+    thumbnailImgPath,
+    categoryId,
     useYN: useYN ? 'Y' : 'N',
-  };
+  });
 
-  dataSource.push(data);
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
 
-  return data;
+  const dataSource = response.data;
+  return dataSource;
 };
 
-function update({
-  id,
+const update = async ({
+  topicId,
   title,
-  category,
-  thumbnail,
-  gptContent,
+  definition,
+  shortDefinition,
+  categoryId,
+  thumbnailImgPath,
+  gptList,
   useYN,
 }: {
-  id: number;
+  topicId: number;
   title: string;
-  category: string;
-  thumbnail: string;
-  gptContent: {
-    id: number;
-    name: string;
-    avatar: string;
+  definition: string;
+  shortDefinition: string;
+  categoryId: number;
+  thumbnailImgPath: string;
+  gptList: {
+    gptId: number;
     content: string;
+    useYN: string;
   }[];
   useYN: boolean;
-}) {
-  const data = {
-    id,
+}) => {
+  const response: ApiResposne = await client.put('/topic', {
+    topicId,
     title,
-    thumbnail,
-    category,
-    modifiedAt: new Date().toISOString(),
-    gptContent,
+    definition,
+    shortDefinition,
+    thumbnailImgPath,
+    categoryId,
+    gptList,
     useYN: useYN ? 'Y' : 'N',
-  };
+  });
 
-  dataSource[id - 1] = data;
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
 
+  const dataSource = response.data;
   return dataSource;
-}
+};
 
 export const topicAPI = {
   list,

@@ -1,64 +1,7 @@
-export const dataSource = [
-  {
-    id: 1,
-    name: 'ETF',
-    useYN: 'Y',
-    topicList: [
-      {
-        id: 1,
-        title: 'ETF란',
-      },
-      {
-        id: 2,
-        title: 'FUND란',
-      },
-      {
-        id: 3,
-        title: 'IRP란',
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'FUND',
-    useYN: 'N',
-    topicList: [
-      {
-        id: 1,
-        title: 'ETF란',
-      },
-      {
-        id: 2,
-        title: 'FUND란',
-      },
-      {
-        id: 3,
-        title: 'IRP란',
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: 'IRP',
-    useYN: 'N',
-    topicList: [
-      {
-        id: 1,
-        title: 'ETF란',
-      },
-      {
-        id: 2,
-        title: 'FUND란',
-      },
-      {
-        id: 3,
-        title: 'IRP란',
-      },
-    ],
-  },
-];
+import { ICategory } from '../types/Category';
+import { ApiResposne, client } from './client';
 
-const list = ({
+const list = async ({
   page,
   listSize,
   keyword,
@@ -69,11 +12,24 @@ const list = ({
   keyword: string;
   useYN: string;
 }) => {
+  const response: ApiResposne = await client.get('/category');
+
+  if (response.status === 'FAIL') {
+    return {
+      list: [],
+      totalDocuments: 0,
+    };
+  }
+
+  const dataSource: {
+    categoryList: ICategory[];
+  } = response.data;
+
   const currentPage = page ?? 1;
   const origin =
     useYN === '전체'
-      ? dataSource
-      : dataSource.filter((item) => item.useYN === useYN);
+      ? dataSource.categoryList
+      : dataSource.categoryList.filter((item) => item.useYN === useYN);
 
   const data = origin.slice(
     (currentPage - 1) * listSize,
@@ -82,65 +38,73 @@ const list = ({
 
   return {
     list: data.filter((item) => item.name.includes(keyword)),
-    totalDocuments: dataSource.length,
+    totalDocuments: dataSource.categoryList.length,
   };
 };
 
-const show = ({ id }: { id: number }) => {
-  return dataSource.find((item) => item.id === id);
+const show = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.get(`category/${id}`);
+  const dataSource = response.data;
+  return dataSource;
 };
 
-const create = ({ name, useYN }: { name: string; useYN: boolean }) => {
-  const len = dataSource.length;
-  const data = {
-    id: len + 1,
+const create = async ({
+  name,
+  useYN,
+  thumbnailImgPath,
+}: {
+  name: string;
+  useYN: boolean;
+  thumbnailImgPath: string;
+}) => {
+  const response: ApiResposne = await client.post('/category', {
     name,
-    useYN: useYN ? 'Y' : 'N',
-    topicList: [
-      {
-        id: 1,
-        title: 'ETF란',
-      },
-      {
-        id: 2,
-        title: 'FUND란',
-      },
-      {
-        id: 3,
-        title: 'IRP란',
-      },
-    ],
-  };
+    useYN,
+    thumbnailImgPath,
+  });
 
-  dataSource.push(data);
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
 
-  return data;
+  const dataSource: ICategory = response.data;
+
+  return dataSource;
 };
 
-function update({
+const update = async ({
   id,
   name,
+  thumbnailImgPath,
   useYN,
   topicList,
 }: {
   id: number;
   name: string;
+  thumbnailImgPath: string;
   useYN: boolean;
   topicList: { id: number; title: string; categoryId: number }[];
-}) {
-  const data = {
+}) => {
+  const response: ApiResposne = await client.put('/category', {
     id,
     name,
-    useYN: useYN ? 'Y' : 'N',
+    useYN,
+    thumbnailImgPath,
     topicList,
-  };
+  });
 
-  console.log(data);
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
 
-  dataSource[id - 1] = data;
+  const dataSource: ICategory = response.data;
 
   return dataSource;
-}
+};
 
 export const categoryAPI = {
   list,
