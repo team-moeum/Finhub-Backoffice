@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { authAPI } from '../../../api/auth';
 import { FHPath } from '../../../configs/Router';
 import * as S from './Header.style';
