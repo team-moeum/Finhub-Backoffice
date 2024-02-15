@@ -4,7 +4,7 @@ import { CreatePageTemplate } from '../../components/templates/Create';
 import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
-import { usertypeAPI } from '../../api/usertype';
+import { usertypeAPI } from '../../api/userType';
 import { FHUploader } from '../../components/atoms/Uploader';
 
 export const UserTypeCreatePage = () => {
