@@ -5,6 +5,7 @@ import { usertypeAPI } from '../../api/usertype';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { FHSelect } from '../../components/atoms/Select';
 import styled from '@emotion/styled';
+import { IUsertype } from '../../types/Usertype';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ export const UserTypeListPage = () => {
       key?: number;
       no?: number;
       name?: string;
-    }[] = list.map((item, idx) => ({
+    }[] = list.map((item: IUsertype, idx: number) => ({
       key: item.id,
       no: totalDocuments - idx,
       name: item.name,
