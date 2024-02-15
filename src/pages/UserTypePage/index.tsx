@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ListPageTemplate } from '../../components/templates/List';
-import { usertypeAPI } from '../../api/usertype';
+import { usertypeAPI } from '../../api/userType';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { FHSelect } from '../../components/atoms/Select';
 import styled from '@emotion/styled';
-import { IUsertype } from '../../types/Usertype';
+import { IUsertype } from '../../types/UserType';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();

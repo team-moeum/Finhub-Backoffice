@@ -4,7 +4,7 @@ import { FHFormItem } from '../../components/organisms/FormItem';
 import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { useEffect, useState } from 'react';
-import { usertypeAPI } from '../../api/usertype';
+import { usertypeAPI } from '../../api/userType';
 import { useParams } from 'react-router-dom';
 import { FHUploader } from '../../components/atoms/Uploader';
 import { FHSwitch } from '../../components/atoms/Switch';
