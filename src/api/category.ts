@@ -48,19 +48,9 @@ const show = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
-const create = async ({
-  name,
-  useYN,
-  thumbnailImgPath,
-}: {
-  name: string;
-  useYN: boolean;
-  thumbnailImgPath: string;
-}) => {
+const create = async ({ name }: { name: string }) => {
   const response: ApiResposne = await client.post('/category', {
     name,
-    useYN,
-    thumbnailImgPath,
   });
 
   if (response.status === 'FAIL') {

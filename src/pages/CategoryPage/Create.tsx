@@ -5,13 +5,11 @@ import { FHTextInput } from '../../components/atoms/TextInput';
 import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { categoryAPI } from '../../api/category';
-import { FHSwitch } from '../../components/atoms/Switch';
 import { FHUploader } from '../../components/atoms/Uploader';
 
 export const CategoryCreatePage = () => {
   const [name, setName] = useState('');
   const [thumbnail, setThumbnail] = useState('');
-  const [useYN, setUseYN] = useState(false);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,17 +24,9 @@ export const CategoryCreatePage = () => {
       alert('카테고리명을 입력해주세요');
       return;
     }
-    categoryAPI.create({
-      name,
-      thumbnailImgPath: '',
-      useYN,
-    });
+    categoryAPI.create({ name });
 
     alert('반영되었습니다.');
-  };
-
-  const handleUseYNChange = (value: boolean) => {
-    setUseYN(value);
   };
 
   return (
@@ -53,11 +43,6 @@ export const CategoryCreatePage = () => {
             value={name}
             onChange={handleTextChange('name')}
           />
-        </FHFormItem>
-      </S.formItemWrapper>
-      <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="노출여부">
-          <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
