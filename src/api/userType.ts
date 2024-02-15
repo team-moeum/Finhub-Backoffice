@@ -52,16 +52,9 @@ const show = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
-const create = async ({
-  name,
-  avatarImgPath,
-}: {
-  name: string;
-  avatarImgPath: string;
-}) => {
+const create = async ({ name }: { name: string }) => {
   const response: ApiResposne = await client.post('/usertype', {
     name,
-    avatarImgPath,
   });
 
   if (response.status === 'FAIL') {
@@ -78,19 +71,16 @@ const create = async ({
 const update = async ({
   id,
   name,
-  avatarImgPath,
   useYN,
 }: {
   id: number;
   name: string;
-  avatarImgPath: string;
   useYN: boolean;
 }) => {
   const response: ApiResposne = await client.put('/usertype', {
     id,
     name,
     useYN: useYN ? 'Y' : 'N',
-    avatarImgPath,
   });
 
   if (response.status === 'FAIL') {
