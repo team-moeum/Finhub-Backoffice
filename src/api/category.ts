@@ -67,13 +67,11 @@ const create = async ({ name }: { name: string }) => {
 const update = async ({
   id,
   name,
-  thumbnailImgPath,
   useYN,
   topicList,
 }: {
   id: number;
   name: string;
-  thumbnailImgPath: string;
   useYN: boolean;
   topicList: { id: number; title: string; categoryId: number }[];
 }) => {
@@ -81,7 +79,6 @@ const update = async ({
     id,
     name,
     useYN,
-    thumbnailImgPath,
     topicList,
   });
 
