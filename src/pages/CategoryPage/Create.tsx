@@ -56,7 +56,9 @@ export const CategoryCreatePage = () => {
 
 const S = {
   formItemWrapper: styled.div`
-    width: 360px;
+    max-width: 720px;
+    width: 100%;
+    padding: 0 16px;
     margin-bottom: 32px;
   `,
 };
