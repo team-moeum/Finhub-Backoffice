@@ -12,6 +12,7 @@ import { produce } from 'immer';
 import { FHDivider } from '../../components/atoms/Divider';
 import { ICategory } from '../../types/Category';
 import { ITopic } from '../../types/Topic';
+import { FHUploader } from '../../components/atoms/Uploader';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ export const CategoryDetailPage = () => {
     { id: number; title: string; categoryId: number; categoryName: string }[]
   >([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [thumbnail, setThumbnail] = useState('');
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +59,6 @@ export const CategoryDetailPage = () => {
     categoryAPI.update({
       id: categoryId,
       name,
-      thumbnailImgPath: './logo.svg',
       useYN,
       topicList: topicList.map(({ id, categoryId, title }) => ({
         id,
@@ -93,6 +94,11 @@ export const CategoryDetailPage = () => {
 
   return (
     <CreatePageTemplate label="카테고리 수정">
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="썸네일">
+          <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+        </FHFormItem>
+      </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="카테고리명">
           <FHTextInput
@@ -135,7 +141,9 @@ export const CategoryDetailPage = () => {
 
 const S = {
   formItemWrapper: styled.div`
-    width: 360px;
+    max-width: 720px;
+    width: 100%;
+    padding: 0 16px;
     margin-bottom: 32px;
   `,
   cardWrapper: styled.div`

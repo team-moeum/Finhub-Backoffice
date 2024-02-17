@@ -48,19 +48,9 @@ const show = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
-const create = async ({
-  name,
-  useYN,
-  thumbnailImgPath,
-}: {
-  name: string;
-  useYN: boolean;
-  thumbnailImgPath: string;
-}) => {
+const create = async ({ name }: { name: string }) => {
   const response: ApiResposne = await client.post('/category', {
     name,
-    useYN,
-    thumbnailImgPath,
   });
 
   if (response.status === 'FAIL') {
@@ -77,13 +67,11 @@ const create = async ({
 const update = async ({
   id,
   name,
-  thumbnailImgPath,
   useYN,
   topicList,
 }: {
   id: number;
   name: string;
-  thumbnailImgPath: string;
   useYN: boolean;
   topicList: { id: number; title: string; categoryId: number }[];
 }) => {
@@ -91,7 +79,6 @@ const update = async ({
     id,
     name,
     useYN,
-    thumbnailImgPath,
     topicList,
   });
 
