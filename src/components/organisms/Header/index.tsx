@@ -47,6 +47,7 @@ export const FHHeader = () => {
           <FHHeaderItem route={FHPath.categories} />
           <FHHeaderItem route={FHPath.topics} />
           <FHHeaderItem route={FHPath.usertypes} />
+          <FHHeaderItem route={FHPath.logs} />
           <S.headerItemWrapper onClick={handleSignOut}>
             로그아웃
           </S.headerItemWrapper>

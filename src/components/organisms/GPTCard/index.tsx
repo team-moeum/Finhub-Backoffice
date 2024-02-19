@@ -1,18 +1,20 @@
 import { FHButton } from '../../atoms/Button';
+import { FHSwitch } from '../../atoms/Switch';
 import { FHTextArea } from '../../atoms/TextArea';
+import { FHFormItem } from '../FormItem';
 import * as S from './GPTCard.style';
 
 export interface GPTCardProps {
   onClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
-  avatar: string;
-  name: string;
   content: string;
+  useYN?: boolean;
+  onUseYNChange?: (value: boolean) => void;
 }
 
 export const GPTCard = ({
-  avatar,
-  name,
+  useYN = false,
+  onUseYNChange,
   content,
   onChange,
   onClick,
@@ -20,10 +22,9 @@ export const GPTCard = ({
   return (
     <S.cardWrapper>
       <S.introWrapper>
-        <S.userTypeWrapper>
-          <S.avatar style={{ backgroundImage: `url(${avatar})` }} />
-          <S.name>{name}</S.name>
-        </S.userTypeWrapper>
+        <FHFormItem direction="horizontal" label="노출여부">
+          <FHSwitch value={useYN} onChange={onUseYNChange} />
+        </FHFormItem>
         <FHButton type="default" onClick={onClick}>
           생성
         </FHButton>
