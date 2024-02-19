@@ -1,4 +1,5 @@
 import { Input } from 'antd';
+import theme from '../../styles/theme';
 
 const { TextArea } = Input;
 
@@ -8,6 +9,7 @@ export interface TextAreaProps {
   placeholder?: string;
   resize?: boolean;
   height?: string | number;
+  readOnly?: boolean;
 }
 
 export const FHTextArea = ({
@@ -16,15 +18,22 @@ export const FHTextArea = ({
   placeholder = '',
   resize = false,
   height = 120,
+  readOnly = false,
 }: TextAreaProps) => {
   return (
     <TextArea
       value={value}
-      showCount
-      allowClear
+      showCount={!readOnly}
+      allowClear={!readOnly}
+      readOnly={readOnly}
       onChange={onChange}
       placeholder={placeholder}
-      style={{ height, resize: resize ? 'vertical' : 'none' }}
+      style={{
+        height,
+        resize: resize ? 'vertical' : 'none',
+        opacity: readOnly ? 0.8 : 1,
+        background: readOnly ? theme.colors.gray.eaeaea : 'transparent',
+      }}
     />
   );
 };
