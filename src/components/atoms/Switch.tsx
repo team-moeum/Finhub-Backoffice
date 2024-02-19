@@ -4,13 +4,13 @@ import { SwitchChangeEventHandler } from 'antd/es/switch';
 export const FHSwitch = ({
   checkedChildren = '',
   unCheckedChildren = '',
-  value,
-  onChange,
+  value = false,
+  onChange = () => null,
 }: {
   checkedChildren?: string;
   unCheckedChildren?: string;
-  value: boolean;
-  onChange: SwitchChangeEventHandler;
+  value?: boolean;
+  onChange?: SwitchChangeEventHandler;
 }) => {
   return (
     <Switch
