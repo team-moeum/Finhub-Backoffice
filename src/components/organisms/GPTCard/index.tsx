@@ -23,7 +23,7 @@ export const GPTCard = ({
     <S.cardWrapper>
       <S.introWrapper>
         <FHFormItem direction="horizontal" label="노출여부">
-          <FHSwitch />
+          <FHSwitch value={useYN} onChange={onUseYNChange} />
         </FHFormItem>
         <FHButton type="default" onClick={onClick}>
           생성
