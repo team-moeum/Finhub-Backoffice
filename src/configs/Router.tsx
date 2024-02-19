@@ -10,6 +10,7 @@ import { CategoryListPage } from '../pages/CategoryPage';
 import { CategoryCreatePage } from '../pages/CategoryPage/Create';
 import { CategoryDetailPage } from '../pages/CategoryPage/Detail';
 import { ErrorPage } from '../pages/ErrorPage';
+import { LogListPage } from '../pages/LogPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -31,6 +32,7 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
     link: '/services/usertypes/create',
   },
   usertypesDetail: { label: '유저유형 상세', link: '/services/usertypes/:id' },
+  logs: { label: 'GPT 로그', link: '/services/logs' },
 };
 
 export const AppRouter = () => {
@@ -59,6 +61,7 @@ export const AppRouter = () => {
         <Route path={FHPath.topics.link} element={<TopicListPage />} />
         <Route path={FHPath.topicsCreate.link} element={<TopicCreatePage />} />
         <Route path={FHPath.topicsDetail.link} element={<TopicDetailPage />} />
+        <Route path={FHPath.logs.link} element={<LogListPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
