@@ -14,6 +14,7 @@ const instance = axios.create({
   baseURL,
   headers: {
     'Content-Type': 'application/json',
+    finhub: import.meta.env.VITE_API_API_KEY ?? '',
   },
 });
 
