@@ -8,7 +8,7 @@ import { ApiResposne, client } from './client';
 const EXPIRED_TIME = 1000 * 60 * 30;
 
 const login = async (email: string, password: string) => {
-  const response: ApiResposne = await client.post('/auth/login', {
+  const response: ApiResposne = await client.post('/login', {
     email,
     password,
   });
