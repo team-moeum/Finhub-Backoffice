@@ -1,6 +1,9 @@
 import {
+  getLocalStorageItem,
   getStorageItem,
+  removeLocalStorageItem,
   removeStorageItem,
+  setLocalStorageItem,
   setStorageItem,
 } from '../utils/storage';
 import { ApiResposne, client } from './client';
@@ -8,28 +11,30 @@ import { ApiResposne, client } from './client';
 const EXPIRED_TIME = 1000 * 60 * 30;
 
 const login = async (email: string, password: string) => {
-  const response: ApiResposne = await client.post('/login', {
+  const response: ApiResposne = await client.post('/admin/login', {
     email,
     password,
   });
 
-  const cur = new Date().getTime();
-
-  setStorageItem(
-    'access-token',
-    response.status === 'SUCCESS'
-      ? cur.toString()
-      : (cur + EXPIRED_TIME).toString(),
-  );
+  setStorageItem('accessToken', response.data.accessToken ?? '');
+  setLocalStorageItem('refreshToken', response.data.refreshToken ?? '');
 };
 
 const verifyToken = async () => {
-  const accessTime = Number(getStorageItem('access-token') ?? '0');
-  return new Date().getTime() - accessTime < EXPIRED_TIME;
+  const response: ApiResposne = await client.post('/auth/autoLogin', {
+    accessToken: getStorageItem('accessToken'),
+    refreshToken: getLocalStorageItem('refreshToken'),
+  });
+
+  setStorageItem('accessToken', response.data.accessToken ?? '');
+  setLocalStorageItem('refreshToken', response.data.refreshToken ?? '');
+
+  return response.status === 'SUCCESS';
 };
 
 const logout = () => {
-  removeStorageItem('access-token');
+  removeStorageItem('accessToken');
+  removeLocalStorageItem('refreshToken');
 };
 
 export const authAPI = {
