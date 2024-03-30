@@ -62,7 +62,7 @@ export const categoryHandler = [
             },
             {
               id: 6,
-              title: '크크크',
+              title: '크크크2',
               categoryId: 1,
             },
           ],
@@ -73,7 +73,7 @@ export const categoryHandler = [
   }),
 
   // Category 생성
-  http.post(`${prefix}/`, () => {
+  http.post(`${prefix}`, () => {
     return HttpResponse.json(
       {
         status: 'SUCCESS',
