@@ -16,7 +16,7 @@ const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     finhub: import.meta.env.VITE_API_API_KEY ?? '',
-    accessToken: getStorageItem('accessToken'),
+    Authorization: `Bearer ${getStorageItem('accessToken')}`,
     refreshToken: getLocalStorageItem('refreshToken'),
   },
 });

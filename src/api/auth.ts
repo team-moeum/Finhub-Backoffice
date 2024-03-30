@@ -8,8 +8,6 @@ import {
 } from '../utils/storage';
 import { ApiResposne, client } from './client';
 
-const EXPIRED_TIME = 1000 * 60 * 30;
-
 const login = async (email: string, password: string) => {
   const response: ApiResposne = await client.post('/admin/login', {
     email,
@@ -25,9 +23,6 @@ const verifyToken = async () => {
     accessToken: getStorageItem('accessToken'),
     refreshToken: getLocalStorageItem('refreshToken'),
   });
-
-  setStorageItem('accessToken', response.data.accessToken ?? '');
-  setLocalStorageItem('refreshToken', response.data.refreshToken ?? '');
 
   return response.status === 'SUCCESS';
 };
