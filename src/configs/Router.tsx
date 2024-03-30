@@ -11,6 +11,7 @@ import { CategoryCreatePage } from '../pages/CategoryPage/Create';
 import { CategoryDetailPage } from '../pages/CategoryPage/Detail';
 import { ErrorPage } from '../pages/ErrorPage';
 import { LogListPage } from '../pages/LogPage';
+import { NoWordListPage } from '../pages/NoWordPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -33,6 +34,7 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   },
   usertypesDetail: { label: '유저유형 상세', link: '/services/usertypes/:id' },
   logs: { label: 'GPT 로그', link: '/services/logs' },
+  noWords: { label: '단어 요청', link: '/services/noWords' },
 };
 
 export const AppRouter = () => {
@@ -62,6 +64,7 @@ export const AppRouter = () => {
         <Route path={FHPath.topicsCreate.link} element={<TopicCreatePage />} />
         <Route path={FHPath.topicsDetail.link} element={<TopicDetailPage />} />
         <Route path={FHPath.logs.link} element={<LogListPage />} />
+        <Route path={FHPath.noWords.link} element={<NoWordListPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
