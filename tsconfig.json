@@ -21,8 +21,14 @@
     "noFallthroughCasesInSwitch": true,
 
     /* emotion */
-    "jsxImportSource": "@emotion/react"
+    "jsxImportSource": "@emotion/react",
+
+    /* alias */
+    "baseUrl": "src",
+    "paths": {
+      "@finhub/*": ["*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "__tests__"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
