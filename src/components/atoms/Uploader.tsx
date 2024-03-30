@@ -27,6 +27,7 @@ export const FHUploader = ({ thumbnail, setThumbnail }: UploaderProps) => {
     }
     return isJpgOrPng && isLt2M;
   };
+
   const handleChange = (info: any) => {
     if (info.file.status === 'uploading') {
       setLoading(true);
@@ -53,7 +54,7 @@ export const FHUploader = ({ thumbnail, setThumbnail }: UploaderProps) => {
       listType="picture-card"
       className="avatar-uploader"
       showUploadList={false}
-      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+      action="/api/upload"
       beforeUpload={beforeUpload}
       onChange={handleChange}
     >

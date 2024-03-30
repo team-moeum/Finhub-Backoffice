@@ -52,6 +52,7 @@ export const CategoryDetailPage = () => {
         return { ...topic, categoryId, categoryName: category?.name ?? '' };
       });
       setTopicList(list);
+      setThumbnail(showData.thumbnailImgPath);
     }
   };
 

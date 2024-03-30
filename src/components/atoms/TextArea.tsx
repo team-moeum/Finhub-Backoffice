@@ -32,7 +32,7 @@ export const FHTextArea = ({
         height,
         resize: resize ? 'vertical' : 'none',
         opacity: readOnly ? 0.8 : 1,
-        background: readOnly ? theme.colors.gray.eaeaea : 'transparent',
+        background: readOnly ? theme.colors.gray.eaeaea : '#ffffff',
       }}
     />
   );

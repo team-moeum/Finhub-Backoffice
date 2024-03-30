@@ -127,6 +127,14 @@ export const TopicDetailPage = () => {
       });
     };
 
+  const handleGPTCardUseYNChange = (idx: number) => (value: boolean) => {
+    setGptList((prevGptList) => {
+      return produce(prevGptList, (draft) => {
+        draft[idx].useYN = value ? 'Y' : 'N';
+      });
+    });
+  };
+
   const handleUseYNChange = (value: boolean) => {
     setUseYN(value);
   };
@@ -213,9 +221,11 @@ export const TopicDetailPage = () => {
                 ))}
               </S.rowWrapper>
               <GPTCard
+                useYN={gptList[gptIdx] && gptList[gptIdx].useYN === 'Y'}
                 content={gptList[gptIdx] && gptList[gptIdx].content}
                 onClick={handleGPTCardClick(gptIdx)}
                 onChange={handleGPTCardChange(gptIdx)}
+                onUseYNChange={handleGPTCardUseYNChange(gptIdx)}
               />
             </FHFormItem>
           </S.formItemWrapper>
@@ -301,7 +311,7 @@ const S = {
   rowWrapper: styled.div`
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
+    overflow-x: auto;
     gap: 6px;
   `,
   userTypeWrapper: styled.div`
