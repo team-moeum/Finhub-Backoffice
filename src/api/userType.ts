@@ -12,9 +12,9 @@ const list = async ({
   keyword: string;
   useYN: string;
 }) => {
-  let url = '/usertype';
+  let url = `/admin/usertype?page=${page}&size=${listSize}`;
   if (useYN !== '전체') {
-    url += `?useYN=${useYN}`;
+    url += `&useYN=${useYN}`;
   }
   const response: ApiResposne = await client.get(url);
 
@@ -47,13 +47,13 @@ const list = async ({
 };
 
 const show = async ({ id }: { id: number }) => {
-  const response: ApiResposne = await client.get(`/usertype/${id}`);
+  const response: ApiResposne = await client.get(`/admin/usertype/${id}`);
   const dataSource = response.data;
   return dataSource;
 };
 
 const create = async ({ name }: { name: string }) => {
-  const response: ApiResposne = await client.post('/usertype', {
+  const response: ApiResposne = await client.post('/admin/usertype', {
     name,
   });
 
@@ -77,7 +77,7 @@ const update = async ({
   name: string;
   useYN: boolean;
 }) => {
-  const response: ApiResposne = await client.put('/usertype', {
+  const response: ApiResposne = await client.put('/admin/usertype', {
     id,
     name,
     useYN: useYN ? 'Y' : 'N',

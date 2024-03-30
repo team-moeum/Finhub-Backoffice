@@ -65,7 +65,7 @@ export const TopicListPage = () => {
       page: 1,
       listSize: 20,
       keyword: '',
-      useYN: '',
+      useYN: '전체',
     });
     setCategories(listData.list);
 

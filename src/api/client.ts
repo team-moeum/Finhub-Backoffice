@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
+import { getLocalStorageItem, getStorageItem } from '../utils/storage';
 
-const prefix = '/api/v1/admin';
+const prefix = '/api/v1';
 const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
 
 export interface ApiResposne {
@@ -15,6 +16,8 @@ const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     finhub: import.meta.env.VITE_API_API_KEY ?? '',
+    Authorization: `Bearer ${getStorageItem('accessToken')}`,
+    refreshToken: getLocalStorageItem('refreshToken'),
   },
 });
 

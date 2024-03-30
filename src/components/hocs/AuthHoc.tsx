@@ -27,20 +27,22 @@ export const AuthHoc = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const handleVerfiedToken = async () => {
-      try {
-        const response = await authAPI.verifyToken();
-        setIsLoggedIn(response);
-      } catch (err) {
-        setIsLoggedIn(false);
-      } finally {
-        setTimeout(() => {
+    const timerId = setTimeout(() => {
+      const handleVerfiedToken = async () => {
+        try {
+          const response = await authAPI.verifyToken();
+          setIsLoggedIn(response);
+        } catch (err) {
+          setIsLoggedIn(false);
+        } finally {
           setLoading(false);
-        }, 1000);
-      }
-    };
+        }
+      };
 
-    handleVerfiedToken();
+      handleVerfiedToken();
+    }, 1000);
+
+    return () => clearTimeout(timerId);
   }, []);
 
   if (loading) {

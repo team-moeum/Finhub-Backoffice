@@ -12,7 +12,11 @@ const list = async ({
   keyword: string;
   useYN: string;
 }) => {
-  const response: ApiResposne = await client.get('/category');
+  let url = `/admin/category?page=${page}&size=${listSize}`;
+  if (useYN !== '전체') {
+    url += `&useYN=${useYN}`;
+  }
+  const response: ApiResposne = await client.get(url);
 
   if (response.status === 'FAIL') {
     return {
@@ -43,13 +47,13 @@ const list = async ({
 };
 
 const show = async ({ id }: { id: number }) => {
-  const response: ApiResposne = await client.get(`category/${id}`);
+  const response: ApiResposne = await client.get(`/admin/category/${id}`);
   const dataSource = response.data;
   return dataSource;
 };
 
 const create = async ({ name }: { name: string }) => {
-  const response: ApiResposne = await client.post('/category', {
+  const response: ApiResposne = await client.post('/admin/category', {
     name,
   });
 
@@ -75,7 +79,7 @@ const update = async ({
   useYN: boolean;
   topicList: { id: number; title: string; categoryId: number }[];
 }) => {
-  const response: ApiResposne = await client.put('/category', {
+  const response: ApiResposne = await client.put('/admin/category', {
     id,
     name,
     useYN,

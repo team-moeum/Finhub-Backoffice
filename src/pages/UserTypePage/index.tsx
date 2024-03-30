@@ -4,8 +4,8 @@ import { ListPageTemplate } from '../../components/templates/List';
 import { usertypeAPI } from '../../api/userType';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { FHSelect } from '../../components/atoms/Select';
-import styled from '@emotion/styled';
 import { IUsertype } from '../../types/UserType';
+import styled from '@emotion/styled';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();
@@ -36,6 +36,13 @@ export const UserTypeListPage = () => {
       ),
     },
     {
+      width: 100,
+      align: 'center',
+      title: '노출여부',
+      dataIndex: 'useYN',
+      key: 'useYN',
+    },
+    {
       ellipsis: true,
       title: '유저유형명',
       dataIndex: 'name',
@@ -61,6 +68,7 @@ export const UserTypeListPage = () => {
       key: item.id,
       no: totalDocuments - idx,
       name: item.name,
+      useYN: item.useYN,
     }));
 
     setList(dataSource);
@@ -85,7 +93,7 @@ export const UserTypeListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage]);
+  }, [currentPage, keyword, useYN]);
 
   return (
     <ListPageTemplate
