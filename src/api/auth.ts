@@ -1,12 +1,9 @@
 import {
   getLocalStorageItem,
-  getStorageItem,
   removeLocalStorageItem,
-  removeStorageItem,
   setLocalStorageItem,
-  setStorageItem,
-} from '../utils/storage';
-import { ApiResposne, client } from './client';
+} from '@finhub/utils/storage';
+import { ApiResposne, client } from '@finhub/api/client';
 
 const login = async (email: string, password: string) => {
   const response: ApiResposne = await client.post('/admin/login', {
@@ -14,13 +11,13 @@ const login = async (email: string, password: string) => {
     password,
   });
 
-  setStorageItem('accessToken', response.data.accessToken ?? '');
+  setLocalStorageItem('accessToken', response.data.accessToken ?? '');
   setLocalStorageItem('refreshToken', response.data.refreshToken ?? '');
 };
 
 const verifyToken = async () => {
   const response: ApiResposne = await client.post('/auth/autoLogin', {
-    accessToken: getStorageItem('accessToken'),
+    accessToken: getLocalStorageItem('accessToken'),
     refreshToken: getLocalStorageItem('refreshToken'),
   });
 
@@ -28,7 +25,7 @@ const verifyToken = async () => {
 };
 
 const logout = () => {
-  removeStorageItem('accessToken');
+  removeLocalStorageItem('accessToken');
   removeLocalStorageItem('refreshToken');
 };
 
