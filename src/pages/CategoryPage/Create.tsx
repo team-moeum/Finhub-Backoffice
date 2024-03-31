@@ -6,8 +6,10 @@ import { FHButton } from '../../components/atoms/Button';
 import { FHFormItem } from '../../components/organisms/FormItem';
 import { categoryAPI } from '../../api/category';
 import { FHUploader } from '../../components/atoms/Uploader';
+import { useNavigate } from 'react-router-dom';
 
 export const CategoryCreatePage = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [thumbnail, setThumbnail] = useState('');
 
@@ -19,14 +21,16 @@ export const CategoryCreatePage = () => {
       }
     };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name) {
       alert('카테고리명을 입력해주세요');
       return;
     }
-    categoryAPI.create({ name });
+
+    const data = await categoryAPI.create({ name, file: thumbnail });
 
     alert('반영되었습니다.');
+    navigate(`/services/categories/${data.id}`);
   };
 
   return (
