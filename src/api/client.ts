@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
-import { getLocalStorageItem, getStorageItem } from '../utils/storage';
+import { getLocalStorageItem } from '@finhub/utils/storage';
+import { FilePathType } from '@finhub/types/FileType';
 
 const prefix = '/api/v1';
 const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
@@ -16,7 +17,7 @@ const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     finhub: import.meta.env.VITE_API_API_KEY ?? '',
-    Authorization: `Bearer ${getStorageItem('accessToken')}`,
+    Authorization: `Bearer ${getLocalStorageItem('accessToken')}`,
     refreshToken: getLocalStorageItem('refreshToken'),
   },
 });
@@ -32,6 +33,11 @@ export interface FetchInstance {
     body: { [key: string]: any },
   ) => Promise<Response>;
   delete: <Response = unknown>(url: string) => Promise<Response>;
+  upload: <Response = unknown>(
+    url: string,
+    type: FilePathType,
+    file: File,
+  ) => Promise<Response>;
 }
 
 export const client: FetchInstance = {
@@ -55,6 +61,23 @@ export const client: FetchInstance = {
   },
   delete: async function fetch<Response = unknown>(url: string) {
     const res = await instance.delete<Response>(url);
+    return res.data;
+  },
+  upload: async function fetch<Response = unknown>(
+    url: string,
+    type: FilePathType,
+    file: File,
+  ) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    const res = await instance.post<Response>(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return res.data;
   },
 };

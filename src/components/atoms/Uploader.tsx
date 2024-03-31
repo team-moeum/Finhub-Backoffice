@@ -1,46 +1,40 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { message, Upload } from 'antd';
-import { SetStateAction, useEffect, useState } from 'react';
+import styled from '@emotion/styled';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 export interface UploaderProps {
   thumbnail: any;
-  setThumbnail: SetStateAction<any>;
+  setThumbnail: React.SetStateAction<any>;
+  readOnly?: boolean;
 }
 
-export const FHUploader = ({ thumbnail, setThumbnail }: UploaderProps) => {
+export const FHUploader = ({
+  thumbnail,
+  setThumbnail,
+  readOnly = false,
+}: UploaderProps) => {
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const getBase64 = (img: File, callback: Function) => {
+  const [imageUrl, setImageUrl] = useState(thumbnail);
+
+  const getBase64 = (
+    img: File,
+    callback: (url: string | ArrayBuffer | null) => void,
+  ) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => callback(reader.result));
     reader.readAsDataURL(img);
   };
-  const beforeUpload = (file: File) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  };
 
-  const handleChange = (info: any) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      getBase64(info.file.originFileObj, (url: string) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-    }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (!file) return;
 
-    setThumbnail(info.file);
+    setLoading(true);
+    getBase64(file, (url: any) => {
+      setLoading(false);
+      setImageUrl(url);
+      setThumbnail(file);
+    });
   };
 
   useEffect(() => {
@@ -48,36 +42,71 @@ export const FHUploader = ({ thumbnail, setThumbnail }: UploaderProps) => {
       setImageUrl(thumbnail);
     }
   }, [thumbnail]);
+
   return (
-    <Upload
-      name="avatar"
-      listType="picture-card"
-      className="avatar-uploader"
-      showUploadList={false}
-      action="/api/upload"
-      beforeUpload={beforeUpload}
-      onChange={handleChange}
-    >
-      {imageUrl ? (
-        <img
-          src={imageUrl}
+    <UploadContainer>
+      {imageUrl && (
+        <Image
+          src={imageUrl as string}
           alt="avatar"
-          style={{
-            width: '100%',
-          }}
+          onClick={
+            !readOnly
+              ? () => document.getElementById('fileInput')?.click()
+              : undefined
+          }
         />
-      ) : (
-        <div>
-          {loading ? <LoadingOutlined /> : <PlusOutlined />}
-          <div
-            style={{
-              marginTop: 8,
-            }}
-          >
-            Upload
-          </div>
-        </div>
       )}
-    </Upload>
+      {!readOnly && (
+        <>
+          <UploadButton
+            htmlFor="fileInput"
+            style={{ opacity: imageUrl ? 0 : 1 }}
+          >
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+          </UploadButton>
+          <input
+            id="fileInput"
+            type="file"
+            style={{ display: 'none' }}
+            onChange={handleChange}
+            accept="image/png, image/jpeg"
+          />
+        </>
+      )}
+    </UploadContainer>
   );
 };
+
+const UploadContainer = styled.div`
+  display: inline-block;
+  width: 104px;
+  height: 104px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: #fafafa;
+`;
+
+const UploadButton = styled.label`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+  top: 0;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+`;
