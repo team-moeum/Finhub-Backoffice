@@ -11,8 +11,9 @@ const login = async (email: string, password: string) => {
     password,
   });
 
-  setLocalStorageItem('accessToken', response.data.accessToken ?? '');
-  setLocalStorageItem('refreshToken', response.data.refreshToken ?? '');
+  setLocalStorageItem('roleType', response.data.roleType ?? '');
+  setLocalStorageItem('accessToken', response.data.token.accessToken ?? '');
+  setLocalStorageItem('refreshToken', response.data.token.refreshToken ?? '');
 };
 
 const verifyToken = async () => {
@@ -27,6 +28,7 @@ const verifyToken = async () => {
 const logout = () => {
   removeLocalStorageItem('accessToken');
   removeLocalStorageItem('refreshToken');
+  removeLocalStorageItem('roleType');
 };
 
 export const authAPI = {
