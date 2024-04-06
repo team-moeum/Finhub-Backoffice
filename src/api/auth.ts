@@ -1,5 +1,4 @@
 import {
-  getLocalStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
 } from '@finhub/utils/storage';
@@ -17,10 +16,7 @@ const login = async (email: string, password: string) => {
 };
 
 const verifyToken = async () => {
-  const response: ApiResposne = await client.post('/auth/autoLogin', {
-    accessToken: getLocalStorageItem('accessToken'),
-    refreshToken: getLocalStorageItem('refreshToken'),
-  });
+  const response: ApiResposne = await client.get('/auth/autoLogin');
 
   return response.status === 'SUCCESS';
 };
