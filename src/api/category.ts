@@ -1,5 +1,7 @@
-import { ICategory } from '../types/Category';
-import { ApiResposne, client } from './client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ApiResposne, client } from '@finhub/api/client';
+import { ICategory } from '@finhub/types/Category';
+import { commonAPI } from '@finhub/api/common';
 
 const list = async ({
   page,
@@ -52,9 +54,24 @@ const show = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
-const create = async ({ name }: { name: string }) => {
+const create = async ({
+  file,
+  name,
+}: {
+  file?: any;
+  name: string;
+}): Promise<{
+  id?: number;
+  errorMsg?: string;
+}> => {
+  const data: {
+    s3ImgUrl?: string;
+    errorMsg?: string;
+  } = await commonAPI.saveImg(file, 'category');
+
   const response: ApiResposne = await client.post('/admin/category', {
     name,
+    s3ImgUrl: data.s3ImgUrl,
   });
 
   if (response.status === 'FAIL') {
@@ -63,28 +80,44 @@ const create = async ({ name }: { name: string }) => {
     };
   }
 
-  const dataSource: ICategory = response.data;
+  const dataSource = response.data;
 
   return dataSource;
 };
 
 const update = async ({
+  file,
   id,
   name,
   useYN,
   topicList,
+  s3ImgUrl,
 }: {
+  file?: any;
   id: number;
   name: string;
   useYN: boolean;
   topicList: { id: number; title: string; categoryId: number }[];
+  s3ImgUrl: string;
 }) => {
-  const response: ApiResposne = await client.put('/admin/category', {
+  const params = {
     id,
     name,
-    useYN,
+    useYN: useYN ? 'Y' : 'N',
     topicList,
-  });
+    s3ImgUrl,
+  };
+
+  if (typeof file !== 'string') {
+    const data: {
+      s3ImgUrl?: string;
+      errorMsg?: string;
+    } = await commonAPI.saveImg(file, 'category');
+
+    params['s3ImgUrl'] = data.s3ImgUrl ?? '';
+  }
+
+  const response: ApiResposne = await client.put('/admin/category', params);
 
   if (response.status === 'FAIL') {
     return {

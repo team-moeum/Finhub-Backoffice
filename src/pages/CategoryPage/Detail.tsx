@@ -1,18 +1,18 @@
-import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
 import { useEffect, useState } from 'react';
-import { categoryAPI } from '../../api/category';
 import { useParams } from 'react-router-dom';
-import { FHSwitch } from '../../components/atoms/Switch';
-import { TopicCard } from '../../components/organisms/TopicCard';
 import { produce } from 'immer';
-import { FHDivider } from '../../components/atoms/Divider';
-import { ICategory } from '../../types/Category';
-import { ITopic } from '../../types/Topic';
-import { FHUploader } from '../../components/atoms/Uploader';
+import styled from '@emotion/styled';
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { categoryAPI } from '@finhub/api/category';
+import { FHSwitch } from '@finhub/components/atoms/Switch';
+import { TopicCard } from '@finhub/components/organisms/TopicCard';
+import { FHDivider } from '@finhub/components/atoms/Divider';
+import { ICategory } from '@finhub/types/Category';
+import { ITopic } from '@finhub/types/Topic';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -45,6 +45,7 @@ export const CategoryDetailPage = () => {
     const showData = await categoryAPI.show({ id: categoryId });
 
     if (showData) {
+      console.log(showData);
       setName(showData.name ?? '');
       setUseYN(showData.useYN === 'Y');
       const list = showData.topicList.map((topic: ITopic) => {
@@ -66,6 +67,8 @@ export const CategoryDetailPage = () => {
         categoryId,
         title,
       })),
+      s3ImgUrl: thumbnail,
+      file: thumbnail,
     });
 
     alert('반영되었습니다.');

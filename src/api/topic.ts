@@ -1,5 +1,8 @@
-import { ITopic } from '../types/Topic';
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ITopic } from '@finhub/types/Topic';
 import { ApiResposne, client } from './client';
+import { commonAPI } from './common';
 
 const list = async ({
   page,
@@ -11,7 +14,7 @@ const list = async ({
   page: number;
   listSize: number;
   keyword: string;
-  category: string;
+  category?: number;
   useYN: string;
 }) => {
   let url = `/admin/topic?page=${page}&size=${listSize}`;
@@ -37,11 +40,9 @@ const list = async ({
   const currentPage = page ?? 1;
 
   let origin =
-    category === '전체'
+    useYN === '전체'
       ? dataSource.topicList
-      : dataSource.topicList.filter((item) => item.categoryName === category);
-  origin =
-    useYN === '전체' ? origin : origin.filter((item) => item.useYN === useYN);
+      : dataSource.topicList.filter((item) => item.useYN === useYN);
 
   const data = origin.slice(
     (currentPage - 1) * listSize,
@@ -61,27 +62,35 @@ const show = async ({ id }: { id: number }) => {
 };
 
 const create = async ({
+  file,
   title,
   definition,
+  summary,
   shortDefinition,
-  thumbnailImgPath,
   categoryId,
   useYN,
 }: {
+  file?: any;
   title: string;
   definition: string;
+  summary: string;
   shortDefinition: string;
-  thumbnailImgPath: string;
   categoryId: number;
   useYN: boolean;
 }) => {
+  const data: {
+    s3ImgUrl?: string;
+    errorMsg?: string;
+  } = await commonAPI.saveImg(file, 'topic');
+
   const response: ApiResposne = await client.post('/admin/topic', {
     title,
     definition,
     shortDefinition,
-    thumbnailImgPath,
+    summary,
     categoryId,
     useYN: useYN ? 'Y' : 'N',
+    s3ImgUrl: data.s3ImgUrl,
   });
 
   if (response.status === 'FAIL') {
@@ -100,37 +109,108 @@ const update = async ({
   definition,
   shortDefinition,
   categoryId,
-  thumbnailImgPath,
+  summary,
+  s3ImgUrl,
+  file,
   gptList,
   useYN,
 }: {
+  file?: any;
   topicId: number;
   title: string;
   definition: string;
   shortDefinition: string;
   categoryId: number;
-  thumbnailImgPath: string;
+  summary: string;
+  s3ImgUrl: string;
   gptList: {
-    gptId: number;
+    gptId?: number;
     content: string;
     useYN: string;
   }[];
   useYN: boolean;
 }) => {
-  const response: ApiResposne = await client.put('/admin/topic', {
+  const params = {
     topicId,
     title,
     definition,
+    summary,
     shortDefinition,
-    thumbnailImgPath,
+    s3ImgUrl,
     categoryId,
     gptList,
     useYN: useYN ? 'Y' : 'N',
-  });
+  };
+  if (typeof file !== 'string') {
+    const data: {
+      s3ImgUrl?: string;
+      errorMsg?: string;
+    } = await commonAPI.saveImg(file, 'category');
+
+    params['s3ImgUrl'] = data.s3ImgUrl ?? '';
+  }
+
+  const response: ApiResposne = await client.put('/admin/topic', params);
 
   if (response.status === 'FAIL') {
     return {
       errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+  return dataSource;
+};
+
+/**
+ * 토픽 유저타입 별 gpt 내용 생성 및 반환
+ * @param param0
+ * @returns
+ */
+const craeteAITopicContent = async ({
+  topicId,
+  categoryId,
+  userTypeId,
+}: {
+  topicId: number;
+  categoryId: number;
+  userTypeId: number;
+}) => {
+  const response: ApiResposne = await client.post('/admin/topic-usertype', {
+    topicId,
+    categoryId,
+    usertypeId: userTypeId,
+  });
+
+  if (response.data.status === 'FAIL') {
+    return {
+      errorMsg: response.data.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+  return dataSource;
+};
+
+const getPrompt = async () => {
+  const response: ApiResposne = await client.get('/admin/prompt');
+
+  if (response.data.status === 'FAIL') {
+    return {
+      errorMsg: response.data.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+  return dataSource;
+};
+
+const craetePrompt = async ({ prompt }: { prompt: string }) => {
+  const response: ApiResposne = await client.post('/admin/prompt', { prompt });
+
+  if (response.data.status === 'FAIL') {
+    return {
+      errorMsg: response.data.errorMsg,
     };
   }
 
@@ -143,4 +223,7 @@ export const topicAPI = {
   show,
   create,
   update,
+  craeteAITopicContent,
+  getPrompt,
+  craetePrompt,
 };

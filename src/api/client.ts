@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
-import { getLocalStorageItem, getStorageItem } from '../utils/storage';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { getLocalStorageItem } from '@finhub/utils/storage';
+import { FilePathType } from '@finhub/types/FileType';
+import { message } from 'antd';
 
 const prefix = '/api/v1';
 const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
@@ -16,10 +18,21 @@ const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
     finhub: import.meta.env.VITE_API_API_KEY ?? '',
-    Authorization: `Bearer ${getStorageItem('accessToken')}`,
+    Authorization: `Bearer ${getLocalStorageItem('accessToken')}`,
     refreshToken: getLocalStorageItem('refreshToken'),
   },
 });
+
+instance.interceptors.response.use(
+  (response: AxiosResponse) => {
+    return response;
+  },
+  (error: AxiosError<any>) => {
+    const errorMessage: string = error.response?.data.errorMsg || error.message;
+    message.error(`요청이 실패했습니다: ${errorMessage}`);
+    return Promise.reject(error);
+  },
+);
 
 export interface FetchInstance {
   get: <Response = unknown>(url: string) => Promise<Response>;
@@ -32,6 +45,11 @@ export interface FetchInstance {
     body: { [key: string]: any },
   ) => Promise<Response>;
   delete: <Response = unknown>(url: string) => Promise<Response>;
+  upload: <Response = unknown>(
+    url: string,
+    type: FilePathType,
+    file: File,
+  ) => Promise<Response>;
 }
 
 export const client: FetchInstance = {
@@ -55,6 +73,23 @@ export const client: FetchInstance = {
   },
   delete: async function fetch<Response = unknown>(url: string) {
     const res = await instance.delete<Response>(url);
+    return res.data;
+  },
+  upload: async function fetch<Response = unknown>(
+    url: string,
+    type: FilePathType,
+    file: File,
+  ) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    const res = await instance.post<Response>(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return res.data;
   },
 };

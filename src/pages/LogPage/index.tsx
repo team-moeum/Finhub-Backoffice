@@ -32,7 +32,7 @@ export const LogListPage = () => {
       }),
       topicAPI.list({
         page: 1,
-        category: '',
+        category: undefined,
         listSize: 20,
         keyword: '',
         useYN: '',

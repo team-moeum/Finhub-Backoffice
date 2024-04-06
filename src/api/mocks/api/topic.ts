@@ -7,7 +7,7 @@ const mockData = [
     categoryId: 1,
     categoryName: 'ETF',
     useYN: 'Y',
-    thumbnail: '/logo.svg',
+    thumbnail: '/logo.png',
   },
   {
     topicId: 2,
@@ -15,7 +15,7 @@ const mockData = [
     categoryId: 2,
     categoryName: 'FUND',
     useYN: 'N',
-    thumbnail: '/logo.svg',
+    thumbnail: '/logo.png',
   },
   {
     topicId: 3,
@@ -23,7 +23,7 @@ const mockData = [
     categoryId: 3,
     categoryName: 'IRP',
     useYN: 'Y',
-    thumbnail: '/logo.svg',
+    thumbnail: '/logo.png',
   },
 ];
 
@@ -57,12 +57,12 @@ export const topicHandler = [
           shortDefinition: '펀드란 사고파는 것.',
           categoryId: 1,
           useYN: 'Y',
-          thumbnailImgPath: '/logo.svg',
+          thumbnailImgPath: '/logo.png',
           gptList: [
             {
               usertypeId: 1,
               usertypeName: '디자이너',
-              avatarImgPath: '/logo.svg',
+              avatarImgPath: '/logo.png',
               gptId: 1,
               content: '이것은 GPT 컨텐츠입니다 이것은 디자이너입니다',
               useYN: 'Y',
@@ -70,7 +70,7 @@ export const topicHandler = [
             {
               usertypeId: 2,
               usertypeName: '개발자',
-              avatarImgPath: '/logo.svg',
+              avatarImgPath: '/logo.png',
               gptId: 2,
               content: '이것은 GPT 컨텐츠입니다 이것은 개발자입니다',
               useYN: 'Y',
@@ -78,7 +78,7 @@ export const topicHandler = [
             {
               usertypeId: 3,
               usertypeName: '기획자',
-              avatarImgPath: '/logo.svg',
+              avatarImgPath: '/logo.png',
               gptId: 3,
               content: '이것은 GPT 컨텐츠입니다 이것은 기획자입니다',
               useYN: 'Y',
