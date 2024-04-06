@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { getLocalStorageItem } from '@finhub/utils/storage';
 import { FilePathType } from '@finhub/types/FileType';
+import { message } from 'antd';
 
 const prefix = '/api/v1';
 const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
@@ -21,6 +22,17 @@ const instance = axios.create({
     refreshToken: getLocalStorageItem('refreshToken'),
   },
 });
+
+instance.interceptors.response.use(
+  (response: AxiosResponse) => {
+    return response;
+  },
+  (error: AxiosError<any>) => {
+    const errorMessage: string = error.response?.data.errorMsg || error.message;
+    message.error(`요청이 실패했습니다: ${errorMessage}`);
+    return Promise.reject(error);
+  },
+);
 
 export interface FetchInstance {
   get: <Response = unknown>(url: string) => Promise<Response>;
