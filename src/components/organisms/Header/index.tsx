@@ -38,7 +38,7 @@ export const FHHeader = () => {
       <S.headerInnerWrapper>
         <a href="/">
           <S.logo>
-            <img width={40} height={40} alt="logo" src="/logo.svg" />
+            <img width={40} height={40} alt="logo" src="/logo.png" />
             <div>관리자</div>
           </S.logo>
         </a>

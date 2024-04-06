@@ -4,19 +4,19 @@ const mockData = [
   {
     id: 1,
     name: '디자이너',
-    avatarImgPath: '/logo.svg',
+    avatarImgPath: '/logo.png',
     useYN: 'N',
   },
   {
     id: 2,
     name: 'PM',
-    avatarImgPath: '/logo.svg',
+    avatarImgPath: '/logo.png',
     useYN: 'Y',
   },
   {
     id: 3,
     name: '개발자',
-    avatarImgPath: '/logo.svg',
+    avatarImgPath: '/logo.png',
     useYN: 'N',
   },
 ];
@@ -47,7 +47,7 @@ export const usertypeHandler = [
         data: {
           id,
           name: '디자이너',
-          avatarImgPath: '/logo.svg',
+          avatarImgPath: '/logo.png',
           useYN: 'N',
         },
       },
