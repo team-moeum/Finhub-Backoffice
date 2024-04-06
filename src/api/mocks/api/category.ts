@@ -4,19 +4,19 @@ export const mockData = [
   {
     id: 1,
     name: 'ETF',
-    thumbnailImgPath: '/logo.svg',
+    thumbnailImgPath: '/logo.png',
     useYN: 'Y',
   },
   {
     id: 2,
     name: 'FUND',
-    thumbnailImgPath: '/logo.svg',
+    thumbnailImgPath: '/logo.png',
     useYN: 'N',
   },
   {
     id: 3,
     name: 'IRP',
-    thumbnailImgPath: '/logo.svg',
+    thumbnailImgPath: '/logo.png',
     useYN: 'N',
   },
 ];
@@ -47,7 +47,7 @@ export const categoryHandler = [
         data: {
           categoryId: id,
           name: 'ETF',
-          thumbnailImgPath: '/logo.svg',
+          thumbnailImgPath: '/logo.png',
           useYN: 'Y',
           topicList: [
             {
@@ -62,7 +62,7 @@ export const categoryHandler = [
             },
             {
               id: 6,
-              title: '크크크',
+              title: '크크크2',
               categoryId: 1,
             },
           ],
@@ -73,7 +73,7 @@ export const categoryHandler = [
   }),
 
   // Category 생성
-  http.post(`${prefix}/`, () => {
+  http.post(`${prefix}`, () => {
     return HttpResponse.json(
       {
         status: 'SUCCESS',

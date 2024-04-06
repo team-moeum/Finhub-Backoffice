@@ -38,7 +38,7 @@ export const FHHeader = () => {
       <S.headerInnerWrapper>
         <a href="/">
           <S.logo>
-            <img width={40} height={40} alt="logo" src="/logo.svg" />
+            <img width={40} height={40} alt="logo" src="/logo.png" />
             <div>관리자</div>
           </S.logo>
         </a>
@@ -48,6 +48,7 @@ export const FHHeader = () => {
           <FHHeaderItem route={FHPath.topics} />
           <FHHeaderItem route={FHPath.usertypes} />
           <FHHeaderItem route={FHPath.logs} />
+          <FHHeaderItem route={FHPath.noWords} />
           <S.headerItemWrapper onClick={handleSignOut}>
             로그아웃
           </S.headerItemWrapper>

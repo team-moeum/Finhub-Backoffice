@@ -1,46 +1,52 @@
-import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
+import { message } from 'antd';
 import { useEffect, useState } from 'react';
-import { topicAPI } from '../../api/topic';
-import { useParams } from 'react-router-dom';
-import { FHUploader } from '../../components/atoms/Uploader';
-import { FHSelect } from '../../components/atoms/Select';
-import { GPTCard } from '../../components/organisms/GPTCard';
 import { produce } from 'immer';
-import { FHSwitch } from '../../components/atoms/Switch';
-import { ICategory } from '../../types/Category';
-import { categoryAPI } from '../../api/category';
-import { FHTextArea } from '../../components/atoms/TextArea';
-import theme from '../../styles/theme';
+import { useParams } from 'react-router-dom';
+import styled from '@emotion/styled';
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { topicAPI } from '@finhub/api/topic';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { GPTCard } from '@finhub/components/organisms/GPTCard';
+import { FHSwitch } from '@finhub/components/atoms/Switch';
+import { ICategory } from '@finhub/types/Category';
+import { categoryAPI } from '@finhub/api/category';
+import { FHTextArea } from '@finhub/components/atoms/TextArea';
+import theme from '@finhub/styles/theme';
+import { usertypeAPI } from '@finhub/api/userType';
+import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
+
+interface GPTItem extends GPTListItem {
+  userTypeId: number;
+  usertypeName: string;
+  avatarImgPath: string;
+}
+
+interface GPTListItem {
+  gptId?: number;
+  content: string;
+  useYN: string;
+}
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
   const topicId = Number(id);
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [definition, setDefinition] = useState('');
   const [shortDefinition, setShortDefinition] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('');
   const [useYN, setUseYN] = useState(false);
-  const [gptList, setGptList] = useState<
-    {
-      gptId: number;
-      userTypeId: number;
-      usertypeName: string;
-      avatarImgPath: string;
-      content: string;
-      useYN: string;
-    }[]
-  >([]);
+  const [gptList, setGptList] = useState<GPTItem[]>([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [gptTemplate, setGptTemplate] = useState(
-    '!카테고리!에 관해서 !토픽!에 대해서 !유저타입!에게 알기 쉽게 설명해주고 싶어. 비유를 들어서 !유저타입!이 이해하기 쉽게 설명해줘',
-  );
+  const [gptTemplate, setGptTemplate] = useState('');
   const [tempGptTemplate, setTempGptTemplate] = useState('');
   const [gptIdx, setGptIdx] = useState(0);
+  const [summary, setSummary] = useState('');
 
   const handleTextChange =
     (type: string) =>
@@ -60,30 +66,69 @@ export const TopicDetailPage = () => {
         setGptTemplate(value);
       } else if (type === 'tempGptTemplate') {
         setTempGptTemplate(value);
+      } else if (type === 'summary') {
+        setSummary(value);
       }
     };
 
   const initRequest = async () => {
-    const listData = await categoryAPI.list({
-      page: 1,
-      listSize: 20,
-      keyword: '',
-      useYN: '전체',
-    });
+    const [listData, userTypeData, data, promptData] = await Promise.all([
+      categoryAPI.list({
+        page: 1,
+        listSize: 20,
+        keyword: '',
+        useYN: '전체',
+      }),
+      usertypeAPI.list({
+        page: 1,
+        listSize: 20,
+        keyword: '',
+        useYN: '전체',
+      }),
+      topicAPI.show({
+        id: topicId,
+      }),
+      topicAPI.getPrompt(),
+    ]);
+
     setCategories(listData.list);
 
-    const data = await topicAPI.show({
-      id: topicId,
-    });
+    if (listData.list.length) {
+      setCategory(listData.list[0].name);
+    }
 
     if (data) {
       setTitle(data.title ?? '');
-      setCategory(data.categoryName ?? 'ETF');
+      setCategory(
+        data.categoryName ?? (listData.list.length && listData.list[0].name),
+      );
       setDefinition(data.definition ?? '');
       setShortDefinition(data.shortDefinition ?? '');
-      setGptList(data.gptList ?? []);
+      const newGptList = userTypeData.list.map((userType) => {
+        const target = data.gptList.find(
+          (gptUserType: GPTItem) => gptUserType.userTypeId === userType.id,
+        );
+
+        const newGPTItem: GPTItem = {
+          userTypeId: userType.id,
+          usertypeName: userType.name,
+          avatarImgPath: '',
+          content: '',
+          useYN: 'N',
+        };
+
+        if (target?.gptId) newGPTItem['gptId'] = target?.gptId;
+
+        return newGPTItem;
+      });
+      setGptList(newGptList);
       setUseYN(data.useYN === 'Y');
+      setThumbnail(data.thumbnailImgPath);
+      setSummary(data.summary);
     }
+
+    setGptTemplate(promptData.prompt);
+    setTempGptTemplate(promptData.prompt);
   };
 
   const handleSubmit = () => {
@@ -91,18 +136,27 @@ export const TopicDetailPage = () => {
       topicId,
       title,
       definition,
+      summary,
       shortDefinition,
       categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
-      thumbnailImgPath: './logo.svg',
-      gptList: gptList.map((gpt) => ({
-        gptId: gpt.gptId,
-        content: gpt.content,
-        useYN: gpt.useYN,
-      })),
+      s3ImgUrl: thumbnail,
+      file: thumbnail,
+      gptList: gptList
+        .filter((gpt) => gpt.content)
+        .map((gpt) => {
+          const listItem: GPTListItem = {
+            content: gpt.content,
+            useYN: gpt.useYN,
+          };
+
+          if (gpt.gptId) listItem['gptId'] = gpt.gptId;
+
+          return listItem;
+        }),
       useYN,
     });
 
-    alert('반영되었습니다.');
+    message.success('정상 반영되었습니다');
     initRequest();
   };
 
@@ -114,8 +168,26 @@ export const TopicDetailPage = () => {
     setGptIdx(idx);
   };
 
-  const handleGPTCardClick = (idx: number) => () => {
-    window.confirm(`${gptList[idx].usertypeName} GPT를 재생성하시겠습니까?`);
+  const handleGPTCardClick = (idx: number) => async () => {
+    try {
+      setLoading(true);
+      const { usertypeName, userTypeId } = gptList[idx];
+      if (window.confirm(`${usertypeName} GPT를 재생성하시겠습니까?`)) {
+        const data = await topicAPI.craeteAITopicContent({
+          topicId,
+          categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
+          userTypeId,
+        });
+
+        setGptList((prevGptList) => {
+          return produce(prevGptList, (draft) => {
+            draft[idx].content = data.answer;
+          });
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGPTCardChange =
@@ -127,6 +199,14 @@ export const TopicDetailPage = () => {
       });
     };
 
+  const handleGPTCardUseYNChange = (idx: number) => (value: boolean) => {
+    setGptList((prevGptList) => {
+      return produce(prevGptList, (draft) => {
+        draft[idx].useYN = value ? 'Y' : 'N';
+      });
+    });
+  };
+
   const handleUseYNChange = (value: boolean) => {
     setUseYN(value);
   };
@@ -135,9 +215,15 @@ export const TopicDetailPage = () => {
     setTempGptTemplate(tempGptTemplate + keyword);
   };
 
-  const handleSubmitGptTemplate = () => {
-    setGptTemplate(tempGptTemplate);
-    alert('반영되었습니다.');
+  const handleSubmitGptTemplate = async () => {
+    if (window.confirm('GPT 템플릿을 저장하시겠습니까?')) {
+      topicAPI.craetePrompt({
+        prompt: tempGptTemplate,
+      });
+      setGptTemplate(tempGptTemplate);
+
+      message.success('정상 반영되었습니다');
+    }
   };
 
   useEffect(() => {
@@ -147,126 +233,139 @@ export const TopicDetailPage = () => {
   const keywords = ['!카테고리!', '!토픽!', '!유저타입!'];
 
   return (
-    <CreatePageTemplate label="주제 수정">
-      <S.contentWrapper>
-        <S.formWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="썸네일">
-              <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="카테고리">
-              <FHSelect
-                value={category}
-                onChange={handleCategoryChange}
-                items={categories.map((item) => item.name)}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="주제명">
-              <FHTextInput
-                type="text"
-                value={title}
-                onChange={handleTextChange('title')}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="요약내용">
-              <FHTextArea
-                value={definition}
-                onChange={handleTextChange('definition')}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="원본내용">
-              <FHTextArea
-                value={shortDefinition}
-                onChange={handleTextChange('shortDefinition')}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="노출여부">
-              <FHSwitch value={useYN} onChange={handleUseYNChange} />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="GPT">
-              <S.rowWrapper>
-                {gptList.map((gpt, index) => (
-                  <S.cardWrapper
-                    key={gpt.gptId}
-                    onClick={handleClickGPT(index)}
-                    style={{ opacity: gptIdx !== index ? 0.75 : 1 }}
-                  >
-                    <S.userTypeWrapper>
-                      <S.avatar
-                        style={{ backgroundImage: `url(${gpt.avatarImgPath})` }}
-                      />
-                      <S.name>{gpt.usertypeName}</S.name>
-                    </S.userTypeWrapper>
-                  </S.cardWrapper>
-                ))}
-              </S.rowWrapper>
-              <GPTCard
-                content={gptList[gptIdx] && gptList[gptIdx].content}
-                onClick={handleGPTCardClick(gptIdx)}
-                onChange={handleGPTCardChange(gptIdx)}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHButton width="100%" onClick={handleSubmit} type="primary">
-              주제 수정
-            </FHButton>
-          </S.formItemWrapper>
-        </S.formWrapper>
-        <S.logWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="GPT 템플릿">
-              <FHTextArea
-                readOnly
-                value={gptTemplate}
-                onChange={handleTextChange('gptTemplate')}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHFormItem direction="vertical" label="">
-              <S.rowWrapper>
-                {keywords.map((keyword) => (
-                  <FHButton
-                    key={keyword}
-                    onClick={handleClickKeyword(keyword)}
-                    type="default"
-                  >
-                    {keyword}
-                  </FHButton>
-                ))}
-              </S.rowWrapper>
-              <FHTextArea
-                height={400}
-                value={tempGptTemplate}
-                onChange={handleTextChange('tempGptTemplate')}
-              />
-            </FHFormItem>
-          </S.formItemWrapper>
-          <S.formItemWrapper>
-            <FHButton
-              width="100%"
-              onClick={handleSubmitGptTemplate}
-              type="primary"
-            >
-              GPT 템플릿 수정
-            </FHButton>
-          </S.formItemWrapper>
-        </S.logWrapper>
-      </S.contentWrapper>
-    </CreatePageTemplate>
+    <LoadingTemplate loading={loading}>
+      <CreatePageTemplate label="주제 수정">
+        <S.contentWrapper>
+          <S.formWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="썸네일">
+                <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="카테고리">
+                <FHSelect
+                  value={category}
+                  onChange={handleCategoryChange}
+                  items={categories.map((item) => item.name)}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="주제명">
+                <FHTextInput
+                  type="text"
+                  value={title}
+                  onChange={handleTextChange('title')}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="요약">
+                <FHTextInput
+                  type="text"
+                  value={summary}
+                  onChange={handleTextChange('summary')}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="요약내용">
+                <FHTextArea
+                  value={definition}
+                  onChange={handleTextChange('definition')}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="원본내용">
+                <FHTextArea
+                  value={shortDefinition}
+                  onChange={handleTextChange('shortDefinition')}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="노출여부">
+                <FHSwitch value={useYN} onChange={handleUseYNChange} />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="GPT">
+                <S.rowWrapper>
+                  {gptList.map((gpt, index) => (
+                    <S.cardWrapper
+                      key={gpt.userTypeId}
+                      onClick={handleClickGPT(index)}
+                      style={{ opacity: gptIdx !== index ? 0.75 : 1 }}
+                    >
+                      <S.userTypeWrapper>
+                        <S.avatar
+                          style={{
+                            backgroundImage: gpt.avatarImgPath
+                              ? `url(${gpt.avatarImgPath})`
+                              : 'url(/logo.png)',
+                          }}
+                        />
+                        <S.name>{gpt.usertypeName}</S.name>
+                      </S.userTypeWrapper>
+                    </S.cardWrapper>
+                  ))}
+                </S.rowWrapper>
+                <GPTCard
+                  useYN={gptList[gptIdx] && gptList[gptIdx].useYN === 'Y'}
+                  content={gptList[gptIdx] && gptList[gptIdx].content}
+                  onClick={handleGPTCardClick(gptIdx)}
+                  onChange={handleGPTCardChange(gptIdx)}
+                  onUseYNChange={handleGPTCardUseYNChange(gptIdx)}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHButton width="100%" onClick={handleSubmit} type="primary">
+                주제 수정
+              </FHButton>
+            </S.formItemWrapper>
+          </S.formWrapper>
+          <S.logWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="GPT 템플릿">
+                <FHTextArea readOnly value={gptTemplate} />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHFormItem direction="vertical" label="">
+                <S.rowWrapper>
+                  {keywords.map((keyword) => (
+                    <FHButton
+                      key={keyword}
+                      onClick={handleClickKeyword(keyword)}
+                      type="default"
+                    >
+                      {keyword}
+                    </FHButton>
+                  ))}
+                </S.rowWrapper>
+                <FHTextArea
+                  height={400}
+                  value={tempGptTemplate}
+                  onChange={handleTextChange('tempGptTemplate')}
+                />
+              </FHFormItem>
+            </S.formItemWrapper>
+            <S.formItemWrapper>
+              <FHButton
+                width="100%"
+                onClick={handleSubmitGptTemplate}
+                type="primary"
+              >
+                GPT 템플릿 수정
+              </FHButton>
+            </S.formItemWrapper>
+          </S.logWrapper>
+        </S.contentWrapper>
+      </CreatePageTemplate>
+    </LoadingTemplate>
   );
 };
 
@@ -297,18 +396,20 @@ const S = {
   cardWrapper: styled.div`
     width: 100%;
     margin-bottom: 32px;
+    transition: opacity 0.15s ease;
   `,
   rowWrapper: styled.div`
     display: flex;
     flex-direction: row;
-    overflow-x: scroll;
-    gap: 6px;
+    overflow-x: auto;
+    gap: 12px;
   `,
   userTypeWrapper: styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
+    cursor: pointer;
   `,
   avatar: styled.div`
     background-size: cover;
@@ -316,10 +417,13 @@ const S = {
     background-repeat: no-repeat;
     width: 44px;
     height: 44px;
-    margin-right: 8px;
+    border-radius: 22px;
   `,
   name: styled.div`
+    margin-top: 8px;
+    text-align: center;
     font-size: 13px;
+    width: max-content;
     color: ${theme.colors.text[444444]};
   `,
 };

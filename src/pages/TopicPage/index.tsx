@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ListPageTemplate } from '../../components/templates/List';
-import { topicAPI } from '../../api/topic';
 import styled from '@emotion/styled';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHSelect } from '../../components/atoms/Select';
-import { ICategory } from '../../types/Category';
-import { categoryAPI } from '../../api/category';
+import { ListPageTemplate } from '@finhub/components/templates/List';
+import { topicAPI } from '@finhub/api/topic';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { ICategory } from '@finhub/types/Category';
+import { categoryAPI } from '@finhub/api/category';
 
 export const TopicListPage = () => {
   const navigate = useNavigate();
@@ -65,14 +65,14 @@ export const TopicListPage = () => {
       page: 1,
       listSize: 20,
       keyword: '',
-      useYN: '',
+      useYN: '전체',
     });
     setCategories(listData.list);
 
     const { list, totalDocuments } = await topicAPI.list({
       page: currentPage,
       listSize: 10,
-      category,
+      category: listData.list.find((item) => item.name === category)?.id,
       keyword,
       useYN,
     });

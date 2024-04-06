@@ -5,7 +5,7 @@ const { TextArea } = Input;
 
 export interface TextAreaProps {
   value: string;
-  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   placeholder?: string;
   resize?: boolean;
   height?: string | number;
@@ -14,7 +14,7 @@ export interface TextAreaProps {
 
 export const FHTextArea = ({
   value,
-  onChange,
+  onChange = () => {},
   placeholder = '',
   resize = false,
   height = 120,
@@ -32,7 +32,7 @@ export const FHTextArea = ({
         height,
         resize: resize ? 'vertical' : 'none',
         opacity: readOnly ? 0.8 : 1,
-        background: readOnly ? theme.colors.gray.eaeaea : 'transparent',
+        background: readOnly ? theme.colors.gray.eaeaea : '#ffffff',
       }}
     />
   );

@@ -1,35 +1,30 @@
 import {
-  getStorageItem,
-  removeStorageItem,
-  setStorageItem,
-} from '../utils/storage';
-import { ApiResposne, client } from './client';
-
-const EXPIRED_TIME = 1000 * 60 * 30;
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '@finhub/utils/storage';
+import { ApiResposne, client } from '@finhub/api/client';
 
 const login = async (email: string, password: string) => {
-  const response: ApiResposne = await client.post('/login', {
+  const response: ApiResposne = await client.post('/admin/login', {
     email,
     password,
   });
 
-  const cur = new Date().getTime();
-
-  setStorageItem(
-    'access-token',
-    response.status === 'SUCCESS'
-      ? cur.toString()
-      : (cur + EXPIRED_TIME).toString(),
-  );
+  setLocalStorageItem('roleType', response.data.roleType ?? '');
+  setLocalStorageItem('accessToken', response.data.token.accessToken ?? '');
+  setLocalStorageItem('refreshToken', response.data.token.refreshToken ?? '');
 };
 
 const verifyToken = async () => {
-  const accessTime = Number(getStorageItem('access-token') ?? '0');
-  return new Date().getTime() - accessTime < EXPIRED_TIME;
+  const response: ApiResposne = await client.get('/auth/autoLogin');
+
+  return response.status === 'SUCCESS';
 };
 
 const logout = () => {
-  removeStorageItem('access-token');
+  removeLocalStorageItem('accessToken');
+  removeLocalStorageItem('refreshToken');
+  removeLocalStorageItem('roleType');
 };
 
 export const authAPI = {

@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { topicAPI } from '../../api/topic';
-import { FHUploader } from '../../components/atoms/Uploader';
-import { FHSelect } from '../../components/atoms/Select';
-import { FHSwitch } from '../../components/atoms/Switch';
-import { ICategory } from '../../types/Category';
-import { categoryAPI } from '../../api/category';
-import { FHTextArea } from '../../components/atoms/TextArea';
+import { useNavigate } from 'react-router-dom';
+
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { topicAPI } from '@finhub/api/topic';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { FHSwitch } from '@finhub/components/atoms/Switch';
+import { ICategory } from '@finhub/types/Category';
+import { categoryAPI } from '@finhub/api/category';
+import { FHTextArea } from '@finhub/components/atoms/TextArea';
 
 export const TopicCreatePage = () => {
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [definition, setDefinition] = useState('');
   const [shortDefinition, setShortDefinition] = useState('');
@@ -20,6 +23,7 @@ export const TopicCreatePage = () => {
   const [category, setCategory] = useState('ETF');
   const [useYN, setUseYN] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [summary, setSummary] = useState('');
 
   const handleTextChange =
     (type: string) =>
@@ -35,24 +39,28 @@ export const TopicCreatePage = () => {
         setDefinition(value);
       } else if (type === 'shortDefinition') {
         setShortDefinition(value);
+      } else if (type === 'summary') {
+        setSummary(value);
       }
     };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title) {
       alert('주제명을 입력해주세요');
       return;
     }
-    topicAPI.create({
+    const data = await topicAPI.create({
       title,
       categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
-      thumbnailImgPath: thumbnail,
       definition,
+      summary,
       shortDefinition,
       useYN,
+      file: thumbnail,
     });
 
     alert('반영되었습니다.');
+    navigate(`/services/topics/${data.id}`);
   };
 
   const handleCategoryChange = (value: string) => {
@@ -70,6 +78,7 @@ export const TopicCreatePage = () => {
       keyword: '',
       useYN: '전체',
     });
+
     setCategories(listData.list);
   };
 
@@ -104,6 +113,11 @@ export const TopicCreatePage = () => {
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="요약내용">
+          <FHTextArea value={summary} onChange={handleTextChange('summary')} />
+        </FHFormItem>
+      </S.formItemWrapper>
+      <S.formItemWrapper>
+        <FHFormItem direction="vertical" label="원본내용">
           <FHTextArea
             value={definition}
             onChange={handleTextChange('definition')}
@@ -111,7 +125,7 @@ export const TopicCreatePage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="원본내용">
+        <FHFormItem direction="vertical" label="짧은요약">
           <FHTextArea
             value={shortDefinition}
             onChange={handleTextChange('shortDefinition')}
