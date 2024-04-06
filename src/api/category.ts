@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ApiResposne, client } from '@finhub/api/client';
 import { ICategory } from '@finhub/types/Category';
 import { commonAPI } from '@finhub/api/common';
