@@ -1,5 +1,5 @@
-import { authAPI } from '../../../api/auth';
-import { FHPath } from '../../../configs/Router';
+import { authAPI } from '@finhub/api/auth';
+import { FHPath } from '@finhub/configs/Router';
 import * as S from './Header.style';
 
 export const FHHeaderItem = ({
@@ -49,6 +49,7 @@ export const FHHeader = () => {
           <FHHeaderItem route={FHPath.usertypes} />
           <FHHeaderItem route={FHPath.logs} />
           <FHHeaderItem route={FHPath.noWords} />
+          <FHHeaderItem route={FHPath.quizzes} />
           <S.headerItemWrapper onClick={handleSignOut}>
             로그아웃
           </S.headerItemWrapper>
