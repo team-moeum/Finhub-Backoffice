@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import { getLocalStorageItem } from '@finhub/utils/storage';
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from '@finhub/utils/storage';
 import { FilePathType } from '@finhub/types/FileType';
 import { message } from 'antd';
 
@@ -27,9 +31,25 @@ instance.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  (error: AxiosError<any>) => {
+  async (error: AxiosError<any>) => {
+    if (error.response?.status === 403) {
+      const response: ApiResposne = await client.get('/auth/updateAccessToken');
+      if (response.status === 'SUCCESS') {
+        instance.defaults.headers.Authorization = `Bearer ${response.data.token}`;
+        setLocalStorageItem('accessToken', response.data.token ?? '');
+        return;
+      } else {
+        message.error(`${error.response?.data.errorMsg || error.message}`);
+        removeLocalStorageItem('accessToken');
+        removeLocalStorageItem('refreshToken');
+        removeLocalStorageItem('roleType');
+        window.location.reload();
+        return;
+      }
+    }
+
     const errorMessage: string = error.response?.data.errorMsg || error.message;
-    message.error(`요청이 실패했습니다: ${errorMessage}`);
+    message.error(`${errorMessage}`);
     return Promise.reject(error);
   },
 );
