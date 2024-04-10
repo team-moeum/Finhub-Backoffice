@@ -1,27 +1,49 @@
-import { IQuiz } from '@finhub/types/Quiz';
-import { Modal, Radio, RadioChangeEvent } from 'antd';
+import { Modal, Radio, RadioChangeEvent, message } from 'antd';
 import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
 import { FHTextInput } from '@finhub/components/atoms/TextInput';
 import { QuizTopicEditor } from '@finhub/components/organisms/QuizTopicEditor';
-import styled from '@emotion/styled';
+import { quizAPI } from '@finhub/api/quiz';
+import { IQuiz } from '@finhub/types/Quiz';
 
 export const QuizModal = ({
   date = '',
+  quizList = [],
   open = false,
   loading = false,
-  onOk,
   onCancel,
+  onOK,
 }: {
   date: string;
+  quizList: IQuiz[];
   open?: boolean;
   loading?: boolean;
-  onOk?: () => void;
   onCancel?: () => void;
+  onOK?: () => void;
 }) => {
+  const [quizId, setQuizId] = useState(0);
   const [question, setQuestion] = useState('');
   const [comment, setComment] = useState('');
   const [answer, setAnswer] = useState('O');
+  const [topicList, setTopicList] = useState<{ id: number; title: string }[]>(
+    [],
+  );
+  const shouldReqAPI = quizList.map((quiz) => quiz.targetDate).includes(date);
+
+  const initRequest = async () => {
+    const data = await quizAPI.show({
+      year: new Date(date).getFullYear(),
+      month: new Date(date).getMonth() + 1,
+      date: new Date(date).getDate(),
+    });
+
+    setQuizId(data.quizInfo.id);
+    setQuestion(data.quizInfo.question);
+    setComment(data.quizInfo.comment);
+    setAnswer(data.quizInfo.answer);
+    setTopicList(data.quizInfo.topicList);
+  };
 
   const handleRadioChange = (e: RadioChangeEvent) => {
     setAnswer(e.target.value);
@@ -37,47 +59,63 @@ export const QuizModal = ({
       }
     };
 
+  const handleSubmit = async () => {
+    if (shouldReqAPI) {
+      await quizAPI.update({
+        id: quizId,
+        year: new Date(date).getFullYear(),
+        month: new Date(date).getMonth() + 1,
+        day: new Date(date).getDate(),
+        question,
+        answer,
+        comment,
+        topicList: topicList.map((topic) => topic.id),
+      });
+
+      message.info('정상 반영되었습니다');
+
+      return;
+    }
+
+    await quizAPI.create({
+      year: new Date(date).getFullYear(),
+      month: new Date(date).getMonth() + 1,
+      day: new Date(date).getDate(),
+      question,
+      answer,
+      comment,
+      topicList: topicList.map((topic) => topic.id),
+    });
+
+    message.info('정상 반영되었습니다');
+
+    if (onOK) onOK();
+  };
+
+  const handleCancel = () => {
+    setQuizId(0);
+    setQuestion('');
+    setComment('');
+    setAnswer('');
+    setTopicList([]);
+
+    if (onCancel) onCancel();
+  };
+
   useEffect(() => {
-    const data: IQuiz = {
-      id: 4,
-      question: '금리가 오르면 대출을 받아야할까 ?',
-      answer: 'O',
-      comment: '금리가 인상하면 저축을 해야 좋아요!!',
-      targetDate: '2024-03-18',
-      createdBy: 'ROLE_SUPER',
-      createdTime: '2024-03-17T00:18:24',
-      modifiedTime: '2024-03-17T00:18:24',
-      topicList: [
-        {
-          id: 1,
-          title: '펀드란?',
-        },
-        {
-          id: 2,
-          title: '펀드란?',
-        },
-        {
-          id: 3,
-          title: '펀드란?',
-        },
-        {
-          id: 4,
-          title: '펀드란?',
-        },
-      ],
-    };
-    setQuestion(data.question);
-    setComment(data.comment);
-  }, []);
+    if (open && shouldReqAPI) {
+      initRequest();
+    }
+  }, [open]);
 
   return (
     <Modal
       title={`${date} 퀴즈 상세`}
       okText="저장"
       open={open}
-      onOk={onOk}
+      onOk={handleSubmit}
       confirmLoading={loading}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       closeIcon={false}
     >
       <S.formItemWrapper>
@@ -108,7 +146,7 @@ export const QuizModal = ({
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="토픽">
-          <QuizTopicEditor />
+          <QuizTopicEditor data={topicList} setter={setTopicList} />
         </FHFormItem>
       </S.formItemWrapper>
     </Modal>

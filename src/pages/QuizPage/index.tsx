@@ -1,16 +1,28 @@
 import styled from '@emotion/styled';
 import type { Dayjs } from 'dayjs';
 import { Tag } from 'antd';
-import { useState } from 'react';
-import { FHDivider } from '../../components/atoms/Divider';
-import { LayoutTemplate } from '../../components/templates/Layout';
-import { FHCalendar } from '../../components/atoms/Calendar';
-import { formatDateString } from '../../utils/formatter';
+import { useEffect, useState } from 'react';
+import { FHDivider } from '@finhub/components/atoms/Divider';
+import { LayoutTemplate } from '@finhub/components/templates/Layout';
+import { FHCalendar } from '@finhub/components/atoms/Calendar';
+import { formatDateString } from '@finhub/utils/formatter';
 import { QuizModal } from '@finhub/components/organisms/QuizModal';
+import { IQuiz } from '@finhub/types/Quiz';
+import { quizAPI } from '@finhub/api/quiz';
 
 export const QuizListPage = () => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(formatDateString(new Date()));
+  const [list, setList] = useState<IQuiz[]>([]);
+
+  const initRequest = async () => {
+    const { quizList } = await quizAPI.list({
+      year: new Date(date).getFullYear(),
+      month: new Date(date).getMonth() + 1,
+    });
+
+    setList(quizList);
+  };
 
   const openModal = () => setOpen(true);
   const closeModal = () => setOpen(false);
@@ -31,18 +43,30 @@ export const QuizListPage = () => {
     closeModal();
   };
 
-  const handleSubmit = () => {};
-
   const cellRender = (cellDate: Dayjs) => {
+    const data = list.find(
+      ({ targetDate }: { targetDate: string }) =>
+        targetDate ===
+        `${cellDate.year()}-${(cellDate.month() + 1).toString().padStart(2, '0')}-${cellDate.date().toString().padStart(2, '0')}`,
+    );
+
     return (
       <S.cellRenderWrapper
         current={cellDate.month() === new Date(date).getMonth()}
       >
-        <h3>금리가 인상하면 대출을 받는 것이 좋을까?</h3>
-        <Tag>#펀드란?</Tag>+@
+        <h3>{data?.question}</h3>
+        {data?.topicList.length ? <Tag>{data?.topicList[0].title}</Tag> : null}
       </S.cellRenderWrapper>
     );
   };
+
+  const handleSubmit = () => {
+    initRequest();
+  };
+
+  useEffect(() => {
+    initRequest();
+  }, []);
 
   return (
     <>
@@ -57,9 +81,10 @@ export const QuizListPage = () => {
       </LayoutTemplate>
       <QuizModal
         date={date}
+        quizList={list}
         open={open}
         onCancel={handleCancel}
-        onOk={handleSubmit}
+        onOK={handleSubmit}
       />
     </>
   );
