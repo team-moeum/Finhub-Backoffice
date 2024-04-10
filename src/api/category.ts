@@ -66,7 +66,11 @@ const create = async ({
   const data: {
     s3ImgUrl?: string;
     errorMsg?: string;
-  } = await commonAPI.saveImg(file, 'category');
+  } = file ? await commonAPI.saveImg(file, 'category') : {};
+
+  if (file && !data.s3ImgUrl) {
+    return { errorMsg: data.errorMsg || '이미지 업로드 실패' };
+  }
 
   const response: ApiResposne = await client.post('/admin/category', {
     name,
