@@ -4,14 +4,22 @@ import { GlobalStyles } from './styles/global';
 import { AuthHoc } from './components/hocs/AuthHoc';
 import { AppRouter } from './configs/Router';
 
+import locale from 'antd/lib/locale/ko_KR';
+import { ConfigProvider } from 'antd';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+dayjs.locale('ko');
+
 function App() {
   return (
-    <RecoilRoot>
-      <Global styles={GlobalStyles} />
-      <AuthHoc>
-        <AppRouter />
-      </AuthHoc>
-    </RecoilRoot>
+    <ConfigProvider locale={locale}>
+      <RecoilRoot>
+        <Global styles={GlobalStyles} />
+        <AuthHoc>
+          <AppRouter />
+        </AuthHoc>
+      </RecoilRoot>
+    </ConfigProvider>
   );
 }
 

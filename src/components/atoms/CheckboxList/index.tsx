@@ -9,7 +9,6 @@ export interface CheckboxData {
 export interface CheckboxListProps {
   list: CheckboxData[];
   checkedList: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (e: any) => void;
 }
 

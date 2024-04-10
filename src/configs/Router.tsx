@@ -1,17 +1,18 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { DashboardPage } from '../pages/DashboardPage';
-import { UserTypeListPage } from '../pages/UserTypePage';
-import { UserTypeCreatePage } from '../pages/UserTypePage/Create';
-import { UserTypeDetailPage } from '../pages/UserTypePage/Detail';
-import { TopicDetailPage } from '../pages/TopicPage/Detail';
-import { TopicCreatePage } from '../pages/TopicPage/Create';
-import { TopicListPage } from '../pages/TopicPage';
-import { CategoryListPage } from '../pages/CategoryPage';
-import { CategoryCreatePage } from '../pages/CategoryPage/Create';
-import { CategoryDetailPage } from '../pages/CategoryPage/Detail';
-import { ErrorPage } from '../pages/ErrorPage';
-import { LogListPage } from '../pages/LogPage';
-import { NoWordListPage } from '../pages/NoWordPage';
+import { DashboardPage } from '@finhub/pages/DashboardPage';
+import { UserTypeListPage } from '@finhub/pages/UserTypePage';
+import { UserTypeCreatePage } from '@finhub/pages/UserTypePage/Create';
+import { UserTypeDetailPage } from '@finhub/pages/UserTypePage/Detail';
+import { TopicDetailPage } from '@finhub/pages/TopicPage/Detail';
+import { TopicCreatePage } from '@finhub/pages/TopicPage/Create';
+import { TopicListPage } from '@finhub/pages/TopicPage';
+import { CategoryListPage } from '@finhub/pages/CategoryPage';
+import { CategoryCreatePage } from '@finhub/pages/CategoryPage/Create';
+import { CategoryDetailPage } from '@finhub/pages/CategoryPage/Detail';
+import { ErrorPage } from '@finhub/pages/ErrorPage';
+import { LogListPage } from '@finhub/pages/LogPage';
+import { NoWordListPage } from '@finhub/pages/NoWordPage';
+import { QuizListPage } from '@finhub/pages/QuizPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -35,6 +36,7 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   usertypesDetail: { label: '유저유형 상세', link: '/services/usertypes/:id' },
   logs: { label: 'GPT 로그', link: '/services/logs' },
   noWords: { label: '단어 요청', link: '/services/noWords' },
+  quizzes: { label: '퀴즈', link: '/services/quizzes' },
 };
 
 export const AppRouter = () => {
@@ -65,6 +67,7 @@ export const AppRouter = () => {
         <Route path={FHPath.topicsDetail.link} element={<TopicDetailPage />} />
         <Route path={FHPath.logs.link} element={<LogListPage />} />
         <Route path={FHPath.noWords.link} element={<NoWordListPage />} />
+        <Route path={FHPath.quizzes.link} element={<QuizListPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

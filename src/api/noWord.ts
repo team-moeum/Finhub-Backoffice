@@ -33,7 +33,7 @@ const list = async ({
 
   const currentPage = page ?? 1;
 
-  let origin =
+  const origin =
     resolvedYN === '전체'
       ? dataSource.topicRequestList
       : dataSource.topicRequestList.filter(

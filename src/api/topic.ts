@@ -1,5 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITopic } from '@finhub/types/Topic';
 import { ApiResposne, client } from './client';
 import { commonAPI } from './common';
@@ -39,7 +37,7 @@ const list = async ({
 
   const currentPage = page ?? 1;
 
-  let origin =
+  const origin =
     useYN === '전체'
       ? dataSource.topicList
       : dataSource.topicList.filter((item) => item.useYN === useYN);
