@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { categoryAPI } from '../../api/category';
-import { FHUploader } from '../../components/atoms/Uploader';
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { categoryAPI } from '@finhub/api/category';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { useNavigate } from 'react-router-dom';
 
 export const CategoryCreatePage = () => {

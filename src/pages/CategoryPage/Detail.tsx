@@ -45,7 +45,6 @@ export const CategoryDetailPage = () => {
     const showData = await categoryAPI.show({ id: categoryId });
 
     if (showData) {
-      console.log(showData);
       setName(showData.name ?? '');
       setUseYN(showData.useYN === 'Y');
       const list = showData.topicList.map((topic: ITopic) => {
