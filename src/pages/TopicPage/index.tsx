@@ -27,16 +27,6 @@ export const TopicListPage = () => {
       title: 'no',
       dataIndex: 'no',
       key: 'no',
-      render: (_: undefined, record: { key: string; no: string }) => (
-        <button
-          type="button"
-          onClick={() => {
-            navigate(`${location.pathname}/${record.key}`);
-          }}
-        >
-          {record.no}
-        </button>
-      ),
     },
     {
       width: 100,
@@ -115,6 +105,14 @@ export const TopicListPage = () => {
     setUseYN(value);
   };
 
+  const handleRow = (data: any) => {
+    return {
+      onClick: () => {
+        navigate(`${location.pathname}/${data.key}`);
+      },
+    };
+  };
+
   useEffect(() => {
     initRequest();
   }, [currentPage, category, keyword, useYN]);
@@ -131,6 +129,7 @@ export const TopicListPage = () => {
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
       isSearch
+      onRow={handleRow}
     >
       <S.formWrapper>
         <S.formItemWrapper>
