@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FHSelect } from '../../atoms/Select';
 import * as S from './TopicCard.style';
 
