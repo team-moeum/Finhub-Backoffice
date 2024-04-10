@@ -5,6 +5,5 @@ export interface ITopic {
   categoryId: number;
   categoryName?: string;
   definition: string;
-  shortDefinition: string;
   useYN: string;
 }

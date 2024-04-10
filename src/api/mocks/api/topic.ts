@@ -54,7 +54,6 @@ export const topicHandler = [
           topicId: id,
           title: 'ETF란',
           definition: '펀드란 어떤 것을 사고파는 행위이다.',
-          shortDefinition: '펀드란 사고파는 것.',
           categoryId: 1,
           useYN: 'Y',
           thumbnailImgPath: '/logo.png',

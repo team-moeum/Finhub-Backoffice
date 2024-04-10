@@ -37,7 +37,6 @@ export const TopicDetailPage = () => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [definition, setDefinition] = useState('');
-  const [shortDefinition, setShortDefinition] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('');
   const [useYN, setUseYN] = useState(false);
@@ -60,8 +59,6 @@ export const TopicDetailPage = () => {
         setTitle(value);
       } else if (type === 'definition') {
         setDefinition(value);
-      } else if (type === 'shortDefinition') {
-        setShortDefinition(value);
       } else if (type === 'gptTemplate') {
         setGptTemplate(value);
       } else if (type === 'tempGptTemplate') {
@@ -103,7 +100,6 @@ export const TopicDetailPage = () => {
         data.categoryName ?? (listData.list.length && listData.list[0].name),
       );
       setDefinition(data.definition ?? '');
-      setShortDefinition(data.shortDefinition ?? '');
       const newGptList = userTypeData.list.map((userType) => {
         const target = data.gptList.find(
           (gptUserType: GPTItem) => gptUserType.userTypeId === userType.id,
@@ -132,12 +128,24 @@ export const TopicDetailPage = () => {
   };
 
   const handleSubmit = () => {
+    if (!title) {
+      alert('주제명을 입력해주세요');
+      return;
+    }
+    if (!definition) {
+      alert('원본내용을 입력해주세요');
+      return;
+    }
+    if (!summary) {
+      alert('요약을 입력해주세요');
+      return;
+    }
+
     topicAPI.update({
       topicId,
       title,
       definition,
       summary,
-      shortDefinition,
       categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
       s3ImgUrl: thumbnail,
       file: thumbnail,
@@ -215,12 +223,21 @@ export const TopicDetailPage = () => {
     setTempGptTemplate(tempGptTemplate + keyword);
   };
 
-  const handleSubmitGptTemplate = async () => {
+  const handleSubmitGptTemplate = () => {
     if (window.confirm('GPT 템플릿을 저장하시겠습니까?')) {
       topicAPI.craetePrompt({
         prompt: tempGptTemplate,
       });
       setGptTemplate(tempGptTemplate);
+
+      message.success('정상 반영되었습니다');
+    }
+  };
+
+  const handleClickSummaryGPT = async () => {
+    if (window.confirm('토픽 요약 GPT를 생성하시겠습니까?')) {
+      const data = await topicAPI.createTopicSummary({ id: topicId });
+      setSummary(data.answer);
 
       message.success('정상 반영되었습니다');
     }
@@ -261,27 +278,23 @@ export const TopicDetailPage = () => {
               </FHFormItem>
             </S.formItemWrapper>
             <S.formItemWrapper>
-              <FHFormItem direction="vertical" label="요약">
-                <FHTextInput
-                  type="text"
-                  value={summary}
-                  onChange={handleTextChange('summary')}
-                />
-              </FHFormItem>
+              <S.formRowWrapper>
+                <S.rowLabelWrapper>요약</S.rowLabelWrapper>
+                <FHButton type="default" onClick={handleClickSummaryGPT}>
+                  생성
+                </FHButton>
+              </S.formRowWrapper>
+              <FHTextArea
+                value={summary}
+                onChange={handleTextChange('summary')}
+              />
             </S.formItemWrapper>
-            <S.formItemWrapper>
-              <FHFormItem direction="vertical" label="요약내용">
-                <FHTextArea
-                  value={definition}
-                  onChange={handleTextChange('definition')}
-                />
-              </FHFormItem>
-            </S.formItemWrapper>
+
             <S.formItemWrapper>
               <FHFormItem direction="vertical" label="원본내용">
                 <FHTextArea
-                  value={shortDefinition}
-                  onChange={handleTextChange('shortDefinition')}
+                  value={definition}
+                  onChange={handleTextChange('definition')}
                 />
               </FHFormItem>
             </S.formItemWrapper>
@@ -425,5 +438,17 @@ const S = {
     font-size: 13px;
     width: max-content;
     color: ${theme.colors.text[444444]};
+  `,
+  rowLabelWrapper: styled.div`
+    font-size: 14px;
+    font-weight: 500;
+  `,
+  formRowWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
   `,
 };

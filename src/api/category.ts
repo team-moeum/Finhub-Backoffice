@@ -111,7 +111,7 @@ const update = async ({
     s3ImgUrl,
   };
 
-  if (typeof file !== 'string') {
+  if (file && typeof file !== 'string') {
     const data: {
       s3ImgUrl?: string;
       errorMsg?: string;
