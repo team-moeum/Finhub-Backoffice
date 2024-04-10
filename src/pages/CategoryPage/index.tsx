@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { ListPageTemplate } from '../../components/templates/List';
+import { ListPageTemplate } from '@finhub/components/templates/List';
 import { useNavigate } from 'react-router-dom';
-import { categoryAPI } from '../../api/category';
+import { categoryAPI } from '@finhub/api/category';
 import styled from '@emotion/styled';
-import { FHSelect } from '../../components/atoms/Select';
-import { FHFormItem } from '../../components/organisms/FormItem';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
 
 export const CategoryListPage = () => {
   const navigate = useNavigate();
@@ -23,16 +23,6 @@ export const CategoryListPage = () => {
       title: 'no',
       dataIndex: 'no',
       key: 'no',
-      render: (_: undefined, record: { key: string; no: string }) => (
-        <button
-          type="button"
-          onClick={() => {
-            navigate(`${location.pathname}/${record.key}`);
-          }}
-        >
-          {record.no}
-        </button>
-      ),
     },
     {
       width: 100,
@@ -91,6 +81,14 @@ export const CategoryListPage = () => {
     setUseYN(value);
   };
 
+  const handleRow = (data: any) => {
+    return {
+      onClick: () => {
+        navigate(`${location.pathname}/${data.key}`);
+      },
+    };
+  };
+
   useEffect(() => {
     initRequest();
   }, [currentPage, useYN, keyword]);
@@ -106,6 +104,7 @@ export const CategoryListPage = () => {
       totalDocuments={totalDocuments}
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
+      onRow={handleRow}
       isSearch
     >
       <S.formItemWrapper>

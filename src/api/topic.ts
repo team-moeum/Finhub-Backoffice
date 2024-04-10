@@ -1,5 +1,3 @@
-/* eslint-disable prefer-const */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITopic } from '@finhub/types/Topic';
 import { ApiResposne, client } from './client';
 import { commonAPI } from './common';
@@ -39,7 +37,7 @@ const list = async ({
 
   const currentPage = page ?? 1;
 
-  let origin =
+  const origin =
     useYN === '전체'
       ? dataSource.topicList
       : dataSource.topicList.filter((item) => item.useYN === useYN);
@@ -81,7 +79,11 @@ const create = async ({
   const data: {
     s3ImgUrl?: string;
     errorMsg?: string;
-  } = await commonAPI.saveImg(file, 'topic');
+  } = file ? await commonAPI.saveImg(file, 'topic') : {};
+
+  if (file && !data.s3ImgUrl) {
+    return { errorMsg: data.errorMsg || '이미지 업로드 실패' };
+  }
 
   const response: ApiResposne = await client.post('/admin/topic', {
     title,

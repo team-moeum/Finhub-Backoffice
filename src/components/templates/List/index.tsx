@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from 'react-router-dom';
 import { LayoutTemplate } from '../Layout';
 import { FHTable } from '../../atoms/Table';
@@ -24,6 +23,7 @@ export interface ListPageTemplateProps {
   totalDocuments: number;
   currentPage: number;
   onTablePageChange: (pagination: TablePaginationConfig) => void;
+  onRow?: any;
 }
 
 export const ListPageTemplate = ({
@@ -41,6 +41,7 @@ export const ListPageTemplate = ({
   totalDocuments,
   currentPage,
   onTablePageChange,
+  onRow,
 }: ListPageTemplateProps) => {
   const navigate = useNavigate();
 
@@ -79,6 +80,7 @@ export const ListPageTemplate = ({
           totalDocuments={totalDocuments}
           currentPage={currentPage}
           onTablePageChange={onTablePageChange}
+          onRow={onRow}
         />
       </S.contentWrapper>
     </LayoutTemplate>

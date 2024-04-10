@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Table, TablePaginationConfig } from 'antd';
 
 export interface TableProps {
@@ -7,6 +6,7 @@ export interface TableProps {
   totalDocuments: number;
   currentPage: number;
   onTablePageChange: (pagination: TablePaginationConfig) => void;
+  onRow?: any;
 }
 
 export const FHTable = ({
@@ -15,6 +15,7 @@ export const FHTable = ({
   totalDocuments = 0,
   currentPage = 1,
   onTablePageChange,
+  onRow,
 }: TableProps) => {
   return (
     <Table
@@ -26,6 +27,7 @@ export const FHTable = ({
         total: totalDocuments,
         current: currentPage,
       }}
+      onRow={onRow}
     />
   );
 };
