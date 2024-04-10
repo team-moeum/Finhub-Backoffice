@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
 import { FHTextInput } from '@finhub/components/atoms/TextInput';
 import { FHButton } from '@finhub/components/atoms/Button';
@@ -18,12 +17,10 @@ export const TopicCreatePage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [definition, setDefinition] = useState('');
-  const [shortDefinition, setShortDefinition] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [category, setCategory] = useState('ETF');
   const [useYN, setUseYN] = useState(false);
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [summary, setSummary] = useState('');
 
   const handleTextChange =
     (type: string) =>
@@ -37,10 +34,6 @@ export const TopicCreatePage = () => {
         setTitle(value);
       } else if (type === 'definition') {
         setDefinition(value);
-      } else if (type === 'shortDefinition') {
-        setShortDefinition(value);
-      } else if (type === 'summary') {
-        setSummary(value);
       }
     };
 
@@ -49,12 +42,15 @@ export const TopicCreatePage = () => {
       alert('주제명을 입력해주세요');
       return;
     }
+    if (!definition) {
+      alert('원본내용을 입력해주세요');
+      return;
+    }
+
     const data = await topicAPI.create({
       title,
       categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
       definition,
-      summary,
-      shortDefinition,
       useYN,
       file: thumbnail,
     });
@@ -80,6 +76,9 @@ export const TopicCreatePage = () => {
     });
 
     setCategories(listData.list);
+    if (listData.list.length) {
+      setCategory(listData.list[0].name);
+    }
   };
 
   useEffect(() => {
@@ -112,23 +111,10 @@ export const TopicCreatePage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="요약내용">
-          <FHTextArea value={summary} onChange={handleTextChange('summary')} />
-        </FHFormItem>
-      </S.formItemWrapper>
-      <S.formItemWrapper>
         <FHFormItem direction="vertical" label="원본내용">
           <FHTextArea
             value={definition}
             onChange={handleTextChange('definition')}
-          />
-        </FHFormItem>
-      </S.formItemWrapper>
-      <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="짧은요약">
-          <FHTextArea
-            value={shortDefinition}
-            onChange={handleTextChange('shortDefinition')}
           />
         </FHFormItem>
       </S.formItemWrapper>
