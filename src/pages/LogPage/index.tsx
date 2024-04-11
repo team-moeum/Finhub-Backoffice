@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react';
-import { topicAPI } from '../../api/topic';
 import styled from '@emotion/styled';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHSelect } from '../../components/atoms/Select';
-import { ICategory } from '../../types/Category';
-import { categoryAPI } from '../../api/category';
-import { ITopic } from '../../types/Topic';
-import { IUsertype } from '../../types/UserType';
-import { LayoutTemplate } from '../../components/templates/Layout';
-import { FHDivider } from '../../components/atoms/Divider';
-import { FHSearchInput } from '../../components/atoms/SearchInput';
-import { FHCollapse } from '../../components/atoms/Collapse';
-import { usertypeAPI } from '../../api/userType';
+import { topicAPI } from '@finhub/api/topic';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { ICategory } from '@finhub/types/Category';
+import { categoryAPI } from '@finhub/api/category';
+import { ITopic } from '@finhub/types/Topic';
+import { IUsertype } from '@finhub/types/UserType';
+import { LayoutTemplate } from '@finhub/components/templates/Layout';
+import { FHDivider } from '@finhub/components/atoms/Divider';
+import { FHCollapse } from '@finhub/components/atoms/Collapse';
+import { usertypeAPI } from '@finhub/api/userType';
+import { gptLogAPI } from '@finhub/api/gptLog';
+import { IGptLog } from '@finhub/types/GptLog';
 
 export const LogListPage = () => {
-  const [keyword, setKeyword] = useState('');
-  const [category, setCategory] = useState('전체');
+  const [category, setCategory] = useState('');
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [topic, setTopic] = useState('전체');
+  const [topic, setTopic] = useState('');
   const [topics, setTopics] = useState<ITopic[]>([]);
-  const [usertype, setUsertype] = useState('전체');
+  const [usertype, setUsertype] = useState('');
   const [usertypes, setUsertypes] = useState<IUsertype[]>([]);
+  const [list, setList] = useState<IGptLog[]>([]);
 
   const initRequest = async () => {
     const res = await Promise.all([
@@ -28,35 +29,47 @@ export const LogListPage = () => {
         page: 1,
         listSize: 20,
         keyword: '',
-        useYN: '',
-      }),
-      topicAPI.list({
-        page: 1,
-        category: undefined,
-        listSize: 20,
-        keyword: '',
-        useYN: '',
+        useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
         listSize: 20,
         keyword: '',
-        useYN: '',
+        useYN: '전체',
       }),
     ]);
     setCategories(res[0].list);
-    setTopics(res[1].list);
-    setUsertypes(res[2].list);
+    if (res[0].list.length) {
+      setCategory(res[0].list[0].name);
+    }
+
+    setUsertypes(res[1].list);
+    if (res[1].list.length) {
+      setUsertype(res[1].list[0].name);
+    }
   };
 
-  const handleSearch = () => {
-    initRequest();
+  const handleChangeTopic = async () => {
+    const data = await topicAPI.list({
+      page: 1,
+      category: categories.find((ct) => ct.name === category)?.id ?? -1,
+      listSize: 20,
+      keyword: '',
+      useYN: '전체',
+    });
+
+    setTopics(data.list);
+    setTopic(data.list.length ? data.list[0].title : '');
   };
 
-  const handleTextChange =
-    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setKeyword(e.target.value);
-    };
+  const handleSearch = async () => {
+    const data = await gptLogAPI.list({
+      topicId: topics.find((ct) => ct.title === topic)?.topicId ?? -1,
+      usertypeId: usertypes.find((ct) => ct.name === usertype)?.id ?? -1,
+    });
+
+    setList(data.list);
+  };
 
   const handleCategoryChange = (value: string) => {
     setCategory(value);
@@ -72,7 +85,19 @@ export const LogListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [keyword]);
+  }, []);
+
+  useEffect(() => {
+    if (category) {
+      handleChangeTopic();
+    }
+  }, [category]);
+
+  useEffect(() => {
+    if (usertype && topic) {
+      handleSearch();
+    }
+  }, [usertype, topic]);
 
   return (
     <LayoutTemplate>
@@ -86,7 +111,7 @@ export const LogListPage = () => {
               <FHSelect
                 value={category}
                 onChange={handleCategoryChange}
-                items={['전체', ...categories.map((item) => item.name)]}
+                items={[...categories.map((item) => item.name)]}
               />
             </FHFormItem>
           </S.formItemWrapper>
@@ -95,7 +120,7 @@ export const LogListPage = () => {
               <FHSelect
                 value={topic}
                 onChange={handleTopicChange}
-                items={['전체', ...topics.map((item) => item.title)]}
+                items={[...topics.map((item) => item.title)]}
               />
             </FHFormItem>
           </S.formItemWrapper>
@@ -104,37 +129,24 @@ export const LogListPage = () => {
               <FHSelect
                 value={usertype}
                 onChange={handleUsertypeChange}
-                items={['전체', ...usertypes.map((item) => item.name)]}
+                items={[...usertypes.map((item) => item.name)]}
               />
             </FHFormItem>
           </S.formItemWrapper>
         </S.formWrapper>
         <FHDivider />
-        <S.inputWrapper>
-          <FHSearchInput
-            placeholder=""
-            value={keyword}
-            onChange={handleTextChange('search')}
-            onSearch={handleSearch}
+        {list?.map((log) => (
+          <FHCollapse
+            key={log.id}
+            items={[
+              {
+                key: log.id,
+                label: log.question,
+                children: <p>{log.answer}</p>,
+              },
+            ]}
           />
-        </S.inputWrapper>
-        <FHDivider />
-        <FHCollapse
-          items={[
-            {
-              key: '1',
-              label:
-                '주식에 관해서 주식매매란 무엇일까?에 대해서 !유저타입!에게 알기 쉽게 설명해주고 싶어. 비유를 들어서 !유저타입!이 이해하기 쉽게 설명해줘',
-              children: (
-                <p>
-                  {`네, 알겠습니다. 주식매매를 설명하기 위해 비유를
-                  사용하겠습니다. 여기서 !유저타입!을 '초등학생'으로 가정하고
-                  설명을 시작하겠습니다.`}
-                </p>
-              ),
-            },
-          ]}
-        />
+        ))}
       </S.contentWrapper>
     </LayoutTemplate>
   );
