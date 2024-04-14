@@ -16,7 +16,9 @@ const login = async (email: string, password: string) => {
 };
 
 const verifyToken = async () => {
-  const response: ApiResposne = await client.get('/auth/autoLogin');
+  const response: ApiResposne = await client.post('/auth/autoLogin', {
+    fcm: '',
+  });
 
   return response.status === 'SUCCESS';
 };

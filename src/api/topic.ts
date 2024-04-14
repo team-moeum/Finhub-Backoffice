@@ -63,16 +63,12 @@ const create = async ({
   file,
   title,
   definition,
-  summary,
-  shortDefinition,
   categoryId,
   useYN,
 }: {
   file?: any;
   title: string;
   definition: string;
-  summary: string;
-  shortDefinition: string;
   categoryId: number;
   useYN: boolean;
 }) => {
@@ -88,8 +84,6 @@ const create = async ({
   const response: ApiResposne = await client.post('/admin/topic', {
     title,
     definition,
-    shortDefinition,
-    summary,
     categoryId,
     useYN: useYN ? 'Y' : 'N',
     s3ImgUrl: data.s3ImgUrl,
@@ -109,7 +103,6 @@ const update = async ({
   topicId,
   title,
   definition,
-  shortDefinition,
   categoryId,
   summary,
   s3ImgUrl,
@@ -121,7 +114,6 @@ const update = async ({
   topicId: number;
   title: string;
   definition: string;
-  shortDefinition: string;
   categoryId: number;
   summary: string;
   s3ImgUrl: string;
@@ -137,17 +129,16 @@ const update = async ({
     title,
     definition,
     summary,
-    shortDefinition,
-    s3ImgUrl,
+    s3ImgUrl: s3ImgUrl ?? '',
     categoryId,
     gptList,
     useYN: useYN ? 'Y' : 'N',
   };
-  if (typeof file !== 'string') {
+  if (file && typeof file !== 'string') {
     const data: {
       s3ImgUrl?: string;
       errorMsg?: string;
-    } = await commonAPI.saveImg(file, 'category');
+    } = await commonAPI.saveImg(file, 'topic');
 
     params['s3ImgUrl'] = data.s3ImgUrl ?? '';
   }
@@ -220,6 +211,21 @@ const craetePrompt = async ({ prompt }: { prompt: string }) => {
   return dataSource;
 };
 
+const createTopicSummary = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.post('/admin/topic-summary', {
+    id,
+  });
+
+  if (response.data.status === 'FAIL') {
+    return {
+      errorMsg: response.data.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+  return dataSource;
+};
+
 export const topicAPI = {
   list,
   show,
@@ -228,4 +234,5 @@ export const topicAPI = {
   craeteAITopicContent,
   getPrompt,
   craetePrompt,
+  createTopicSummary,
 };
