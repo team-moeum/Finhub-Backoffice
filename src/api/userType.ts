@@ -1,5 +1,6 @@
 import { IUsertype } from '../types/UserType';
 import { ApiResposne, client } from './client';
+import { commonAPI } from './common';
 
 const list = async ({
   page,
@@ -52,9 +53,28 @@ const show = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
-const create = async ({ name }: { name: string }) => {
+const create = async ({
+  file,
+  name,
+}: {
+  file?: any;
+  name: string;
+}): Promise<{
+  id?: number;
+  errorMsg?: string;
+}> => {
+  const data: {
+    s3ImgUrl?: string;
+    errorMsg?: string;
+  } = file ? await commonAPI.saveImg(file, 'category') : {};
+
+  if (file && !data.s3ImgUrl) {
+    return { errorMsg: data.errorMsg || '이미지 업로드 실패' };
+  }
+
   const response: ApiResposne = await client.post('/admin/usertype', {
     name,
+    s3ImgUrl: data.s3ImgUrl,
   });
 
   if (response.status === 'FAIL') {
@@ -72,16 +92,32 @@ const update = async ({
   id,
   name,
   useYN,
+  s3ImgUrl,
+  file,
 }: {
   id: number;
   name: string;
   useYN: boolean;
+  file?: any;
+  s3ImgUrl: string;
 }) => {
-  const response: ApiResposne = await client.put('/admin/usertype', {
+  const params = {
     id,
     name,
     useYN: useYN ? 'Y' : 'N',
-  });
+    s3ImgUrl,
+  };
+
+  if (file && typeof file !== 'string') {
+    const data: {
+      s3ImgUrl?: string;
+      errorMsg?: string;
+    } = await commonAPI.saveImg(file, 'category');
+
+    params['s3ImgUrl'] = data.s3ImgUrl ?? '';
+  }
+
+  const response: ApiResposne = await client.put('/admin/usertype', params);
 
   if (response.status === 'FAIL') {
     return {
