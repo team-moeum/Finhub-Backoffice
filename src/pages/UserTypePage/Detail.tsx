@@ -1,13 +1,13 @@
 import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
-import { useEffect, useState } from 'react';
-import { usertypeAPI } from '../../api/userType';
 import { useParams } from 'react-router-dom';
-import { FHUploader } from '../../components/atoms/Uploader';
-import { FHSwitch } from '../../components/atoms/Switch';
+import { useEffect, useState } from 'react';
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { usertypeAPI } from '@finhub/api/userType';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
+import { FHSwitch } from '@finhub/components/atoms/Switch';
 
 export const UserTypeDetailPage = () => {
   const { id } = useParams();
@@ -45,10 +45,11 @@ export const UserTypeDetailPage = () => {
       id: userTypeId,
       name,
       useYN,
+      s3ImgUrl: avatarImgPath,
+      file: avatarImgPath,
     });
 
     alert('반영되었습니다.');
-    initRequest();
   };
 
   useEffect(() => {

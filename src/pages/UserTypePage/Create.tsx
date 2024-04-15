@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-import { CreatePageTemplate } from '../../components/templates/Create';
-import { FHTextInput } from '../../components/atoms/TextInput';
-import { FHButton } from '../../components/atoms/Button';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { usertypeAPI } from '../../api/userType';
-import { FHUploader } from '../../components/atoms/Uploader';
+import { CreatePageTemplate } from '@finhub/components/templates/Create';
+import { FHTextInput } from '@finhub/components/atoms/TextInput';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { usertypeAPI } from '@finhub/api/userType';
+import { FHUploader } from '@finhub/components/atoms/Uploader';
+import { useNavigate } from 'react-router-dom';
 
 export const UserTypeCreatePage = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [avatarImgPath, setAvatarImgPath] = useState('');
 
@@ -19,16 +21,18 @@ export const UserTypeCreatePage = () => {
       }
     };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name) {
       alert('유저유형명을 입력해주세요');
       return;
     }
-    usertypeAPI.create({
+    const data = await usertypeAPI.create({
+      file: avatarImgPath,
       name,
     });
 
     alert('반영되었습니다.');
+    navigate(`/services/usertypes/${data.id}`);
   };
 
   return (
