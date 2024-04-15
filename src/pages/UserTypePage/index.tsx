@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ListPageTemplate } from '../../components/templates/List';
-import { usertypeAPI } from '../../api/userType';
-import { FHFormItem } from '../../components/organisms/FormItem';
-import { FHSelect } from '../../components/atoms/Select';
-import { IUsertype } from '../../types/UserType';
 import styled from '@emotion/styled';
+import { ListPageTemplate } from '@finhub/components/templates/List';
+import { usertypeAPI } from '@finhub/api/userType';
+import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { FHSelect } from '@finhub/components/atoms/Select';
+import { IUsertype } from '@finhub/types/UserType';
 
 export const UserTypeListPage = () => {
   const navigate = useNavigate();
