@@ -13,6 +13,7 @@ import { ErrorPage } from '@finhub/pages/ErrorPage';
 import { LogListPage } from '@finhub/pages/LogPage';
 import { NoWordListPage } from '@finhub/pages/NoWordPage';
 import { QuizListPage } from '@finhub/pages/QuizPage';
+import { AvatarListPage } from '@finhub/pages/AvatarPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -37,6 +38,7 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   logs: { label: 'GPT 로그', link: '/services/logs' },
   noWords: { label: '단어 요청', link: '/services/noWords' },
   quizzes: { label: '퀴즈', link: '/services/quizzes' },
+  avatars: { label: '아바타', link: '/services/avatars' },
 };
 
 export const AppRouter = () => {
@@ -68,6 +70,7 @@ export const AppRouter = () => {
         <Route path={FHPath.logs.link} element={<LogListPage />} />
         <Route path={FHPath.noWords.link} element={<NoWordListPage />} />
         <Route path={FHPath.quizzes.link} element={<QuizListPage />} />
+        <Route path={FHPath.avatars.link} element={<AvatarListPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
