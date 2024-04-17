@@ -165,7 +165,6 @@ export const TopicDetailPage = () => {
     });
 
     message.success('정상 반영되었습니다');
-    initRequest();
   };
 
   const handleCategoryChange = (value: string) => {
@@ -416,6 +415,7 @@ const S = {
     flex-direction: row;
     overflow-x: auto;
     gap: 12px;
+    width: 100%;
   `,
   userTypeWrapper: styled.div`
     display: flex;

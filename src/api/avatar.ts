@@ -31,7 +31,7 @@ const create = async ({ file }: { file?: any }) => {
   }
 
   const response: ApiResposne = await client.post('/admin/user-avatar', {
-    s3ImgUrl: data.s3ImgUrl,
+    s3ImgUrl: data.s3ImgUrl ?? '',
   });
 
   if (response.status === 'FAIL') {
