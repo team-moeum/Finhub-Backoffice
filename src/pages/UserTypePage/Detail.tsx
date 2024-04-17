@@ -30,7 +30,7 @@ export const UserTypeDetailPage = () => {
     });
 
     if (data) {
-      setAvatarImgPath(data.avatarImgPath ?? './logo.png');
+      setAvatarImgPath(data.avatarImgPath ?? '');
       setName(data.name ?? '');
       setUseYN(data.useYN === 'Y');
     }

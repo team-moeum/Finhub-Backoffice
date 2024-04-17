@@ -86,7 +86,8 @@ const create = async ({
     definition,
     categoryId,
     useYN: useYN ? 'Y' : 'N',
-    s3ImgUrl: data.s3ImgUrl,
+    s3ImgUrl: data.s3ImgUrl ?? '',
+    summary: '',
   });
 
   if (response.status === 'FAIL') {

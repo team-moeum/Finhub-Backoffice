@@ -74,7 +74,7 @@ const create = async ({
 
   const response: ApiResposne = await client.post('/admin/category', {
     name,
-    s3ImgUrl: data.s3ImgUrl,
+    s3ImgUrl: data.s3ImgUrl ?? '',
   });
 
   if (response.status === 'FAIL') {
