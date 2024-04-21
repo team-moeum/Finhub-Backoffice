@@ -5,12 +5,10 @@ import { commonAPI } from './common';
 const list = async ({
   page,
   listSize,
-  keyword,
   useYN,
 }: {
   page: number;
   listSize: number;
-  keyword: string;
   useYN: string;
 }) => {
   let url = `/admin/usertype?page=${page}&size=${listSize}`;
@@ -28,22 +26,17 @@ const list = async ({
 
   const dataSource: {
     usertypeList: IUsertype[];
+    pageInfo: {
+      currentPage: number;
+      totalPages: number;
+      pageSize: number;
+      totalElements: number;
+    };
   } = response.data;
 
-  const currentPage = page ?? 1;
-  const origin =
-    useYN === '전체'
-      ? dataSource.usertypeList
-      : dataSource.usertypeList.filter((item) => item.useYN === useYN);
-
-  const data = origin.slice(
-    (currentPage - 1) * listSize,
-    currentPage * listSize,
-  );
-
   return {
-    list: data.filter((item) => item.name.includes(keyword)),
-    totalDocuments: dataSource.usertypeList.length,
+    list: dataSource.usertypeList,
+    totalDocuments: dataSource.pageInfo.totalElements,
   };
 };
 
