@@ -37,7 +37,6 @@ export const CategoryDetailPage = () => {
     const listData = await categoryAPI.list({
       page: 1,
       listSize: 20,
-      keyword: '',
       useYN: '전체',
     });
     setCategories(listData.list);

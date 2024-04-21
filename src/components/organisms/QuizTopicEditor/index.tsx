@@ -19,7 +19,6 @@ export const QuizTopicEditor = ({
       page: 1,
       category: undefined,
       listSize: 20,
-      keyword: '',
       useYN: '전체',
     });
 

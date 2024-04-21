@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
-import { LayoutTemplate } from '../Layout';
-import { FHTable } from '../../atoms/Table';
-import { FHDivider } from '../../atoms/Divider';
-import { FHSearchInput } from '../../atoms/SearchInput';
-import { FHButton } from '../../atoms/Button';
 import { ReactNode } from 'react';
 import { TablePaginationConfig } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { LayoutTemplate } from '@finhub/components/templates/Layout';
+import { FHTable } from '@finhub/components/atoms/Table';
+import { FHDivider } from '@finhub/components/atoms/Divider';
+import { FHSearchInput } from '@finhub/components/atoms/SearchInput';
+import { FHButton } from '@finhub/components/atoms/Button';
 import * as S from './List.style';
 
 export interface ListPageTemplateProps {
@@ -13,9 +13,9 @@ export interface ListPageTemplateProps {
   children?: ReactNode;
   isCreate?: boolean;
   isSearch?: boolean;
-  keyword: string;
-  onSearch: any;
-  onTextChange: any;
+  keyword?: string;
+  onSearch?: any;
+  onTextChange?: any;
   // table
   tableDataSource: any;
   tableColumns: any;
@@ -45,6 +45,12 @@ export const ListPageTemplate = ({
 }: ListPageTemplateProps) => {
   const navigate = useNavigate();
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onTextChange) {
+      onTextChange('search')(e);
+    }
+  };
+
   return (
     <LayoutTemplate>
       <S.pageHeaderWrapper>
@@ -67,7 +73,7 @@ export const ListPageTemplate = ({
               <FHSearchInput
                 placeholder={placeholder}
                 value={keyword}
-                onChange={onTextChange('search')}
+                onChange={handleTextChange}
                 onSearch={onSearch}
               />
             </S.inputWrapper>
