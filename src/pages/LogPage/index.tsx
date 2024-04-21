@@ -28,13 +28,11 @@ export const LogListPage = () => {
       categoryAPI.list({
         page: 1,
         listSize: 20,
-        keyword: '',
         useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
         listSize: 20,
-        keyword: '',
         useYN: '전체',
       }),
     ]);
@@ -54,7 +52,6 @@ export const LogListPage = () => {
       page: 1,
       category: categories.find((ct) => ct.name === category)?.id ?? -1,
       listSize: 20,
-      keyword: '',
       useYN: '전체',
     });
 

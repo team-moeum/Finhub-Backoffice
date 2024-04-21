@@ -1,5 +1,5 @@
-import { IGptLog } from '../types/GptLog';
-import { IPageInfo } from '../types/PageInfo';
+import { IGptLog } from '@finhub/types/GptLog';
+import { IPageInfo } from '@finhub/types/PageInfo';
 import { ApiResposne, client } from './client';
 
 const list = async ({
