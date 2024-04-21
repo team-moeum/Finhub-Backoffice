@@ -1,16 +1,14 @@
-import { INoWord } from '../types/NoWord';
-import { IPageInfo } from '../types/PageInfo';
+import { INoWord } from '@finhub/types/NoWord';
+import { IPageInfo } from '@finhub/types/PageInfo';
 import { ApiResposne, client } from './client';
 
 const list = async ({
   page,
   listSize,
-  keyword,
   resolvedYN,
 }: {
   page: number;
   listSize: number;
-  keyword: string;
   resolvedYN: string;
 }) => {
   let url = `/admin/no-word?page=${page}&size=${listSize}`;
@@ -31,23 +29,9 @@ const list = async ({
     pageInfo: IPageInfo;
   } = response.data;
 
-  const currentPage = page ?? 1;
-
-  const origin =
-    resolvedYN === '전체'
-      ? dataSource.topicRequestList
-      : dataSource.topicRequestList.filter(
-          (item) => item.resolvedYN === resolvedYN,
-        );
-
-  const data = origin.slice(
-    (currentPage - 1) * listSize,
-    currentPage * listSize,
-  );
-
   return {
-    list: data.filter((item) => item.term.includes(keyword)),
-    totalDocuments: dataSource.topicRequestList.length,
+    list: dataSource.topicRequestList,
+    totalDocuments: dataSource.pageInfo.totalElements,
   };
 };
 
