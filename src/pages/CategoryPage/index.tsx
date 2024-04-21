@@ -5,45 +5,44 @@ import { categoryAPI } from '@finhub/api/category';
 import styled from '@emotion/styled';
 import { FHSelect } from '@finhub/components/atoms/Select';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
+import { USE_YN_FILTER } from '@finhub/configs/constants';
+
+const columns = [
+  {
+    width: 100,
+    align: 'center',
+    title: 'no',
+    dataIndex: 'no',
+    key: 'no',
+  },
+  {
+    width: 100,
+    align: 'center',
+    title: '노출여부',
+    dataIndex: 'useYN',
+    key: 'useYN',
+  },
+  {
+    ellipsis: true,
+    title: '카테고리명',
+    dataIndex: 'name',
+    key: 'name',
+  },
+];
 
 export const CategoryListPage = () => {
   const navigate = useNavigate();
-  const [keyword, setKeyword] = useState('');
   const [list, setList] = useState<
     { key?: number; no?: number; name?: string }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
-  const [useYN, setUseYN] = useState('전체');
-
-  const columns = [
-    {
-      width: 100,
-      align: 'center',
-      title: 'no',
-      dataIndex: 'no',
-      key: 'no',
-    },
-    {
-      width: 100,
-      align: 'center',
-      title: '노출여부',
-      dataIndex: 'useYN',
-      key: 'useYN',
-    },
-    {
-      ellipsis: true,
-      title: '카테고리명',
-      dataIndex: 'name',
-      key: 'name',
-    },
-  ];
+  const [useYN, setUseYN] = useState(USE_YN_FILTER[0]);
 
   const initRequest = async () => {
     const { list, totalDocuments } = await categoryAPI.list({
       page: currentPage,
       listSize: 10,
-      keyword,
       useYN,
     });
 
@@ -56,22 +55,13 @@ export const CategoryListPage = () => {
       useYN?: string;
     }[] = list.map((item, idx) => ({
       key: item.id,
-      no: totalDocuments - idx,
+      no: totalDocuments - (currentPage - 1) * 10 - idx,
       name: item.name,
       useYN: item.useYN,
     }));
 
     setList(dataSource);
   };
-
-  const handleSearch = () => {
-    initRequest();
-  };
-
-  const handleTextChange =
-    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setKeyword(e.target.value);
-    };
 
   const handleTablePageChange = ({ current }: { current?: number }) => {
     setCurrentPage(current ?? 1);
@@ -91,28 +81,28 @@ export const CategoryListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage, useYN, keyword]);
+  }, [currentPage, useYN]);
 
   return (
     <ListPageTemplate
       label="카테고리목록"
-      keyword={keyword}
-      onSearch={handleSearch}
-      onTextChange={handleTextChange}
       tableDataSource={list}
       tableColumns={columns}
       totalDocuments={totalDocuments}
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
       onRow={handleRow}
-      isSearch
+      isSearch={false}
+      keyword={''}
+      onSearch={null}
+      onTextChange={null}
     >
       <S.formItemWrapper>
         <FHFormItem direction="horizontal" label="노출여부">
           <FHSelect
             value={useYN}
             onChange={handleUseYNChange}
-            items={['전체', 'Y', 'N']}
+            items={USE_YN_FILTER}
           />
         </FHFormItem>
       </S.formItemWrapper>
