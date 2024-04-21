@@ -45,6 +45,12 @@ export const ListPageTemplate = ({
 }: ListPageTemplateProps) => {
   const navigate = useNavigate();
 
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onTextChange) {
+      onTextChange('search')(e);
+    }
+  };
+
   return (
     <LayoutTemplate>
       <S.pageHeaderWrapper>
@@ -67,7 +73,7 @@ export const ListPageTemplate = ({
               <FHSearchInput
                 placeholder={placeholder}
                 value={keyword}
-                onChange={onTextChange('search')}
+                onChange={handleTextChange}
                 onSearch={onSearch}
               />
             </S.inputWrapper>
