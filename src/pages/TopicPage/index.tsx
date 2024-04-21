@@ -7,54 +7,53 @@ import { FHFormItem } from '@finhub/components/organisms/FormItem';
 import { FHSelect } from '@finhub/components/atoms/Select';
 import { ICategory } from '@finhub/types/Category';
 import { categoryAPI } from '@finhub/api/category';
+import { USE_YN_FILTER } from '@finhub/configs/constants';
+
+const columns = [
+  {
+    width: 100,
+    align: 'center',
+    title: 'no',
+    dataIndex: 'no',
+    key: 'no',
+  },
+  {
+    width: 100,
+    align: 'center',
+    title: '카테고리',
+    dataIndex: 'category',
+    key: 'category',
+  },
+  {
+    width: 100,
+    align: 'center',
+    title: '노출여부',
+    dataIndex: 'useYN',
+    key: 'useYN',
+  },
+  {
+    ellipsis: true,
+    title: '주제명',
+    dataIndex: 'title',
+    key: 'title',
+  },
+];
 
 export const TopicListPage = () => {
   const navigate = useNavigate();
-  const [keyword, setKeyword] = useState('');
   const [list, setList] = useState<
     { key?: number; no?: number; name?: string }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [category, setCategory] = useState('전체');
-  const [useYN, setUseYN] = useState('전체');
+  const [useYN, setUseYN] = useState(USE_YN_FILTER[0]);
   const [categories, setCategories] = useState<ICategory[]>([]);
-
-  const columns = [
-    {
-      width: 100,
-      align: 'center',
-      title: 'no',
-      dataIndex: 'no',
-      key: 'no',
-    },
-    {
-      width: 100,
-      align: 'center',
-      title: '카테고리',
-      dataIndex: 'category',
-      key: 'category',
-    },
-    {
-      width: 100,
-      align: 'center',
-      title: '노출여부',
-      dataIndex: 'useYN',
-      key: 'useYN',
-    },
-    {
-      ellipsis: true,
-      title: '주제명',
-      dataIndex: 'title',
-      key: 'title',
-    },
-  ];
 
   const initRequest = async () => {
     const listData = await categoryAPI.list({
       page: 1,
       listSize: 20,
-      keyword: '',
       useYN: '전체',
     });
     setCategories(listData.list);
@@ -63,7 +62,6 @@ export const TopicListPage = () => {
       page: currentPage,
       listSize: 10,
       category: listData.list.find((item) => item.name === category)?.id,
-      keyword,
       useYN,
     });
 
@@ -75,7 +73,7 @@ export const TopicListPage = () => {
       name?: string;
     }[] = list.map((item, idx) => ({
       key: item.topicId,
-      no: totalDocuments - idx,
+      no: totalDocuments - (currentPage - 1) * 10 - idx,
       title: item.title,
       category: item.categoryName,
       useYN: item.useYN,
@@ -83,15 +81,6 @@ export const TopicListPage = () => {
 
     setList(dataSource);
   };
-
-  const handleSearch = () => {
-    initRequest();
-  };
-
-  const handleTextChange =
-    (_: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setKeyword(e.target.value);
-    };
 
   const handleTablePageChange = ({ current }: { current?: number }) => {
     setCurrentPage(current ?? 1);
@@ -115,20 +104,17 @@ export const TopicListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage, category, keyword, useYN]);
+  }, [currentPage, category, useYN]);
 
   return (
     <ListPageTemplate
       label="주제목록"
-      keyword={keyword}
-      onSearch={handleSearch}
-      onTextChange={handleTextChange}
       tableDataSource={list}
       tableColumns={columns}
       totalDocuments={totalDocuments}
       currentPage={currentPage}
       onTablePageChange={handleTablePageChange}
-      isSearch
+      isSearch={false}
       onRow={handleRow}
     >
       <S.formWrapper>
@@ -146,7 +132,7 @@ export const TopicListPage = () => {
             <FHSelect
               value={useYN}
               onChange={handleUseYNChange}
-              items={['전체', 'Y', 'N']}
+              items={USE_YN_FILTER}
             />
           </FHFormItem>
         </S.formItemWrapper>

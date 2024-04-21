@@ -5,13 +5,11 @@ import { commonAPI } from './common';
 const list = async ({
   page,
   listSize,
-  keyword,
   category,
   useYN,
 }: {
   page: number;
   listSize: number;
-  keyword: string;
   category?: number;
   useYN: string;
 }) => {
@@ -33,23 +31,17 @@ const list = async ({
 
   const dataSource: {
     topicList: ITopic[];
+    pageInfo: {
+      currentPage: number;
+      totalPages: number;
+      pageSize: number;
+      totalElements: number;
+    };
   } = response.data;
 
-  const currentPage = page ?? 1;
-
-  const origin =
-    useYN === '전체'
-      ? dataSource.topicList
-      : dataSource.topicList.filter((item) => item.useYN === useYN);
-
-  const data = origin.slice(
-    (currentPage - 1) * listSize,
-    currentPage * listSize,
-  );
-
   return {
-    list: data.filter((item) => item.title.includes(keyword)),
-    totalDocuments: dataSource.topicList.length,
+    list: dataSource.topicList,
+    totalDocuments: dataSource.pageInfo.totalElements,
   };
 };
 
