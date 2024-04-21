@@ -93,9 +93,6 @@ export const CategoryListPage = () => {
       onTablePageChange={handleTablePageChange}
       onRow={handleRow}
       isSearch={false}
-      keyword={''}
-      onSearch={null}
-      onTextChange={null}
     >
       <S.formItemWrapper>
         <FHFormItem direction="horizontal" label="노출여부">

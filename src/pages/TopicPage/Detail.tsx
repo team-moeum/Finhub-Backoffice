@@ -73,13 +73,11 @@ export const TopicDetailPage = () => {
       categoryAPI.list({
         page: 1,
         listSize: 20,
-        keyword: '',
         useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
         listSize: 20,
-        keyword: '',
         useYN: '전체',
       }),
       topicAPI.show({
