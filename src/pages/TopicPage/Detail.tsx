@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 import { produce } from 'immer';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
@@ -20,19 +20,20 @@ import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
 
 interface GPTItem extends GPTListItem {
-  userTypeId: number;
   usertypeName: string;
   avatarImgPath: string;
 }
 
 interface GPTListItem {
-  gptId?: number;
+  gptId?: number | null;
   content: string;
   useYN: string;
+  usertypeId: number;
 }
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const topicId = Number(id);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -100,15 +101,15 @@ export const TopicDetailPage = () => {
       setDefinition(data.definition ?? '');
       const newGptList = userTypeData.list.map((userType) => {
         const target = data.gptList.find(
-          (gptUserType: GPTItem) => gptUserType.userTypeId === userType.id,
+          (gptUserType: GPTItem) => gptUserType.usertypeId === userType.id,
         );
 
         const newGPTItem: GPTItem = {
-          userTypeId: userType.id,
+          usertypeId: userType.id,
           usertypeName: userType.name,
-          avatarImgPath: '',
-          content: '',
-          useYN: 'N',
+          avatarImgPath: userType.avatarImgPath ?? '',
+          content: target?.content ?? '',
+          useYN: target?.useYN,
         };
 
         if (target?.gptId) newGPTItem['gptId'] = target?.gptId;
@@ -153,6 +154,8 @@ export const TopicDetailPage = () => {
           const listItem: GPTListItem = {
             content: gpt.content,
             useYN: gpt.useYN,
+            usertypeId: gpt.usertypeId,
+            gptId: null,
           };
 
           if (gpt.gptId) listItem['gptId'] = gpt.gptId;
@@ -163,6 +166,7 @@ export const TopicDetailPage = () => {
     });
 
     message.success('정상 반영되었습니다');
+    navigate(`/services/topics`);
   };
 
   const handleCategoryChange = (value: string) => {
@@ -176,12 +180,12 @@ export const TopicDetailPage = () => {
   const handleGPTCardClick = (idx: number) => async () => {
     try {
       setLoading(true);
-      const { usertypeName, userTypeId } = gptList[idx];
+      const { usertypeName, usertypeId } = gptList[idx];
       if (window.confirm(`${usertypeName} GPT를 재생성하시겠습니까?`)) {
         const data = await topicAPI.craeteAITopicContent({
           topicId,
           categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
-          userTypeId,
+          userTypeId: usertypeId,
         });
 
         setGptList((prevGptList) => {
@@ -305,7 +309,7 @@ export const TopicDetailPage = () => {
                 <S.rowWrapper>
                   {gptList.map((gpt, index) => (
                     <S.cardWrapper
-                      key={gpt.userTypeId}
+                      key={gpt.usertypeId}
                       onClick={handleClickGPT(index)}
                       style={{ opacity: gptIdx !== index ? 0.75 : 1 }}
                     >

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
@@ -13,14 +13,21 @@ import { FHDivider } from '@finhub/components/atoms/Divider';
 import { ICategory } from '@finhub/types/Category';
 import { ITopic } from '@finhub/types/Topic';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
+import { message } from 'antd';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const categoryId = Number(id);
   const [name, setName] = useState('');
   const [useYN, setUseYN] = useState(false);
   const [topicList, setTopicList] = useState<
-    { id: number; title: string; categoryId: number; categoryName: string }[]
+    {
+      topicId: number;
+      title: string;
+      categoryId: number;
+      categoryName: string;
+    }[]
   >([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [thumbnail, setThumbnail] = useState('');
@@ -60,8 +67,8 @@ export const CategoryDetailPage = () => {
       id: categoryId,
       name,
       useYN,
-      topicList: topicList.map(({ id, categoryId, title }) => ({
-        id,
+      topicList: topicList.map(({ topicId, categoryId, title }) => ({
+        topicId,
         categoryId,
         title,
       })),
@@ -69,8 +76,8 @@ export const CategoryDetailPage = () => {
       file: thumbnail,
     });
 
-    alert('반영되었습니다.');
-    initRequest();
+    message.success('반영되었습니다.');
+    navigate(`/services/categories`);
   };
 
   const handleTopicCardChange = (idx: number) => (value: string) => {
@@ -118,7 +125,7 @@ export const CategoryDetailPage = () => {
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="주제">
           {topicList.map((topic, index) => (
-            <S.cardWrapper key={topic.id}>
+            <S.cardWrapper key={topic.topicId}>
               <S.cardWrapper>
                 <TopicCard
                   title={topic.title}

@@ -111,8 +111,9 @@ const update = async ({
   summary: string;
   s3ImgUrl: string;
   gptList: {
-    gptId?: number;
+    gptId?: number | null;
     content: string;
+    usertypeId: number;
     useYN: string;
   }[];
   useYN: boolean;
