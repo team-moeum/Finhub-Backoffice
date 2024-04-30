@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import { useEffect, useState } from 'react';
 import { produce } from 'immer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
@@ -18,6 +18,7 @@ import { FHTextArea } from '@finhub/components/atoms/TextArea';
 import theme from '@finhub/styles/theme';
 import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
+import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 
 interface GPTItem extends GPTListItem {
   usertypeName: string;
@@ -33,7 +34,6 @@ interface GPTListItem {
 
 export const TopicDetailPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const topicId = Number(id);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
@@ -47,6 +47,7 @@ export const TopicDetailPage = () => {
   const [tempGptTemplate, setTempGptTemplate] = useState('');
   const [gptIdx, setGptIdx] = useState(0);
   const [summary, setSummary] = useState('');
+  const { onConfirm } = useConfirmNavigate(`/services/topics`);
 
   const handleTextChange =
     (type: string) =>
@@ -166,7 +167,7 @@ export const TopicDetailPage = () => {
     });
 
     message.success('정상 반영되었습니다');
-    navigate(`/services/topics`);
+    onConfirm('주제목록으로 이동하시겠습니까?');
   };
 
   const handleCategoryChange = (value: string) => {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
@@ -14,10 +14,10 @@ import { ICategory } from '@finhub/types/Category';
 import { ITopic } from '@finhub/types/Topic';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { message } from 'antd';
+import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const categoryId = Number(id);
   const [name, setName] = useState('');
   const [useYN, setUseYN] = useState(false);
@@ -31,6 +31,7 @@ export const CategoryDetailPage = () => {
   >([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [thumbnail, setThumbnail] = useState('');
+  const { onConfirm } = useConfirmNavigate(`/services/categories`);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +78,7 @@ export const CategoryDetailPage = () => {
     });
 
     message.success('반영되었습니다.');
-    navigate(`/services/categories`);
+    onConfirm('카테고리목록으로 이동하시겠습니까?');
   };
 
   const handleTopicCardChange = (idx: number) => (value: string) => {
