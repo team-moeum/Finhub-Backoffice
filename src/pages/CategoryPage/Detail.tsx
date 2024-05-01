@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { produce } from 'immer';
 import styled from '@emotion/styled';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
@@ -14,10 +14,10 @@ import { ICategory } from '@finhub/types/Category';
 import { ITopic } from '@finhub/types/Topic';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { message } from 'antd';
+import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const categoryId = Number(id);
   const [name, setName] = useState('');
   const [useYN, setUseYN] = useState(false);
@@ -31,6 +31,7 @@ export const CategoryDetailPage = () => {
   >([]);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [thumbnail, setThumbnail] = useState('');
+  const { onConfirm } = useConfirmNavigate(`/services/categories`);
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +78,7 @@ export const CategoryDetailPage = () => {
     });
 
     message.success('반영되었습니다.');
-    navigate(`/services/categories`);
+    onConfirm('카테고리목록으로 이동하시겠습니까?');
   };
 
   const handleTopicCardChange = (idx: number) => (value: string) => {
@@ -95,6 +96,14 @@ export const CategoryDetailPage = () => {
 
   const handleUseYNChange = (value: boolean) => {
     setUseYN(value);
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('카테고리를 삭제하시겠습니까?')) {
+      await categoryAPI.remove({ id: categoryId });
+      message.success('반영되었습니다.');
+      navigate(`/services/categories`);
+    }
   };
 
   useEffect(() => {
@@ -139,11 +148,14 @@ export const CategoryDetailPage = () => {
           ))}
         </FHFormItem>
       </S.formItemWrapper>
-      <S.formItemWrapper>
+      <S.buttonWrapper>
+        <FHButton width="100%" onClick={handleDelete} type="default">
+          카테고리 삭제
+        </FHButton>
         <FHButton width="100%" onClick={handleSubmit} type="primary">
           카테고리 수정
         </FHButton>
-      </S.formItemWrapper>
+      </S.buttonWrapper>
     </CreatePageTemplate>
   );
 };
@@ -157,5 +169,12 @@ const S = {
   `,
   cardWrapper: styled.div`
     width: 100%;
+  `,
+
+  buttonWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   `,
 };
