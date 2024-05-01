@@ -19,6 +19,7 @@ import theme from '@finhub/styles/theme';
 import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
 import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
+import { useNavigate } from 'react-router-dom';
 
 interface GPTItem extends GPTListItem {
   usertypeName: string;
@@ -48,6 +49,7 @@ export const TopicDetailPage = () => {
   const [gptIdx, setGptIdx] = useState(0);
   const [summary, setSummary] = useState('');
   const { onConfirm } = useConfirmNavigate(`/services/topics`);
+  const navigate = useNavigate();
 
   const handleTextChange =
     (type: string) =>
