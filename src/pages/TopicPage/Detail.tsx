@@ -110,7 +110,7 @@ export const TopicDetailPage = () => {
           usertypeName: userType.name,
           avatarImgPath: userType.avatarImgPath ?? '',
           content: target?.content ?? '',
-          useYN: target?.useYN,
+          useYN: target?.useYN ?? 'N',
         };
 
         if (target?.gptId) newGPTItem['gptId'] = target?.gptId;
@@ -182,7 +182,7 @@ export const TopicDetailPage = () => {
     try {
       setLoading(true);
       const { usertypeName, usertypeId } = gptList[idx];
-      if (window.confirm(`${usertypeName} GPT를 재생성하시겠습니까?`)) {
+      if (window.confirm(`${usertypeName} GPT를 생성하시겠습니까?`)) {
         const data = await topicAPI.craeteAITopicContent({
           topicId,
           categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
@@ -242,6 +242,14 @@ export const TopicDetailPage = () => {
       setSummary(data.answer);
 
       message.success('정상 반영되었습니다');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('토픽을 삭제하시겠습니까?')) {
+      await topicAPI.remove({ id: topicId });
+      message.success('반영되었습니다.');
+      navigate(`/services/topics`);
     }
   };
 
@@ -336,11 +344,14 @@ export const TopicDetailPage = () => {
                 />
               </FHFormItem>
             </S.formItemWrapper>
-            <S.formItemWrapper>
+            <S.buttonWrapper>
+              <FHButton width="100%" onClick={handleDelete} type="default">
+                주제 삭제
+              </FHButton>
               <FHButton width="100%" onClick={handleSubmit} type="primary">
                 주제 수정
               </FHButton>
-            </S.formItemWrapper>
+            </S.buttonWrapper>
           </S.formWrapper>
           <S.logWrapper>
             <S.formItemWrapper>
@@ -453,5 +464,11 @@ const S = {
     align-items: center;
     width: 100%;
     margin-bottom: 8px;
+  `,
+  buttonWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   `,
 };

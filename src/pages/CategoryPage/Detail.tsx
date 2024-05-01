@@ -98,6 +98,14 @@ export const CategoryDetailPage = () => {
     setUseYN(value);
   };
 
+  const handleDelete = async () => {
+    if (window.confirm('카테고리를 삭제하시겠습니까?')) {
+      await categoryAPI.remove({ id: categoryId });
+      message.success('반영되었습니다.');
+      navigate(`/services/categories`);
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -140,11 +148,14 @@ export const CategoryDetailPage = () => {
           ))}
         </FHFormItem>
       </S.formItemWrapper>
-      <S.formItemWrapper>
+      <S.buttonWrapper>
+        <FHButton width="100%" onClick={handleDelete} type="default">
+          카테고리 삭제
+        </FHButton>
         <FHButton width="100%" onClick={handleSubmit} type="primary">
           카테고리 수정
         </FHButton>
-      </S.formItemWrapper>
+      </S.buttonWrapper>
     </CreatePageTemplate>
   );
 };
@@ -158,5 +169,12 @@ const S = {
   `,
   cardWrapper: styled.div`
     width: 100%;
+  `,
+
+  buttonWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   `,
 };

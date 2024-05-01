@@ -63,7 +63,10 @@ export interface FetchInstance {
     url: string,
     body: { [key: string]: any },
   ) => Promise<Response>;
-  delete: <Response = unknown>(url: string) => Promise<Response>;
+  delete: <Response = unknown>(
+    url: string,
+    body: { [key: string]: any },
+  ) => Promise<Response>;
   upload: <Response = unknown>(
     url: string,
     type: FilePathType,
@@ -90,8 +93,11 @@ export const client: FetchInstance = {
     const res = await instance.put<Response>(url, body);
     return res.data;
   },
-  delete: async function fetch<Response = unknown>(url: string) {
-    const res = await instance.delete<Response>(url);
+  delete: async function fetch<Response = unknown>(
+    url: string,
+    body: { [key: string]: any },
+  ) {
+    const res = await instance.delete<Response>(url, { data: body });
     return res.data;
   },
   upload: async function fetch<Response = unknown>(
