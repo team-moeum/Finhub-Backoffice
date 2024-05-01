@@ -15,6 +15,7 @@ import { ITopic } from '@finhub/types/Topic';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { message } from 'antd';
 import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
+import { useNavigate } from 'react-router-dom';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -32,6 +33,7 @@ export const CategoryDetailPage = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [thumbnail, setThumbnail] = useState('');
   const { onConfirm } = useConfirmNavigate(`/services/categories`);
+  const navigate = useNavigate();
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
