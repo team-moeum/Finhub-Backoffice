@@ -220,6 +220,20 @@ const createTopicSummary = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
+const remove = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.delete('/admin/topic', { id });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
 export const topicAPI = {
   list,
   show,
@@ -229,4 +243,5 @@ export const topicAPI = {
   getPrompt,
   craetePrompt,
   createTopicSummary,
+  remove,
 };
