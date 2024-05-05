@@ -4,7 +4,16 @@ import { IPageInfo } from '@finhub/types/PageInfo';
 
 const prefix = '/admin/announce';
 
-const list = async ({ page, listSize }: { page: number; listSize: number }) => {
+const list = async ({
+  page,
+  listSize,
+}: {
+  page: number;
+  listSize: number;
+}): Promise<{
+  list: IAnnounce[];
+  totalDocuments: number;
+}> => {
   const url = `${prefix}?page=${page}&size=${listSize}`;
   const response: ApiResposne = await client.get(url);
 
