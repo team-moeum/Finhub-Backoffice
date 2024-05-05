@@ -42,9 +42,12 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   noWords: { label: '단어 요청', link: '/services/noWords' },
   quizzes: { label: '퀴즈', link: '/services/quizzes' },
   avatars: { label: '아바타', link: '/services/avatars' },
-  announces: { label: '', link: '/services/announces' },
-  announceCreate: { label: '아바타', link: '/services/announces/create' },
-  announceDetail: { label: '아바타', link: '/services/announces/:id' },
+  announces: { label: '공지사항', link: '/services/announces' },
+  announceCreate: {
+    label: '공지사항 생성',
+    link: '/services/announces/create',
+  },
+  announceDetail: { label: '공지사항 상세', link: '/services/announces/:id' },
 };
 
 export const AppRouter = () => {
