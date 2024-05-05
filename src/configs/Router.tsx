@@ -14,6 +14,9 @@ import { LogListPage } from '@finhub/pages/LogPage';
 import { NoWordListPage } from '@finhub/pages/NoWordPage';
 import { QuizListPage } from '@finhub/pages/QuizPage';
 import { AvatarListPage } from '@finhub/pages/AvatarPage';
+import { AnnounceListPage } from '@finhub/pages/AnnouncePage';
+import { AnnounceCreatePage } from '@finhub/pages/AnnouncePage/create';
+import { AnnounceDetailPage } from '@finhub/pages/AnnouncePage/detail';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -39,6 +42,12 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   noWords: { label: '단어 요청', link: '/services/noWords' },
   quizzes: { label: '퀴즈', link: '/services/quizzes' },
   avatars: { label: '아바타', link: '/services/avatars' },
+  announces: { label: '공지사항', link: '/services/announces' },
+  announceCreate: {
+    label: '공지사항 생성',
+    link: '/services/announces/create',
+  },
+  announceDetail: { label: '공지사항 상세', link: '/services/announces/:id' },
 };
 
 export const AppRouter = () => {
@@ -71,6 +80,15 @@ export const AppRouter = () => {
         <Route path={FHPath.noWords.link} element={<NoWordListPage />} />
         <Route path={FHPath.quizzes.link} element={<QuizListPage />} />
         <Route path={FHPath.avatars.link} element={<AvatarListPage />} />
+        <Route path={FHPath.announces.link} element={<AnnounceListPage />} />
+        <Route
+          path={FHPath.announceCreate.link}
+          element={<AnnounceCreatePage />}
+        />
+        <Route
+          path={FHPath.announceDetail.link}
+          element={<AnnounceDetailPage />}
+        />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
