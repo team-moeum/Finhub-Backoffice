@@ -25,12 +25,12 @@ const list = async ({
   }
 
   const dataSource: {
-    categoryList: IAnnounce[];
+    info: IAnnounce[];
     pageInfoProcessDto: IPageInfo;
   } = response.data;
 
   return {
-    list: dataSource.categoryList,
+    list: dataSource.info,
     totalDocuments: dataSource.pageInfoProcessDto.totalElements,
   };
 };

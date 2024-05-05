@@ -22,7 +22,7 @@ const columns = [
 export const AnnounceListPage = () => {
   const navigate = useNavigate();
   const [list, setList] = useState<
-    { key?: number; no?: number; name?: string }[]
+    { key?: number; no?: number; title?: string }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
