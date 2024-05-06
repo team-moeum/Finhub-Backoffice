@@ -53,6 +53,7 @@ export const FHHeader = () => {
           <FHHeaderItem route={FHPath.avatars} />
           <FHHeaderItem route={FHPath.announces} />
           <FHHeaderItem route={FHPath.banners} />
+          <FHHeaderItem route={FHPath.columns} />
           <S.headerItemWrapper onClick={handleSignOut}>
             로그아웃
           </S.headerItemWrapper>
