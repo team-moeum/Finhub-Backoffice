@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
 import { FHTextInput } from '@finhub/components/atoms/TextInput';
-import { QuizTopicEditor } from '@finhub/components/organisms/QuizTopicEditor';
+import { TopicEditor } from '@finhub/components/organisms/TopicEditor';
 import { quizAPI } from '@finhub/api/quiz';
 import { IQuiz } from '@finhub/types/Quiz';
 
@@ -146,7 +146,7 @@ export const QuizModal = ({
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="토픽">
-          <QuizTopicEditor data={topicList} setter={setTopicList} />
+          <TopicEditor data={topicList} setter={setTopicList} />
         </FHFormItem>
       </S.formItemWrapper>
     </Modal>

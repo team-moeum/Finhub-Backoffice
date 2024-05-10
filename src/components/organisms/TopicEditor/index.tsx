@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { topicAPI } from '@finhub/api/topic';
 import { ITopic } from '@finhub/types/Topic';
 
-export const QuizTopicEditor = ({
+export const TopicEditor = ({
   data,
   setter,
 }: {
