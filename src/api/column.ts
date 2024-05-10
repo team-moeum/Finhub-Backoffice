@@ -40,7 +40,6 @@ const create = async ({
   title: string;
   summary: string;
   content: string;
-  bannerType: string;
   topicList: number[];
   file: any;
 }): Promise<{
