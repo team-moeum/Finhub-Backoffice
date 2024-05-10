@@ -140,10 +140,44 @@ const remove = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
+const generateSummary = async ({ title }: { title: string }) => {
+  const response: ApiResposne = await client.post(`${prefix}/summary`, {
+    subject: title,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
+const generateContent = async ({ title }: { title: string }) => {
+  const response: ApiResposne = await client.post(`${prefix}/content`, {
+    subject: title,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
 export const columnAPI = {
   list,
   show,
   create,
   update,
   remove,
+  generateSummary,
+  generateContent,
 };
