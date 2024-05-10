@@ -38,7 +38,7 @@ export const ColumnListPage = () => {
           <List
             dataSource={list}
             renderItem={(item: IColumnListItem, index: number) => (
-              <Link to={index.toString()} key={index}>
+              <Link to={item.id.toString()} key={index}>
                 <List.Item>
                   <List.Item.Meta
                     title={item.title}
