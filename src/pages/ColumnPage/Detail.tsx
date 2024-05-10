@@ -96,6 +96,18 @@ export const ColumnDetailPage = () => {
     setUseYN(value);
   };
 
+  const handleClickSummaryGPT = async () => {
+    const data = await columnAPI.generateSummary({ title });
+    message.success('생성되었습니다.');
+    setSummary(data.answer);
+  };
+
+  const handleClickContentGPT = async () => {
+    const data = await columnAPI.generateContent({ title });
+    message.success('생성되었습니다.');
+    setContent(data.answer);
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -117,18 +129,22 @@ export const ColumnDetailPage = () => {
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="컬럼요약">
-          <FHTextInput
-            type="text"
-            value={summary}
-            onChange={handleTextChange('summary')}
-          />
-        </FHFormItem>
+        <S.formRowWrapper>
+          <S.rowLabelWrapper>컬럼요약</S.rowLabelWrapper>
+          <FHButton type="default" onClick={handleClickSummaryGPT}>
+            생성
+          </FHButton>
+        </S.formRowWrapper>
+        <FHTextArea value={summary} onChange={handleTextChange('summary')} />
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="컬럼내용">
-          <FHTextArea value={content} onChange={handleTextChange('content')} />
-        </FHFormItem>
+        <S.formRowWrapper>
+          <S.rowLabelWrapper>컬럼내용</S.rowLabelWrapper>
+          <FHButton type="default" onClick={handleClickContentGPT}>
+            생성
+          </FHButton>
+        </S.formRowWrapper>
+        <FHTextArea value={content} onChange={handleTextChange('content')} />
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="관련 토픽">
@@ -158,5 +174,17 @@ const S = {
   `,
   cardWrapper: styled.div`
     width: 100%;
+  `,
+  rowLabelWrapper: styled.div`
+    font-size: 14px;
+    font-weight: 500;
+  `,
+  formRowWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
   `,
 };

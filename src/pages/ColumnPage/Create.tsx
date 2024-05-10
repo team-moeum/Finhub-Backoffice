@@ -7,15 +7,12 @@ import { FHFormItem } from '@finhub/components/organisms/FormItem';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { useNavigate } from 'react-router-dom';
 import { columnAPI } from '@finhub/api/column';
-import { FHTextArea } from '@finhub/components/atoms/TextArea';
 import { TopicEditor } from '@finhub/components/organisms/TopicEditor';
 
 export const ColumnCreatePage = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [thumbnail, setThumbnail] = useState('');
-  const [summary, setSummary] = useState('');
-  const [content, setContent] = useState('');
   const [topicList, setTopicList] = useState<{ id: number; title: string }[]>(
     [],
   );
@@ -30,26 +27,12 @@ export const ColumnCreatePage = () => {
       const { value } = e.target;
       if (type === 'title') {
         setTitle(value);
-      } else if (type === 'summary') {
-        setSummary(value);
-      } else if (type === 'content') {
-        setContent(value);
       }
     };
 
   const handleSubmit = async () => {
     if (!title) {
       alert('컬럼명을 입력해주세요');
-      return;
-    }
-
-    if (!summary) {
-      alert('컬럼요약을 입력해주세요');
-      return;
-    }
-
-    if (!content) {
-      alert('컬럼내용을 입력해주세요');
       return;
     }
 
@@ -60,8 +43,8 @@ export const ColumnCreatePage = () => {
 
     const data = await columnAPI.create({
       title,
-      summary,
-      content,
+      summary: '',
+      content: '',
       topicList: topicList.map((topic) => topic.id),
       file: thumbnail,
     });
@@ -84,20 +67,6 @@ export const ColumnCreatePage = () => {
             value={title}
             onChange={handleTextChange('title')}
           />
-        </FHFormItem>
-      </S.formItemWrapper>
-      <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="컬럼요약">
-          <FHTextInput
-            type="text"
-            value={summary}
-            onChange={handleTextChange('summary')}
-          />
-        </FHFormItem>
-      </S.formItemWrapper>
-      <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="컬럼내용">
-          <FHTextArea value={content} onChange={handleTextChange('content')} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
