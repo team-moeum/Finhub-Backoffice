@@ -1,6 +1,7 @@
 import { ApiResposne, client } from '@finhub/api/client';
 import { IColumnListItem } from '@finhub/types/Column';
 import { commonAPI } from './common';
+import { ICommentReport } from '@finhub/types/CommentReport';
 
 const prefix = '/admin/gpt-column';
 
@@ -172,6 +173,116 @@ const generateContent = async ({ title }: { title: string }) => {
   return dataSource;
 };
 
+const reportReason = async () => {
+  const response: ApiResposne = await client.get('/admin/report/reason');
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
+const createReportReason = async ({ reason }: { reason: string }) => {
+  const response: ApiResposne = await client.post('/admin/report/reason', {
+    reason,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
+const updateReportReason = async ({
+  id,
+  reason,
+  useYn,
+}: {
+  id: number;
+  reason: string;
+  useYn: string;
+}) => {
+  const response: ApiResposne = await client.put('/admin/report/reason', {
+    id,
+    reason,
+    useYN: useYn,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
+const confirmComment = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.post('/admin/report/comment', {
+    id,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
+const listCommentReport = async ({
+  page,
+  listSize,
+  useYn,
+}: {
+  page: number;
+  listSize: number;
+  useYn: string;
+}) => {
+  let url = `/admin/report/comment?page=${page}&size=${listSize}`;
+  if (useYn !== '전체') {
+    url += `&useYN=${useYn}`;
+  }
+  const response: ApiResposne = await client.get(url);
+
+  if (response.status === 'FAIL') {
+    return {
+      list: [],
+      totalDocuments: 0,
+    };
+  }
+
+  const dataSource: {
+    reportedCommentsList: ICommentReport[];
+    pageInfo: {
+      currentPage: number;
+      totalPages: number;
+      pageSize: number;
+      totalElements: number;
+    };
+  } = response.data;
+
+  return {
+    list: dataSource.reportedCommentsList,
+    totalDocuments: dataSource.pageInfo.totalElements,
+  };
+};
+
 export const columnAPI = {
   list,
   show,
@@ -180,4 +291,9 @@ export const columnAPI = {
   remove,
   generateSummary,
   generateContent,
+  reportReason,
+  createReportReason,
+  updateReportReason,
+  confirmComment,
+  listCommentReport,
 };
