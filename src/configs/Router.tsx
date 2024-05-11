@@ -14,6 +14,16 @@ import { LogListPage } from '@finhub/pages/LogPage';
 import { NoWordListPage } from '@finhub/pages/NoWordPage';
 import { QuizListPage } from '@finhub/pages/QuizPage';
 import { AvatarListPage } from '@finhub/pages/AvatarPage';
+import { AnnounceListPage } from '@finhub/pages/AnnouncePage';
+import { AnnounceCreatePage } from '@finhub/pages/AnnouncePage/Create';
+import { AnnounceDetailPage } from '@finhub/pages/AnnouncePage/Detail';
+import { BannerListPage } from '@finhub/pages/BannerPage';
+import { BannerCreatePage } from '@finhub/pages/BannerPage/Create';
+import { BannerDetailPage } from '@finhub/pages/BannerPage/Detail';
+import { ColumnListPage } from '@finhub/pages/ColumnPage';
+import { ColumnCreatePage } from '@finhub/pages/ColumnPage/Create';
+import { ColumnDetailPage } from '@finhub/pages/ColumnPage/Detail';
+import { ColumnCommentReportPage } from '@finhub/pages/ColumnPage/CommentReportPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -39,6 +49,25 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   noWords: { label: '단어 요청', link: '/services/noWords' },
   quizzes: { label: '퀴즈', link: '/services/quizzes' },
   avatars: { label: '아바타', link: '/services/avatars' },
+  announces: { label: '공지사항', link: '/services/announces' },
+  announceCreate: {
+    label: '공지사항 생성',
+    link: '/services/announces/create',
+  },
+  announceDetail: { label: '공지사항 상세', link: '/services/announces/:id' },
+  banners: { label: '배너', link: '/services/banners' },
+  bannerCreate: {
+    label: '배너 생성',
+    link: '/services/banners/create',
+  },
+  bannerDetail: { label: '배너 상세', link: '/services/banners/:id' },
+  columns: { label: 'GPT 컬럼', link: '/services/columns' },
+  columnCreate: { label: 'GPT 컬럼 생성', link: '/services/columns/create' },
+  columnDetail: { label: 'GPT 컬럼 상세', link: '/services/columns/:id' },
+  columnCommentReport: {
+    label: 'GPT 컬럼 신고 댓글',
+    link: '/services/columns/:id/comment/report',
+  },
 };
 
 export const AppRouter = () => {
@@ -71,6 +100,25 @@ export const AppRouter = () => {
         <Route path={FHPath.noWords.link} element={<NoWordListPage />} />
         <Route path={FHPath.quizzes.link} element={<QuizListPage />} />
         <Route path={FHPath.avatars.link} element={<AvatarListPage />} />
+        <Route path={FHPath.announces.link} element={<AnnounceListPage />} />
+        <Route
+          path={FHPath.announceCreate.link}
+          element={<AnnounceCreatePage />}
+        />
+        <Route
+          path={FHPath.announceDetail.link}
+          element={<AnnounceDetailPage />}
+        />
+        <Route path={FHPath.banners.link} element={<BannerListPage />} />
+        <Route path={FHPath.bannerCreate.link} element={<BannerCreatePage />} />
+        <Route path={FHPath.bannerDetail.link} element={<BannerDetailPage />} />
+        <Route path={FHPath.columns.link} element={<ColumnListPage />} />
+        <Route path={FHPath.columnCreate.link} element={<ColumnCreatePage />} />
+        <Route path={FHPath.columnDetail.link} element={<ColumnDetailPage />} />
+        <Route
+          path={FHPath.columnCommentReport.link}
+          element={<ColumnCommentReportPage />}
+        />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>

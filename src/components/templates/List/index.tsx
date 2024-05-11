@@ -7,8 +7,10 @@ import { FHDivider } from '@finhub/components/atoms/Divider';
 import { FHSearchInput } from '@finhub/components/atoms/SearchInput';
 import { FHButton } from '@finhub/components/atoms/Button';
 import * as S from './List.style';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 export interface ListPageTemplateProps {
+  isBack?: boolean;
   label: string;
   children?: ReactNode;
   isCreate?: boolean;
@@ -27,6 +29,7 @@ export interface ListPageTemplateProps {
 }
 
 export const ListPageTemplate = ({
+  isBack = false,
   label,
   children,
   isCreate = true,
@@ -54,7 +57,15 @@ export const ListPageTemplate = ({
   return (
     <LayoutTemplate>
       <S.pageHeaderWrapper>
-        <div>{label}</div>
+        <S.pageLabelWrapper>
+          {isBack && (
+            <button onClick={() => window.history.back()}>
+              <ArrowLeftOutlined />
+            </button>
+          )}
+
+          <div>{label}</div>
+        </S.pageLabelWrapper>
         {isCreate ? (
           <FHButton
             type="primary"

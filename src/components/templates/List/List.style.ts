@@ -13,6 +13,13 @@ export const pageHeaderWrapper = styled.div`
   }
 `;
 
+export const pageLabelWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+`;
+
 export const contentWrapper = styled.div`
   width: 100%;
 `;
