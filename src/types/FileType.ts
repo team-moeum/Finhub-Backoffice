@@ -3,4 +3,5 @@ export type FilePathType =
   | 'topic'
   | 'usertype'
   | 'banner'
-  | 'userAvatar';
+  | 'userAvatar'
+  | 'column';
