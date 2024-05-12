@@ -9,9 +9,9 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Send Slack notification
+        id: slack
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: ${{ secrets.SLACK_BOT_CHANNEL }}
           payload: |
             {
               "text": "SLACK PR 알림",
@@ -20,10 +20,11 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "PR 했습니다👍\n<${{ github.event.comment.html_url }}|PR 확인하러 가기>"
+                    "text": "PR 등록했습니다👍\n<${{ github.event.comment.html_url }}|PR 확인하러 가기>"
                   }
                 }
               ]
             }
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
