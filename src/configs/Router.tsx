@@ -24,6 +24,7 @@ import { ColumnListPage } from '@finhub/pages/ColumnPage';
 import { ColumnCreatePage } from '@finhub/pages/ColumnPage/Create';
 import { ColumnDetailPage } from '@finhub/pages/ColumnPage/Detail';
 import { ColumnCommentReportPage } from '@finhub/pages/ColumnPage/CommentReportPage';
+import { FCMTestPage } from '@finhub/pages/FCMTestPage';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -67,6 +68,10 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   columnCommentReport: {
     label: 'GPT 컬럼 신고 댓글',
     link: '/services/columns/:id/comment/report',
+  },
+  fcm: {
+    label: 'FCM 테스트',
+    link: '/services/fcm',
   },
 };
 
@@ -119,6 +124,7 @@ export const AppRouter = () => {
           path={FHPath.columnCommentReport.link}
           element={<ColumnCommentReportPage />}
         />
+        <Route path={FHPath.fcm.link} element={<FCMTestPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
