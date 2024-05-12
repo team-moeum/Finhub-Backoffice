@@ -3,6 +3,9 @@ name: notify pr review
 on:
   pull_request:
     types: [opened, reopened]
+    branches:
+      - main
+      - develop
 
 jobs:
   Notify:
@@ -20,7 +23,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "PR 등록했습니다👍\n<${{ github.event.pull_request.html_url }}|PR 확인하러 가기>"
+                    "text": "*${{ github.repository }}* PR 리뷰요청입니다👍\n<${{ github.event.pull_request.html_url }}|PR 확인하러 가기>\nRegistered by *${{ github.event.pull_request.user.login }}*"
                   }
                 }
               ]
