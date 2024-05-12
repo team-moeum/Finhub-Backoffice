@@ -1,8 +1,8 @@
-name: notify pr review
+name: notify pr approve
 
 on:
   pull_request:
-    types: [review_requested]
+    types: [submitted]
 
 jobs:
   Notify:
@@ -20,7 +20,7 @@ jobs:
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": "PR 했습니다👍\n<${{ github.event.comment.html_url }}|PR 확인하러 가기>"
+                            "text": "PR 승인했습니다👍\n<${{ github.event.comment.html_url }}|PR 확인하러 가기>"
                         }
                     }
                 ]
