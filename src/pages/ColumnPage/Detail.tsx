@@ -60,68 +60,7 @@ export const ColumnDetailPage = () => {
       setTopicList(showData.topicList);
       setThumbnail(showData.backgroundUrl ?? '');
       setUseYN(showData.useYN === 'Y');
-      setCommentList([
-        {
-          id: 2,
-          nickname: '숭',
-          date: '2024-04-14',
-          avatarImgPath: '',
-          comment: '2번째 댓글이당',
-          like: 1,
-          reportedYn: 'N',
-          useYn: 'Y',
-        },
-        {
-          id: 14,
-          nickname: '숭',
-          date: '2024-04-15',
-          avatarImgPath: '',
-          comment: 'ㅁㅁ',
-          like: 0,
-          reportedYn: 'N',
-          useYn: 'Y',
-        },
-        {
-          id: 1,
-          nickname: '숭',
-          date: '2024-04-14',
-          avatarImgPath: '',
-          comment: '2번째 댓글이당',
-          like: 1,
-          reportedYn: 'N',
-          useYn: 'Y',
-        },
-        {
-          id: 6,
-          nickname: '숭',
-          date: '2024-04-14',
-          avatarImgPath: '',
-          comment: '2번째 댓글이당',
-          like: 1,
-          reportedYn: 'N',
-          useYn: 'Y',
-        },
-        {
-          id: 8,
-          nickname: '숭',
-          date: '2024-04-14',
-          avatarImgPath: '',
-          comment: '2번째 댓글이당',
-          like: 1,
-          reportedYn: 'Y',
-          useYn: 'N',
-        },
-        {
-          id: 2,
-          nickname: '숭',
-          date: '2024-04-14',
-          avatarImgPath: '',
-          comment: '2번째 댓글이당',
-          like: 1,
-          reportedYn: 'Y',
-          useYn: 'N',
-        },
-      ]);
+      setCommentList(showData.commentList);
     }
   };
 
