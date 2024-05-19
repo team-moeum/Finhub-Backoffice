@@ -9,11 +9,16 @@ import { formatDateString } from '@finhub/utils/formatter';
 import { QuizModal } from '@finhub/components/organisms/QuizModal';
 import { IQuiz } from '@finhub/types/Quiz';
 import { quizAPI } from '@finhub/api/quiz';
+import { FHButton } from '@finhub/components/atoms/Button';
+import { useVisible } from '@finhub/hooks/useVisible';
+import { EmoticonModal } from '@finhub/components/organisms/EmoticonModal';
 
 export const QuizListPage = () => {
-  const [open, setOpen] = useState(false);
   const [date, setDate] = useState(formatDateString(new Date()));
   const [list, setList] = useState<IQuiz[]>([]);
+  const [isOpenQuizModal, openQuizModal, closeQuizModal] = useVisible();
+  const [isOpenEmoticonModal, openEmoticonModal, closeEmoticonModal] =
+    useVisible();
 
   const initRequest = async () => {
     const { quizList } = await quizAPI.list({
@@ -24,9 +29,6 @@ export const QuizListPage = () => {
     setList(quizList);
   };
 
-  const openModal = () => setOpen(true);
-  const closeModal = () => setOpen(false);
-
   const handleCalendarSelect = (
     date: Dayjs,
     info: {
@@ -35,12 +37,12 @@ export const QuizListPage = () => {
   ) => {
     if (info.source === 'date') {
       setDate(date.format('YYYY-MM-DD'));
-      openModal();
+      openQuizModal();
     }
   };
 
   const handleCancel = () => {
-    closeModal();
+    closeQuizModal();
   };
 
   const cellRender = (cellDate: Dayjs) => {
@@ -64,6 +66,10 @@ export const QuizListPage = () => {
     initRequest();
   };
 
+  const handleOpenEmoticon = () => {
+    openEmoticonModal();
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -73,6 +79,9 @@ export const QuizListPage = () => {
       <LayoutTemplate>
         <S.pageHeaderWrapper>
           <div>퀴즈 목록</div>
+          <FHButton onClick={handleOpenEmoticon} type="default">
+            이모티콘 관리
+          </FHButton>
         </S.pageHeaderWrapper>
         <FHDivider />
         <S.contentWrapper>
@@ -82,8 +91,13 @@ export const QuizListPage = () => {
       <QuizModal
         date={date}
         quizList={list}
-        open={open}
+        open={isOpenQuizModal}
         onCancel={handleCancel}
+        onOK={handleSubmit}
+      />
+      <EmoticonModal
+        open={isOpenEmoticonModal}
+        onCancel={closeEmoticonModal}
         onOK={handleSubmit}
       />
     </>
