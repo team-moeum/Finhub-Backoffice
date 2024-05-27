@@ -20,6 +20,7 @@ import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
 import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 import { useNavigate } from 'react-router-dom';
+import { css } from '@emotion/react';
 
 interface GPTItem extends GPTListItem {
   usertypeName: string;
@@ -322,7 +323,7 @@ export const TopicDetailPage = () => {
                     <S.cardWrapper
                       key={gpt.usertypeId}
                       onClick={handleClickGPT(index)}
-                      style={{ opacity: gptIdx !== index ? 0.75 : 1 }}
+                      active={gptIdx === index}
                     >
                       <S.userTypeWrapper>
                         <S.avatar
@@ -421,10 +422,23 @@ const S = {
     margin-bottom: 32px;
     width: 100%;
   `,
-  cardWrapper: styled.div`
+  cardWrapper: styled.div<{ active: boolean }>`
     width: 100%;
     margin-bottom: 32px;
-    transition: opacity 0.15s ease;
+    transition:
+      opacity,
+      background 0.15s ease;
+    padding: 6px;
+    border-radius: 12px;
+    ${(props) =>
+      props.active
+        ? css`
+            opacity: 1;
+            background-color: #ddd;
+          `
+        : css`
+            opacity: 0.5;
+          `}
   `,
   rowWrapper: styled.div`
     display: flex;
