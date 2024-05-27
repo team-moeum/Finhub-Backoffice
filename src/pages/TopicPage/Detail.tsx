@@ -434,7 +434,7 @@ const S = {
       props.active
         ? css`
             opacity: 1;
-            background-color: #ddd;
+            background-color: ${theme.colors.gray.eaeaea};
           `
         : css`
             opacity: 0.5;
