@@ -49,7 +49,6 @@ export const TopicDetailPage = () => {
   const [tempGptTemplate, setTempGptTemplate] = useState('');
   const [gptIdx, setGptIdx] = useState(0);
   const [summary, setSummary] = useState('');
-  const { onConfirm } = useConfirmNavigate(`/services/topics`);
   const navigate = useNavigate();
 
   const handleTextChange =
@@ -144,33 +143,34 @@ export const TopicDetailPage = () => {
       return;
     }
 
-    topicAPI.update({
-      topicId,
-      title,
-      definition,
-      summary,
-      categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
-      s3ImgUrl: thumbnail,
-      file: thumbnail,
-      gptList: gptList
-        .filter((gpt) => gpt.content)
-        .map((gpt) => {
-          const listItem: GPTListItem = {
-            content: gpt.content,
-            useYN: gpt.useYN,
-            usertypeId: gpt.usertypeId,
-            gptId: null,
-          };
+    if (window.confirm('주제 저장하시겠습니까?')) {
+      topicAPI.update({
+        topicId,
+        title,
+        definition,
+        summary,
+        categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
+        s3ImgUrl: thumbnail,
+        file: thumbnail,
+        gptList: gptList
+          .filter((gpt) => gpt.content)
+          .map((gpt) => {
+            const listItem: GPTListItem = {
+              content: gpt.content,
+              useYN: gpt.useYN,
+              usertypeId: gpt.usertypeId,
+              gptId: null,
+            };
 
-          if (gpt.gptId) listItem['gptId'] = gpt.gptId;
+            if (gpt.gptId) listItem['gptId'] = gpt.gptId;
 
-          return listItem;
-        }),
-      useYN,
-    });
+            return listItem;
+          }),
+        useYN,
+      });
 
-    message.success('정상 반영되었습니다');
-    onConfirm('주제목록으로 이동하시겠습니까?');
+      message.success('정상 반영되었습니다');
+    }
   };
 
   const handleCategoryChange = (value: string) => {
@@ -352,7 +352,7 @@ export const TopicDetailPage = () => {
                 주제 삭제
               </FHButton>
               <FHButton width="100%" onClick={handleSubmit} type="primary">
-                주제 수정
+                주제 저장
               </FHButton>
             </S.buttonWrapper>
           </S.formWrapper>
