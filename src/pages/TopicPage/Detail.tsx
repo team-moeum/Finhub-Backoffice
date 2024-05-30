@@ -18,7 +18,6 @@ import { FHTextArea } from '@finhub/components/atoms/TextArea';
 import theme from '@finhub/styles/theme';
 import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
-import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 import { useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
 
@@ -90,17 +89,24 @@ export const TopicDetailPage = () => {
       topicAPI.getPrompt(),
     ]);
 
-    setCategories(listData.list);
+    const categoryList = listData.list;
+    setCategories(categoryList);
 
-    if (listData.list.length) {
-      setCategory(listData.list[0].name);
+    if (categoryList.length) {
+      setCategory(categoryList[0].name);
     }
 
     if (data) {
       setTitle(data.title ?? '');
-      setCategory(
-        data.categoryName ?? (listData.list.length && listData.list[0].name),
-      );
+      if (data.categoryId && listData.list.length) {
+        const categoryName = getCategoryById(
+          categoryList,
+          data.categoryId,
+        )?.name;
+
+        setCategory(categoryName ?? categoryList[0].name);
+      }
+
       setDefinition(data.definition ?? '');
       const newGptList = userTypeData.list.map((userType) => {
         const target = data.gptList.find(
@@ -127,6 +133,10 @@ export const TopicDetailPage = () => {
 
     setGptTemplate(promptData.prompt);
     setTempGptTemplate(promptData.prompt);
+  };
+
+  const getCategoryById = (list: ICategory[], id: number) => {
+    return list.find((item) => item.id === id);
   };
 
   const handleSubmit = () => {
