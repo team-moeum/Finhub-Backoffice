@@ -20,13 +20,17 @@ export const QuizListPage = () => {
   const [isOpenEmoticonModal, openEmoticonModal, closeEmoticonModal] =
     useVisible();
 
-  const initRequest = async () => {
+  const requestDate = async (currentDate: string) => {
     const { quizList } = await quizAPI.list({
-      year: new Date(date).getFullYear(),
-      month: new Date(date).getMonth() + 1,
+      year: new Date(currentDate).getFullYear(),
+      month: new Date(currentDate).getMonth() + 1,
     });
 
     setList(quizList);
+  };
+
+  const initRequest = async () => {
+    requestDate(date);
   };
 
   const handleCalendarSelect = (
@@ -70,6 +74,10 @@ export const QuizListPage = () => {
     openEmoticonModal();
   };
 
+  const handleChange = (date: Dayjs) => {
+    requestDate(date.format('YYYY-MM-DD'));
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -85,7 +93,11 @@ export const QuizListPage = () => {
         </S.pageHeaderWrapper>
         <FHDivider />
         <S.contentWrapper>
-          <FHCalendar onSelect={handleCalendarSelect} cellRender={cellRender} />
+          <FHCalendar
+            onChange={handleChange}
+            onSelect={handleCalendarSelect}
+            cellRender={cellRender}
+          />
         </S.contentWrapper>
       </LayoutTemplate>
       <QuizModal
