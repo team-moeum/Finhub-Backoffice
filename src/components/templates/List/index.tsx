@@ -8,7 +8,7 @@ import { FHSearchInput } from '@finhub/components/atoms/SearchInput';
 import { FHButton } from '@finhub/components/atoms/Button';
 import * as S from './List.style';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { FHDndTable } from '@finhub/components/atoms/DndTable';
+import { FHDndTable } from '@finhub/components/organisms/DndTable';
 
 export interface ListPageTemplateProps {
   isBack?: boolean;
