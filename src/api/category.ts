@@ -93,7 +93,7 @@ const update = async ({
   id: number;
   name: string;
   useYN: boolean;
-  topicList: { topicId: number; title: string; categoryId: number }[];
+  topicList: { id: number; title: string; categoryId: number }[];
   s3ImgUrl: string;
 }) => {
   const params = {

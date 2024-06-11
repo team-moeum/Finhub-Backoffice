@@ -1,5 +1,5 @@
 export interface ITopic {
-  topicId: number;
+  id: number;
   title: string;
   thumbnailImgPath: string;
   categoryId: number;

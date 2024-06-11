@@ -72,7 +72,7 @@ export const TopicListPage = () => {
       no?: number;
       name?: string;
     }[] = list.map((item, idx) => ({
-      key: item.topicId,
+      key: item.id,
       no: totalDocuments - (currentPage - 1) * 10 - idx,
       title: item.title,
       category: item.categoryName,

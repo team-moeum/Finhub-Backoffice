@@ -42,7 +42,7 @@ export const TopicEditor = ({
 
     const newTopic = topics.find((item) => item.title === value);
     if (newTopic) {
-      setter([...data, { id: newTopic.topicId, title: newTopic.title }]);
+      setter([...data, { id: newTopic.id, title: newTopic.title }]);
     }
   };
 
