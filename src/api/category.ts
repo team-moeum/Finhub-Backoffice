@@ -140,10 +140,31 @@ const remove = async ({ id }: { id: number }) => {
   return dataSource;
 };
 
+const updateOrder = async ({
+  orders,
+}: {
+  orders: { [key: string]: number };
+}) => {
+  const response: ApiResposne = await client.post('/admin/order/category', {
+    orders,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
 export const categoryAPI = {
   list,
   show,
   create,
   update,
   remove,
+  updateOrder,
 };
