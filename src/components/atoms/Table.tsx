@@ -7,6 +7,9 @@ export interface TableProps {
   currentPage: number;
   onTablePageChange: (pagination: TablePaginationConfig) => void;
   onRow?: any;
+  defaultPageSize?: number;
+  rowKey?: string;
+  components?: any;
 }
 
 export const FHTable = ({
@@ -16,6 +19,9 @@ export const FHTable = ({
   currentPage = 1,
   onTablePageChange,
   onRow,
+  defaultPageSize,
+  rowKey,
+  components,
 }: TableProps) => {
   return (
     <Table
@@ -26,8 +32,11 @@ export const FHTable = ({
         position: ['bottomCenter'],
         total: totalDocuments,
         current: currentPage,
+        defaultPageSize,
       }}
       onRow={onRow}
+      rowKey={rowKey}
+      components={components}
     />
   );
 };

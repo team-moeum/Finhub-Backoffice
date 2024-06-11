@@ -8,6 +8,7 @@ import { FHSearchInput } from '@finhub/components/atoms/SearchInput';
 import { FHButton } from '@finhub/components/atoms/Button';
 import * as S from './List.style';
 import { ArrowLeftOutlined } from '@ant-design/icons';
+import { FHDndTable } from '@finhub/components/atoms/DndTable';
 
 export interface ListPageTemplateProps {
   isBack?: boolean;
@@ -26,6 +27,10 @@ export interface ListPageTemplateProps {
   currentPage: number;
   onTablePageChange: (pagination: TablePaginationConfig) => void;
   onRow?: any;
+  defaultPageSize?: number;
+  isDnd?: boolean;
+  onDragEnd?: any;
+  onUpdateSort?: any;
 }
 
 export const ListPageTemplate = ({
@@ -45,6 +50,10 @@ export const ListPageTemplate = ({
   currentPage,
   onTablePageChange,
   onRow,
+  defaultPageSize,
+  isDnd = false,
+  onDragEnd,
+  onUpdateSort,
 }: ListPageTemplateProps) => {
   const navigate = useNavigate();
 
@@ -66,14 +75,21 @@ export const ListPageTemplate = ({
 
           <div>{label}</div>
         </S.pageLabelWrapper>
-        {isCreate ? (
-          <FHButton
-            type="primary"
-            onClick={() => navigate(`${location.pathname}/create`)}
-          >
-            {`${label} 추가`}
-          </FHButton>
-        ) : null}
+        <S.pageLabelWrapper>
+          {isCreate ? (
+            <FHButton
+              type="primary"
+              onClick={() => navigate(`${location.pathname}/create`)}
+            >
+              {`${label} 추가`}
+            </FHButton>
+          ) : null}
+          {isDnd && (
+            <FHButton type="primary" onClick={onUpdateSort}>
+              순서 수정
+            </FHButton>
+          )}
+        </S.pageLabelWrapper>
       </S.pageHeaderWrapper>
       <S.contentWrapper>
         {children}
@@ -91,14 +107,29 @@ export const ListPageTemplate = ({
           </>
         ) : null}
         <FHDivider />
-        <FHTable
-          dataSource={tableDataSource}
-          columns={tableColumns}
-          totalDocuments={totalDocuments}
-          currentPage={currentPage}
-          onTablePageChange={onTablePageChange}
-          onRow={onRow}
-        />
+        {isDnd && (
+          <FHDndTable
+            dataSource={tableDataSource}
+            columns={tableColumns}
+            totalDocuments={totalDocuments}
+            currentPage={currentPage}
+            onTablePageChange={onTablePageChange}
+            onRow={onRow}
+            defaultPageSize={defaultPageSize}
+            onDragEnd={onDragEnd}
+          />
+        )}
+        {!isDnd && (
+          <FHTable
+            dataSource={tableDataSource}
+            columns={tableColumns}
+            totalDocuments={totalDocuments}
+            currentPage={currentPage}
+            onTablePageChange={onTablePageChange}
+            onRow={onRow}
+            defaultPageSize={defaultPageSize}
+          />
+        )}
       </S.contentWrapper>
     </LayoutTemplate>
   );
