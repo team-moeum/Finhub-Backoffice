@@ -6,4 +6,5 @@ export interface ITopic {
   categoryName?: string;
   definition: string;
   useYN: string;
+  position: number;
 }
