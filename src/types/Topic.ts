@@ -1,9 +1,10 @@
 export interface ITopic {
-  topicId: number;
+  id: number;
   title: string;
   thumbnailImgPath: string;
   categoryId: number;
   categoryName?: string;
   definition: string;
   useYN: string;
+  position: number;
 }

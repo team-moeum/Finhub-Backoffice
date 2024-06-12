@@ -3,4 +3,5 @@ export interface ICategory {
   name: string;
   thumbnailImgPath: string;
   useYN: string;
+  position: number;
 }

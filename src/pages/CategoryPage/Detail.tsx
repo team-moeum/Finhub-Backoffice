@@ -16,6 +16,7 @@ import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { message } from 'antd';
 import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 import { useNavigate } from 'react-router-dom';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 export const CategoryDetailPage = () => {
   const { id } = useParams();
@@ -46,7 +47,7 @@ export const CategoryDetailPage = () => {
   const initRequest = async () => {
     const listData = await categoryAPI.list({
       page: 1,
-      listSize: 20,
+      listSize: MAX_LIST_SIZE,
       useYN: '전체',
     });
     setCategories(listData.list);
@@ -71,7 +72,7 @@ export const CategoryDetailPage = () => {
       name,
       useYN,
       topicList: topicList.map(({ topicId, categoryId, title }) => ({
-        topicId,
+        id: topicId,
         categoryId,
         title,
       })),

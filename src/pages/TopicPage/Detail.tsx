@@ -20,6 +20,7 @@ import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 import { css } from '@emotion/react';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 interface GPTItem extends GPTListItem {
   usertypeName: string;
@@ -75,12 +76,12 @@ export const TopicDetailPage = () => {
     const [listData, userTypeData, data, promptData] = await Promise.all([
       categoryAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
       topicAPI.show({

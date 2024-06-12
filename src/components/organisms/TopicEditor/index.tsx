@@ -3,6 +3,7 @@ import { FHSelect } from '@finhub/components/atoms/Select';
 import { useEffect, useState } from 'react';
 import { topicAPI } from '@finhub/api/topic';
 import { ITopic } from '@finhub/types/Topic';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 export const TopicEditor = ({
   data,
@@ -18,7 +19,7 @@ export const TopicEditor = ({
     const listData = await topicAPI.list({
       page: 1,
       category: undefined,
-      listSize: 20,
+      listSize: MAX_LIST_SIZE,
       useYN: '전체',
     });
 
@@ -42,7 +43,7 @@ export const TopicEditor = ({
 
     const newTopic = topics.find((item) => item.title === value);
     if (newTopic) {
-      setter([...data, { id: newTopic.topicId, title: newTopic.title }]);
+      setter([...data, { id: newTopic.id, title: newTopic.title }]);
     }
   };
 

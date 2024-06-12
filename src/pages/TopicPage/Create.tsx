@@ -12,6 +12,7 @@ import { FHSwitch } from '@finhub/components/atoms/Switch';
 import { ICategory } from '@finhub/types/Category';
 import { categoryAPI } from '@finhub/api/category';
 import { FHTextArea } from '@finhub/components/atoms/TextArea';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 export const TopicCreatePage = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ export const TopicCreatePage = () => {
   const initRequest = async () => {
     const listData = await categoryAPI.list({
       page: 1,
-      listSize: 20,
+      listSize: MAX_LIST_SIZE,
       useYN: '전체',
     });
 
