@@ -4,4 +4,5 @@ export type FilePathType =
   | 'usertype'
   | 'banner'
   | 'userAvatar'
-  | 'column';
+  | 'column'
+  | 'emoticon';

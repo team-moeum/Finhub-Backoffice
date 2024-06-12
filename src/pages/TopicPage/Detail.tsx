@@ -18,8 +18,9 @@ import { FHTextArea } from '@finhub/components/atoms/TextArea';
 import theme from '@finhub/styles/theme';
 import { usertypeAPI } from '@finhub/api/userType';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
-import { useConfirmNavigate } from '@finhub/hooks/useConfirmNavigate';
 import { useNavigate } from 'react-router-dom';
+import { css } from '@emotion/react';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 interface GPTItem extends GPTListItem {
   usertypeName: string;
@@ -48,7 +49,6 @@ export const TopicDetailPage = () => {
   const [tempGptTemplate, setTempGptTemplate] = useState('');
   const [gptIdx, setGptIdx] = useState(0);
   const [summary, setSummary] = useState('');
-  const { onConfirm } = useConfirmNavigate(`/services/topics`);
   const navigate = useNavigate();
 
   const handleTextChange =
@@ -76,12 +76,12 @@ export const TopicDetailPage = () => {
     const [listData, userTypeData, data, promptData] = await Promise.all([
       categoryAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
       topicAPI.show({
@@ -90,17 +90,24 @@ export const TopicDetailPage = () => {
       topicAPI.getPrompt(),
     ]);
 
-    setCategories(listData.list);
+    const categoryList = listData.list;
+    setCategories(categoryList);
 
-    if (listData.list.length) {
-      setCategory(listData.list[0].name);
+    if (categoryList.length) {
+      setCategory(categoryList[0].name);
     }
 
     if (data) {
       setTitle(data.title ?? '');
-      setCategory(
-        data.categoryName ?? (listData.list.length && listData.list[0].name),
-      );
+      if (data.categoryId && listData.list.length) {
+        const categoryName = getCategoryById(
+          categoryList,
+          data.categoryId,
+        )?.name;
+
+        setCategory(categoryName ?? categoryList[0].name);
+      }
+
       setDefinition(data.definition ?? '');
       const newGptList = userTypeData.list.map((userType) => {
         const target = data.gptList.find(
@@ -129,6 +136,10 @@ export const TopicDetailPage = () => {
     setTempGptTemplate(promptData.prompt);
   };
 
+  const getCategoryById = (list: ICategory[], id: number) => {
+    return list.find((item) => item.id === id);
+  };
+
   const handleSubmit = () => {
     if (!title) {
       alert('주제명을 입력해주세요');
@@ -143,33 +154,34 @@ export const TopicDetailPage = () => {
       return;
     }
 
-    topicAPI.update({
-      topicId,
-      title,
-      definition,
-      summary,
-      categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
-      s3ImgUrl: thumbnail,
-      file: thumbnail,
-      gptList: gptList
-        .filter((gpt) => gpt.content)
-        .map((gpt) => {
-          const listItem: GPTListItem = {
-            content: gpt.content,
-            useYN: gpt.useYN,
-            usertypeId: gpt.usertypeId,
-            gptId: null,
-          };
+    if (window.confirm('주제 저장하시겠습니까?')) {
+      topicAPI.update({
+        topicId,
+        title,
+        definition,
+        summary,
+        categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
+        s3ImgUrl: thumbnail,
+        file: thumbnail,
+        gptList: gptList
+          .filter((gpt) => gpt.content)
+          .map((gpt) => {
+            const listItem: GPTListItem = {
+              content: gpt.content,
+              useYN: gpt.useYN,
+              usertypeId: gpt.usertypeId,
+              gptId: null,
+            };
 
-          if (gpt.gptId) listItem['gptId'] = gpt.gptId;
+            if (gpt.gptId) listItem['gptId'] = gpt.gptId;
 
-          return listItem;
-        }),
-      useYN,
-    });
+            return listItem;
+          }),
+        useYN,
+      });
 
-    message.success('정상 반영되었습니다');
-    onConfirm('주제목록으로 이동하시겠습니까?');
+      message.success('정상 반영되었습니다');
+    }
   };
 
   const handleCategoryChange = (value: string) => {
@@ -322,7 +334,7 @@ export const TopicDetailPage = () => {
                     <S.cardWrapper
                       key={gpt.usertypeId}
                       onClick={handleClickGPT(index)}
-                      style={{ opacity: gptIdx !== index ? 0.75 : 1 }}
+                      active={gptIdx === index}
                     >
                       <S.userTypeWrapper>
                         <S.avatar
@@ -351,7 +363,7 @@ export const TopicDetailPage = () => {
                 주제 삭제
               </FHButton>
               <FHButton width="100%" onClick={handleSubmit} type="primary">
-                주제 수정
+                주제 저장
               </FHButton>
             </S.buttonWrapper>
           </S.formWrapper>
@@ -421,10 +433,23 @@ const S = {
     margin-bottom: 32px;
     width: 100%;
   `,
-  cardWrapper: styled.div`
+  cardWrapper: styled.div<{ active: boolean }>`
     width: 100%;
     margin-bottom: 32px;
-    transition: opacity 0.15s ease;
+    transition:
+      opacity,
+      background 0.15s ease;
+    padding: 6px;
+    border-radius: 12px;
+    ${(props) =>
+      props.active
+        ? css`
+            opacity: 1;
+            background-color: ${theme.colors.gray.eaeaea};
+          `
+        : css`
+            opacity: 0.5;
+          `}
   `,
   rowWrapper: styled.div`
     display: flex;

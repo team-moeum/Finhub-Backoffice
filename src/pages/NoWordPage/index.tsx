@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import styled from '@emotion/styled';
 import { ListPageTemplate } from '@finhub/components/templates/List';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
@@ -7,74 +7,85 @@ import { FHSelect } from '@finhub/components/atoms/Select';
 import { noWordAPI } from '@finhub/api/noWord';
 import { USE_YN_FILTER } from '@finhub/configs/constants';
 
-const columns = [
-  {
-    width: 100,
-    align: 'center',
-    title: 'no',
-    dataIndex: 'no',
-    key: 'no',
-  },
-  {
-    align: 'center',
-    title: '단어',
-    dataIndex: 'term',
-    key: 'term',
-  },
-  {
-    width: 200,
-    align: 'center',
-    title: '요청시간',
-    dataIndex: 'requestedAt',
-    key: 'requestedAt',
-  },
-  {
-    width: 100,
-    align: 'center',
-    title: '확인여부',
-    dataIndex: 'resolvedYN',
-    key: 'resolvedYN',
-    render: (
-      _: undefined,
-      record: { key: string; term: string; resolvedYN: string },
-    ) => {
-      if (record.resolvedYN === 'N') {
-        return (
-          <Button
-            type="primary"
-            onClick={() => {
-              if (window.confirm(`${record.term} 요청 확인하시겠습니까?`)) {
-                alert('정상 반영되었습니다');
-              }
-            }}
-          >
-            요청완료
-          </Button>
-        );
-      }
-
-      return (
-        <Button
-          type="primary"
-          danger
-          onClick={() => {
-            if (window.confirm(`${record.term} 요청 취소하시겠습니까?`)) {
-              alert('정상 반영되었습니다');
-            }
-          }}
-        >
-          요청취소
-        </Button>
-      );
-    },
-  },
-];
-
 export const NoWordListPage = () => {
   const [list, setList] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [resolvedYN, setResolvedYN] = useState(USE_YN_FILTER[0]);
+
+  const handleUpdate = async (id: number) => {
+    await noWordAPI.update({ id });
+    message.success('정상 반영되었습니다');
+    initRequest();
+  };
+
+  const handleConfirm = (record: {
+    key: number;
+    term: string;
+    resolvedYN: string;
+  }) => {
+    if (window.confirm(`${record.term} 요청 확인하시겠습니까?`)) {
+      handleUpdate(record.key);
+    }
+  };
+
+  const handleCancel = (record: {
+    key: number;
+    term: string;
+    resolvedYN: string;
+  }) => {
+    if (window.confirm(`${record.term} 요청 취소하시겠습니까?`)) {
+      handleUpdate(record.key);
+    }
+  };
+
+  const columns = [
+    {
+      width: 100,
+      align: 'center',
+      title: 'no',
+      dataIndex: 'no',
+      key: 'no',
+    },
+    {
+      align: 'center',
+      title: '단어',
+      dataIndex: 'term',
+      key: 'term',
+    },
+    {
+      width: 200,
+      align: 'center',
+      title: '요청시간',
+      dataIndex: 'requestedAt',
+      key: 'requestedAt',
+    },
+    {
+      width: 100,
+      align: 'center',
+      title: '확인여부',
+      dataIndex: 'resolvedYN',
+      key: 'resolvedYN',
+      render: (
+        _: undefined,
+        record: { key: number; term: string; resolvedYN: string },
+      ) => {
+        if (record.resolvedYN === 'N') {
+          return (
+            <Button type="primary" onClick={() => handleConfirm(record)}>
+              요청완료
+            </Button>
+          );
+        }
+
+        return (
+          <Button type="primary" danger onClick={() => handleCancel(record)}>
+            요청취소
+          </Button>
+        );
+      },
+    },
+  ];
 
   const initRequest = async () => {
     const { list, totalDocuments } = await noWordAPI.list({

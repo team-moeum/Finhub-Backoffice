@@ -8,6 +8,10 @@ import { FHSelect } from '@finhub/components/atoms/Select';
 import { ICategory } from '@finhub/types/Category';
 import { categoryAPI } from '@finhub/api/category';
 import { USE_YN_FILTER } from '@finhub/configs/constants';
+import { arrayMove } from '@dnd-kit/sortable';
+import { DragEndEvent } from '@dnd-kit/core';
+import { message } from 'antd';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 const columns = [
   {
@@ -42,7 +46,7 @@ const columns = [
 export const TopicListPage = () => {
   const navigate = useNavigate();
   const [list, setList] = useState<
-    { key?: number; no?: number; name?: string }[]
+    { key?: number; no?: number; name?: string; position?: number }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
@@ -53,7 +57,7 @@ export const TopicListPage = () => {
   const initRequest = async () => {
     const listData = await categoryAPI.list({
       page: 1,
-      listSize: 20,
+      listSize: MAX_LIST_SIZE,
       useYN: '전체',
     });
     setCategories(listData.list);
@@ -71,12 +75,16 @@ export const TopicListPage = () => {
       key?: number;
       no?: number;
       name?: string;
+      title?: string;
+      useYN?: string;
+      position?: number;
     }[] = list.map((item, idx) => ({
-      key: item.topicId,
+      key: item.id,
       no: totalDocuments - (currentPage - 1) * 10 - idx,
       title: item.title,
       category: item.categoryName,
       useYN: item.useYN,
+      position: item.position,
     }));
 
     setList(dataSource);
@@ -102,6 +110,44 @@ export const TopicListPage = () => {
     };
   };
 
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    setList((prevState: any) => {
+      const activeIndex = prevState.findIndex(
+        (record: any) => record.key === active?.id,
+      );
+      const overIndex = prevState.findIndex(
+        (record: any) => record.key === over?.id,
+      );
+
+      const newList = arrayMove([...prevState], activeIndex, overIndex);
+
+      [newList[activeIndex].position, newList[overIndex].position] = [
+        newList[overIndex].position,
+        newList[activeIndex].position,
+      ];
+
+      return newList;
+    });
+  };
+
+  const handleUpdateSort = async () => {
+    if (window.confirm('순서를 변경하시겠습니까?')) {
+      try {
+        const orderMap = list.reduce<{ [key: number]: number }>((acc, item) => {
+          if (item.position && item.key) {
+            acc[item.key] = item.position;
+          }
+          return acc;
+        }, {});
+
+        await topicAPI.updateOrder({ orders: orderMap });
+        message.success('정상반영되었습니다.');
+      } catch {
+        message.error('오류 확인부탁드립니다.');
+      }
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, [currentPage, category, useYN]);
@@ -116,6 +162,9 @@ export const TopicListPage = () => {
       onTablePageChange={handleTablePageChange}
       isSearch={false}
       onRow={handleRow}
+      isDnd={true}
+      onDragEnd={handleDragEnd}
+      onUpdateSort={handleUpdateSort}
     >
       <S.formWrapper>
         <S.formItemWrapper>

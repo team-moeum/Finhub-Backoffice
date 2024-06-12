@@ -36,7 +36,7 @@ const list = async ({
 };
 
 const update = async ({ id }: { id: number }) => {
-  const response: ApiResposne = await client.post('/no-word', {
+  const response: ApiResposne = await client.post('/admin/no-word', {
     id,
   });
 

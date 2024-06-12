@@ -13,6 +13,7 @@ import { FHCollapse } from '@finhub/components/atoms/Collapse';
 import { usertypeAPI } from '@finhub/api/userType';
 import { gptLogAPI } from '@finhub/api/gptLog';
 import { IGptLog } from '@finhub/types/GptLog';
+import { MAX_LIST_SIZE } from '@finhub/api/common';
 
 export const LogListPage = () => {
   const [category, setCategory] = useState('');
@@ -27,12 +28,12 @@ export const LogListPage = () => {
     const res = await Promise.all([
       categoryAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
       usertypeAPI.list({
         page: 1,
-        listSize: 20,
+        listSize: MAX_LIST_SIZE,
         useYN: '전체',
       }),
     ]);
@@ -51,7 +52,7 @@ export const LogListPage = () => {
     const data = await topicAPI.list({
       page: 1,
       category: categories.find((ct) => ct.name === category)?.id ?? -1,
-      listSize: 20,
+      listSize: MAX_LIST_SIZE,
       useYN: '전체',
     });
 
@@ -61,7 +62,7 @@ export const LogListPage = () => {
 
   const handleSearch = async () => {
     const data = await gptLogAPI.list({
-      topicId: topics.find((ct) => ct.title === topic)?.topicId ?? -1,
+      topicId: topics.find((ct) => ct.title === topic)?.id ?? -1,
       usertypeId: usertypes.find((ct) => ct.name === usertype)?.id ?? -1,
     });
 
