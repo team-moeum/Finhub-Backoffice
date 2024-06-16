@@ -20,7 +20,7 @@ export function LoginPage({ onSubmit, register, errors }: Props) {
         <S.input>
           <label htmlFor="username">Email</label>
           <input
-            data-testId="input-email"
+            data-testid="input-email"
             type="email"
             {...register('username', { required: true })}
           />
@@ -29,7 +29,7 @@ export function LoginPage({ onSubmit, register, errors }: Props) {
         <S.input>
           <label htmlFor="password">Password</label>
           <input
-            data-testId="input-password"
+            data-testid="input-password"
             type="password"
             {...register('password', { required: true })}
           />

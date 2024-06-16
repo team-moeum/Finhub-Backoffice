@@ -41,7 +41,7 @@ export const AnnounceCreatePage = () => {
 
     await announceAPI.create({ title, content });
 
-    alert('반영되었습니다.');
+    message.success('반영되었습니다.');
     navigate(`/services/announces`);
   };
 
@@ -50,7 +50,7 @@ export const AnnounceCreatePage = () => {
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="공지사항 제목">
           <FHTextInput
-            data-testId="input-title"
+            data-testid="input-title"
             type="text"
             value={title}
             onChange={handleTextChange('title')}
@@ -60,7 +60,7 @@ export const AnnounceCreatePage = () => {
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="공지사항 내용">
           <FHTextArea
-            data-testId="input-content"
+            data-testid="input-content"
             value={content}
             onChange={handleTextChange('content')}
           />

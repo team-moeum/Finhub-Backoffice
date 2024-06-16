@@ -80,7 +80,7 @@ export const AnnounceDetailPage = () => {
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="공지사항 제목">
           <FHTextInput
-            data-testId="input-title"
+            data-testid="input-title"
             type="text"
             value={title}
             onChange={handleTextChange('title')}
@@ -90,7 +90,7 @@ export const AnnounceDetailPage = () => {
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="공지사항 내용">
           <FHTextArea
-            data-testId="input-content"
+            data-testid="input-content"
             value={content}
             onChange={handleTextChange('content')}
           />
