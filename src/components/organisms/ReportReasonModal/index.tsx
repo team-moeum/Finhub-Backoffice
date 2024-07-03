@@ -43,6 +43,14 @@ export const ReportReasonModal = ({
     setReasonList(data.reportReasons);
   };
 
+  const handleDelete = async ({ id }: { id: number }) => {
+    if (window.confirm('신고 사유를 삭제하시겠습니까?')) {
+      await columnAPI.removeReason({ id });
+      message.success('반영되었습니다.');
+      initRequest();
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -66,6 +74,7 @@ export const ReportReasonModal = ({
         onSubmit={({ id, reason, useYn }) =>
           handleSubmit({ id, reason, useYn })
         }
+        onDelete={({ id }) => handleDelete({ id })}
       />
     </Modal>
   );

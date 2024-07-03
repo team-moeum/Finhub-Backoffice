@@ -283,6 +283,22 @@ const listCommentReport = async ({
   };
 };
 
+const removeReason = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.delete('/admin/report/reason', {
+    id,
+  });
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
 export const columnAPI = {
   list,
   show,
@@ -296,4 +312,5 @@ export const columnAPI = {
   updateReportReason,
   confirmComment,
   listCommentReport,
+  removeReason,
 };
