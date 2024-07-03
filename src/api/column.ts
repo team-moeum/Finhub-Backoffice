@@ -128,7 +128,7 @@ const update = async ({
 };
 
 const remove = async ({ id }: { id: number }) => {
-  const response: ApiResposne = await client.delete(prefix, { id });
+  const response: ApiResposne = await client.delete('/admin/column', { id });
 
   if (response.status === 'FAIL') {
     return {
