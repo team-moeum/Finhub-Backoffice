@@ -6,10 +6,12 @@ const ReasonEditor = ({
   data,
   onUpdate,
   onSubmit,
+  onDelete,
 }: {
   data: ICommentReport;
   onUpdate: ({ id, reason, useYn }: ICommentReport) => void;
   onSubmit: ({ id, reason, useYn }: ICommentReport) => void;
+  onDelete?: ({ id }: { id: number }) => void;
 }) => {
   return (
     <div
@@ -38,6 +40,9 @@ const ReasonEditor = ({
           })
         }
       />
+      {onDelete && (
+        <Button onClick={() => onDelete({ id: data.id })}>삭제</Button>
+      )}
       <Button
         onClick={() =>
           onSubmit({ id: data.id, reason: data.reason, useYn: data.useYn })
@@ -58,6 +63,7 @@ interface ReportReasonEditorProps {
   onCreate: ({ reason }: { reason: string }) => void;
   onUpdate: ({ id, reason, useYn }: ICommentReport) => void;
   onSubmit: ({ id, reason, useYn }: ICommentReport) => void;
+  onDelete?: ({ id }: { id: number }) => void;
 }
 
 export const ReportReasonEditor = ({
@@ -65,6 +71,7 @@ export const ReportReasonEditor = ({
   onCreate,
   onUpdate,
   onSubmit,
+  onDelete,
 }: ReportReasonEditorProps) => {
   const [reason, setReason] = useState('');
 
@@ -79,6 +86,10 @@ export const ReportReasonEditor = ({
 
   const handleSubmit = (item: ICommentReport) => {
     onSubmit(item);
+  };
+
+  const handleDelete = ({ id }: { id: number }) => {
+    if (onDelete) onDelete({ id });
   };
 
   return (
@@ -106,6 +117,7 @@ export const ReportReasonEditor = ({
             data={item}
             onUpdate={handleUpdate}
             onSubmit={handleSubmit}
+            onDelete={handleDelete}
           />
         </div>
       ))}

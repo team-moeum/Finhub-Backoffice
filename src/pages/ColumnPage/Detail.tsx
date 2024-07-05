@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { message } from 'antd';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
@@ -32,6 +32,7 @@ export const ColumnDetailPage = () => {
   const [isOpenReportReason, setIsOpenReportReason] = useState(false);
 
   const { onConfirm } = useConfirmNavigate(`/services/columns`);
+  const navigate = useNavigate();
 
   const handleTextChange =
     (type: string) =>
@@ -132,6 +133,14 @@ export const ColumnDetailPage = () => {
     setIsOpenReportReason(false);
   };
 
+  const handleDelete = async () => {
+    if (window.confirm('컬럼을 삭제하시겠습니까?')) {
+      await columnAPI.remove({ id: columnId });
+      message.success('반영되었습니다.');
+      navigate(`/services/columns`);
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -198,11 +207,14 @@ export const ColumnDetailPage = () => {
             </S.buttonWrapper>
           </FHFormItem>
         </S.formItemWrapper>
-        <S.formItemWrapper>
+        <S.buttonWrapper>
+          <FHButton width="100%" onClick={handleDelete} type="default">
+            컬럼 삭제
+          </FHButton>
           <FHButton width="100%" onClick={handleSubmit} type="primary">
             컬럼 수정
           </FHButton>
-        </S.formItemWrapper>
+        </S.buttonWrapper>
       </CreatePageTemplate>
       <CommentModal
         list={commentList}
