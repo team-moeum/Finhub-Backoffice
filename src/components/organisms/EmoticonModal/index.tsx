@@ -6,6 +6,8 @@ import { FHDivider } from '@finhub/components/atoms/Divider';
 import { FHButton } from '@finhub/components/atoms/Button';
 import { emoticonAPI } from '@finhub/api/emoticon';
 import { IEmoticon } from '@finhub/types/Emoticon';
+import { DeleteOutlined } from '@ant-design/icons';
+import theme from '@finhub/styles/theme';
 
 export const EmoticonModal = ({
   open = false,
@@ -45,6 +47,15 @@ export const EmoticonModal = ({
     initRequest();
   };
 
+  const handleDelete = async (id: number) => {
+    if (window.confirm('이모티콘을 삭제하시겠습니까?')) {
+      await emoticonAPI.remove({ id });
+      message.success('반영되었습니다.');
+
+      initRequest();
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -69,7 +80,15 @@ export const EmoticonModal = ({
         <FHDivider />
         <S.listWrapper>
           {list.map((emoticon) => (
-            <S.img key={emoticon.id} alt="emoticon" src={emoticon.s3ImgUrl} />
+            <S.emoticonItemWrapper
+              key={emoticon.id}
+              onClick={() => handleDelete(emoticon.id)}
+            >
+              <S.img alt="emoticon" src={emoticon.s3ImgUrl} />
+              <S.overlay>
+                <DeleteOutlined />
+              </S.overlay>
+            </S.emoticonItemWrapper>
           ))}
         </S.listWrapper>
       </S.formItemWrapper>
@@ -94,9 +113,39 @@ const S = {
     gap: 12px;
   `,
   img: styled.img`
+    width: 100%;
+    height: 100%;
+  `,
+  emoticonItemWrapper: styled.div`
+    position: relative;
     width: 80px;
     height: 80px;
     border: 1px solid #d9d9d9;
-    border-radius: 8px;
+    cursor: pointer;
+  `,
+  overlay: styled.div`
+    background-color: transparent;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+      color: ${theme.colors.white};
+      font-size: 24px;
+      visibility: hidden;
+    }
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+      transition: 0.3s background;
+
+      svg {
+        visibility: visible;
+      }
+    }
   `,
 };

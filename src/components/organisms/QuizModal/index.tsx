@@ -6,6 +6,7 @@ import { FHTextInput } from '@finhub/components/atoms/TextInput';
 import { TopicEditor } from '@finhub/components/organisms/TopicEditor';
 import { quizAPI } from '@finhub/api/quiz';
 import { IQuiz } from '@finhub/types/Quiz';
+import { FHButton } from '@finhub/components/atoms/Button';
 
 export const QuizModal = ({
   date = '',
@@ -72,7 +73,7 @@ export const QuizModal = ({
         topicList: topicList.map((topic) => topic.id),
       });
 
-      message.info('정상 반영되었습니다');
+      message.success('정상 반영되었습니다');
 
       return;
     }
@@ -87,9 +88,10 @@ export const QuizModal = ({
       topicList: topicList.map((topic) => topic.id),
     });
 
-    message.info('정상 반영되었습니다');
+    message.success('정상 반영되었습니다');
 
     if (onOK) onOK();
+    initRequest();
   };
 
   const handleCancel = () => {
@@ -100,6 +102,16 @@ export const QuizModal = ({
     setTopicList([]);
 
     if (onCancel) onCancel();
+  };
+
+  const handleDelete = async () => {
+    if (shouldReqAPI && window.confirm('퀴즈를 삭제하시겠습니까?')) {
+      await quizAPI.remove({ id: quizId });
+      message.success('반영되었습니다.');
+
+      if (onOK) onOK();
+      handleCancel();
+    }
   };
 
   useEffect(() => {
@@ -149,6 +161,11 @@ export const QuizModal = ({
           <TopicEditor data={topicList} setter={setTopicList} />
         </FHFormItem>
       </S.formItemWrapper>
+      {shouldReqAPI && (
+        <FHButton onClick={handleDelete} type="default">
+          퀴즈 삭제
+        </FHButton>
+      )}
     </Modal>
   );
 };

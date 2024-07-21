@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
@@ -8,6 +8,7 @@ import { FHButton } from '@finhub/components/atoms/Button';
 import { usertypeAPI } from '@finhub/api/userType';
 import { FHUploader } from '@finhub/components/atoms/Uploader';
 import { FHSwitch } from '@finhub/components/atoms/Switch';
+import { message } from 'antd';
 
 export const UserTypeDetailPage = () => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ export const UserTypeDetailPage = () => {
   const [name, setName] = useState('');
   const [avatarImgPath, setAvatarImgPath] = useState('');
   const [useYN, setUseYN] = useState(false);
+  const navigate = useNavigate();
 
   const handleTextChange =
     (type: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,6 +54,14 @@ export const UserTypeDetailPage = () => {
     alert('반영되었습니다.');
   };
 
+  const handleDelete = async () => {
+    if (window.confirm('유저유형을 삭제하시겠습니까?')) {
+      await usertypeAPI.remove({ id: userTypeId });
+      message.success('반영되었습니다.');
+      navigate(`/services/usertypes`);
+    }
+  };
+
   useEffect(() => {
     initRequest();
   }, []);
@@ -80,11 +90,14 @@ export const UserTypeDetailPage = () => {
           <FHSwitch value={useYN} onChange={handleUseYNChange} />
         </FHFormItem>
       </S.formItemWrapper>
-      <S.formItemWrapper>
-        <FHButton width="100%" onClick={handleSubmit} type="primary">
-          유저유형 수정
+      <S.buttonWrapper>
+        <FHButton width="100%" onClick={handleDelete} type="default">
+          카테고리 삭제
         </FHButton>
-      </S.formItemWrapper>
+        <FHButton width="100%" onClick={handleSubmit} type="primary">
+          카테고리 수정
+        </FHButton>
+      </S.buttonWrapper>
     </CreatePageTemplate>
   );
 };
@@ -95,5 +108,11 @@ const S = {
     width: 100%;
     padding: 0 16px;
     margin-bottom: 32px;
+  `,
+  buttonWrapper: styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
   `,
 };

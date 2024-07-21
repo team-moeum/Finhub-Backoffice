@@ -45,7 +45,25 @@ const create = async ({ file }: { file?: any }) => {
   return dataSource;
 };
 
+const remove = async ({ id }: { id: number }) => {
+  const response: ApiResposne = await client.delete(
+    '/admin/calendar-emoticon',
+    { id },
+  );
+
+  if (response.status === 'FAIL') {
+    return {
+      errorMsg: response.errorMsg,
+    };
+  }
+
+  const dataSource = response.data;
+
+  return dataSource;
+};
+
 export const emoticonAPI = {
   list,
   create,
+  remove,
 };
