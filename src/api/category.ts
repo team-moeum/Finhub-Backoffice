@@ -100,7 +100,11 @@ const update = async ({
     id,
     name,
     useYN: useYN ? 'Y' : 'N',
-    topicList,
+    topicList: topicList.map(({ id, title, categoryId }) => ({
+      topicId: id,
+      title,
+      categoryId,
+    })),
     s3ImgUrl,
   };
 
