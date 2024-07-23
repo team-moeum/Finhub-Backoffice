@@ -8,7 +8,7 @@ import { FilePathType } from '@finhub/types/FileType';
 import { message } from 'antd';
 
 const prefix = '/api/v1';
-const baseURL = prefix;
+const baseURL = (import.meta.env.VITE_API_BASE_URL ?? '') + prefix;
 
 export interface ApiResposne {
   status: 'SUCCESS' | 'FAIL';
