@@ -119,12 +119,17 @@ export const TopicListPage = () => {
         (record: any) => record.key === over?.id,
       );
 
-      const newList = arrayMove([...prevState], activeIndex, overIndex);
+      const minIndex = Math.min(activeIndex, overIndex);
+      const maxIndex = Math.max(activeIndex, overIndex);
 
-      [newList[activeIndex].position, newList[overIndex].position] = [
-        newList[overIndex].position,
-        newList[activeIndex].position,
-      ];
+      const newList = arrayMove([...prevState], activeIndex, overIndex)
+        .map((item, index) => {
+          if (index >= minIndex && index <= maxIndex) {
+            return { ...item, position: index + 1 };
+          }
+          return item;
+        })
+        .sort((a, b) => a.position - b.position);
 
       return newList;
     });
