@@ -23,13 +23,6 @@ export default defineConfig(({ mode }) => {
       port: 3001,
       strictPort: true,
       host: true,
-      origin: 'http://0.0.0.0:3001',
-      proxy: {
-        '/api': {
-          target: env.VITE_API_BASE_URL,
-          changeOrigin: true,
-        },
-      },
     },
     resolve: {
       alias: {
