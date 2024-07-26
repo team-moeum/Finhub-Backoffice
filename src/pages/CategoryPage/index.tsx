@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ListPageTemplate } from '@finhub/components/templates/List';
 import { useNavigate } from 'react-router-dom';
 import { categoryAPI } from '@finhub/api/category';
 import styled from '@emotion/styled';
 import { FHSelect } from '@finhub/components/atoms/Select';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
-import { USE_YN_FILTER } from '@finhub/configs/constants';
+import { PAGE_UNITS, USE_YN_FILTER } from '@finhub/configs/constants';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { message } from 'antd';
@@ -41,11 +41,14 @@ export const CategoryListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
   const [useYN, setUseYN] = useState(USE_YN_FILTER[0]);
+  const [pageUnit, setPageUnit] = useState(PAGE_UNITS[0]);
+
+  const listSize = useMemo(() => Number(pageUnit), [pageUnit]);
 
   const initRequest = async () => {
     const { list, totalDocuments } = await categoryAPI.list({
       page: currentPage,
-      listSize: 10,
+      listSize,
       useYN,
     });
 
@@ -59,7 +62,7 @@ export const CategoryListPage = () => {
       position?: number;
     }[] = list.map((item, idx) => ({
       key: item.id,
-      no: totalDocuments - (currentPage - 1) * 10 - idx,
+      no: totalDocuments - (currentPage - 1) * listSize - idx,
       name: item.name,
       useYN: item.useYN,
       position: item.position,
@@ -74,6 +77,10 @@ export const CategoryListPage = () => {
 
   const handleUseYNChange = (value: string) => {
     setUseYN(value);
+  };
+
+  const handlePageUnitChange = (value: string) => {
+    setPageUnit(value);
   };
 
   const handleRow = (data: any) => {
@@ -129,7 +136,7 @@ export const CategoryListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage, useYN]);
+  }, [currentPage, useYN, listSize]);
 
   return (
     <ListPageTemplate
@@ -144,25 +151,41 @@ export const CategoryListPage = () => {
       isDnd={true}
       onDragEnd={handleDragEnd}
       onUpdateSort={handleUpdateSort}
+      defaultPageSize={listSize}
     >
-      <S.formItemWrapper>
-        <FHFormItem direction="horizontal" label="노출여부">
-          <FHSelect
-            value={useYN}
-            onChange={handleUseYNChange}
-            items={USE_YN_FILTER}
-          />
-        </FHFormItem>
-      </S.formItemWrapper>
+      <S.formWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="노출여부">
+            <FHSelect
+              value={useYN}
+              onChange={handleUseYNChange}
+              items={USE_YN_FILTER}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="페이지단위">
+            <FHSelect
+              value={pageUnit}
+              onChange={handlePageUnitChange}
+              items={PAGE_UNITS}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+      </S.formWrapper>
     </ListPageTemplate>
   );
 };
 
 const S = {
-  formItemWrapper: styled.div`
+  formWrapper: styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     margin-bottom: 24px;
+  `,
+  formItemWrapper: styled.div`
+    margin-right: 24px;
   `,
 };
