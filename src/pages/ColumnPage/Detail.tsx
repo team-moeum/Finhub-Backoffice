@@ -15,6 +15,7 @@ import { TopicEditor } from '@finhub/components/organisms/TopicEditor';
 import { CommentModal } from '@finhub/components/organisms/CommentModal';
 import { IComment } from '@finhub/types/Comment';
 import { ReportReasonModal } from '@finhub/components/organisms/ReportReasonModal';
+import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
 
 export const ColumnDetailPage = () => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ export const ColumnDetailPage = () => {
   const [commentList, setCommentList] = useState<IComment[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenReportReason, setIsOpenReportReason] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { onConfirm } = useConfirmNavigate(`/services/columns`);
   const navigate = useNavigate();
@@ -106,15 +108,29 @@ export const ColumnDetailPage = () => {
   };
 
   const handleClickSummaryGPT = async () => {
-    const data = await columnAPI.generateSummary({ title });
-    message.success('생성되었습니다.');
-    setSummary(data.answer);
+    if (window.confirm('GPT 컬럼 요약을 생성하시겠습니까?')) {
+      try {
+        setLoading(true);
+        const data = await columnAPI.generateSummary({ title });
+        message.success('생성되었습니다.');
+        setSummary(data.answer);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   const handleClickContentGPT = async () => {
-    const data = await columnAPI.generateContent({ title });
-    message.success('생성되었습니다.');
-    setContent(data.answer);
+    if (window.confirm('GPT 컬럼 내용을 생성하시겠습니까?')) {
+      try {
+        setLoading(true);
+        const data = await columnAPI.generateContent({ title });
+        message.success('생성되었습니다.');
+        setContent(data.answer);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   const handleOpenCommentModal = () => {
@@ -146,7 +162,7 @@ export const ColumnDetailPage = () => {
   }, []);
 
   return (
-    <>
+    <LoadingTemplate loading={loading}>
       <CreatePageTemplate label="컬럼 수정">
         <S.formItemWrapper>
           <FHFormItem direction="vertical" label="썸네일">
@@ -225,7 +241,7 @@ export const ColumnDetailPage = () => {
         open={isOpenReportReason}
         onCancel={handleCloseReportReasonModal}
       />
-    </>
+    </LoadingTemplate>
   );
 };
 

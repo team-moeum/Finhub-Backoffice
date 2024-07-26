@@ -193,10 +193,10 @@ export const TopicDetailPage = () => {
   };
 
   const handleGPTCardClick = (idx: number) => async () => {
-    try {
-      setLoading(true);
-      const { usertypeName, usertypeId } = gptList[idx];
-      if (window.confirm(`${usertypeName} GPT를 생성하시겠습니까?`)) {
+    const { usertypeName, usertypeId } = gptList[idx];
+    if (window.confirm(`${usertypeName} GPT를 생성하시겠습니까?`)) {
+      try {
+        setLoading(true);
         const data = await topicAPI.craeteAITopicContent({
           topicId,
           categoryId: categories.find((ct) => ct.name === category)?.id ?? -1,
@@ -208,9 +208,9 @@ export const TopicDetailPage = () => {
             draft[idx].content = data.answer;
           });
         });
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -252,10 +252,15 @@ export const TopicDetailPage = () => {
 
   const handleClickSummaryGPT = async () => {
     if (window.confirm('토픽 요약 GPT를 생성하시겠습니까?')) {
-      const data = await topicAPI.createTopicSummary({ id: topicId });
-      setSummary(data.answer);
+      try {
+        setLoading(true);
+        const data = await topicAPI.createTopicSummary({ id: topicId });
+        setSummary(data.answer);
 
-      message.success('정상 반영되었습니다');
+        message.success('정상 반영되었습니다');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
