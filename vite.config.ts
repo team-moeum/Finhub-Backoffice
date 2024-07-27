@@ -18,12 +18,6 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3001,
       strictPort: true,
-      proxy: {
-        '/api/v1': {
-          changeOrigin: true,
-          target: env.VITE_API_BASE_URL,
-        },
-      },
     },
     server: {
       port: 3001,
