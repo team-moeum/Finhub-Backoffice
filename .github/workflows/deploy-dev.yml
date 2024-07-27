@@ -8,10 +8,12 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  SERVICE_NAME: backoffice
 on:
   push:
     branches:
       - develop
+      - build
 jobs:
   Deploy-Development:
     runs-on: ubuntu-latest
@@ -57,10 +59,9 @@ jobs:
             aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }}
             aws configure set region ${{ env.AWS_REGION }}
             ECR_REGISTRY_LOGIN=$(aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }})
-            sudo docker stop ${{ env.ECR_REPOSITORY }} || true
-            sudo docker rm ${{ env.ECR_REPOSITORY }} || true
-            sudo docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-            sudo docker run -d --name finhub-backoffice -p 3001:3001 ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+            sudo docker-compose rm -f ${{ env.SERVICE_NAME }}
+            sudo docker-compose pull ${{ env.SERVICE_NAME }}
+            sudo docker-compose up -d ${{ env.SERVICE_NAME }}
 
       - name: Send Slack Message
         uses: 8398a7/action-slack@v3
