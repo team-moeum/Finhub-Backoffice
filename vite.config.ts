@@ -5,6 +5,15 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
+  const customDefine =
+    mode === 'production'
+      ? {
+          'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
+            process.env.VITE_API_BASE_URL,
+          ),
+        }
+      : {};
+
   return {
     plugins: [
       react({
@@ -30,10 +39,6 @@ export default defineConfig(({ mode }) => {
         'react-router-dom': 'react-router-dom',
       },
     },
-    define: {
-      'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
-        env.VITE_API_BASE_URL,
-      ),
-    },
+    define: { ...customDefine },
   };
 });
