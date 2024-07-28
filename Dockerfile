@@ -12,9 +12,6 @@ RUN yarn build
 
 ENV NODE_ENV=production
 
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-
 EXPOSE 3001
 
 CMD ["yarn", "preview"]

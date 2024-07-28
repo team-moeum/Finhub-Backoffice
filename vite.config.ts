@@ -5,15 +5,6 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
-  const customDefine =
-    mode === 'production'
-      ? {
-          'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
-            process.env.VITE_API_BASE_URL,
-          ),
-        }
-      : {};
-
   return {
     plugins: [
       react({
@@ -27,18 +18,29 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3001,
       strictPort: true,
-      host: true,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        },
+      },
     },
     server: {
       port: 3001,
       strictPort: true,
-      host: true,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        },
+      },
     },
     resolve: {
       alias: {
         'react-router-dom': 'react-router-dom',
       },
     },
-    define: { ...customDefine },
   };
 });
