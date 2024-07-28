@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3001,
       strictPort: true,
+      host: true,
       proxy: {
         '/api': {
           target: env.VITE_API_BASE_URL,
@@ -29,6 +30,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 3001,
       strictPort: true,
+      host: true,
       proxy: {
         '/api': {
           target: env.VITE_API_BASE_URL,
