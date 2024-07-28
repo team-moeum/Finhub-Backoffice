@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3001,
       strictPort: true,
+      host: true,
     },
     server: {
       port: 3001,
@@ -30,7 +31,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      VITE_API_BASE_URL: process.env.VITE_API_BASE_URL,
+      'import.meta.env.VITE_API_BASE_URL': JSON.stringify(
+        process.env.VITE_API_BASE_URL,
+      ),
     },
   };
 });
