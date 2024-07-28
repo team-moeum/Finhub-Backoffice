@@ -22,9 +22,9 @@ jobs:
 
       - name: Generate Environment Variables File
         run: |
-          echo "$REACT_SECRET" >> .env
+          echo "$REACT_SECRET_DEV" >> .env
         env:
-          REACT_SECRET: ${{ secrets.REACT_SECRET }}
+          REACT_SECRET: ${{ secrets.REACT_SECRET_DEV }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -60,7 +60,6 @@ jobs:
             aws configure set region ${{ env.AWS_REGION }}
             ECR_REGISTRY_LOGIN=$(aws ecr get-login-password --region ${{ env.AWS_REGION }} | sudo docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }})
             sudo docker-compose rm -f ${{ env.SERVICE_NAME }}
-            sudo docker rmi ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest || true
             sudo docker-compose pull ${{ env.SERVICE_NAME }}
             sudo docker-compose up -d ${{ env.SERVICE_NAME }}
 
