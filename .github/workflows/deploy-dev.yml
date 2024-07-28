@@ -24,7 +24,7 @@ jobs:
         run: |
           echo "$REACT_SECRET_DEV" >> .env
         env:
-          REACT_SECRET: ${{ secrets.REACT_SECRET_DEV }}
+          REACT_SECRET_DEV: ${{ secrets.REACT_SECRET_DEV }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
