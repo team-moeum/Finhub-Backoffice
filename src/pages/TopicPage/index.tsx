@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { ListPageTemplate } from '@finhub/components/templates/List';
@@ -7,7 +7,7 @@ import { FHFormItem } from '@finhub/components/organisms/FormItem';
 import { FHSelect } from '@finhub/components/atoms/Select';
 import { ICategory } from '@finhub/types/Category';
 import { categoryAPI } from '@finhub/api/category';
-import { USE_YN_FILTER } from '@finhub/configs/constants';
+import { PAGE_UNITS, USE_YN_FILTER } from '@finhub/configs/constants';
 import { arrayMove } from '@dnd-kit/sortable';
 import { DragEndEvent } from '@dnd-kit/core';
 import { message } from 'antd';
@@ -53,6 +53,9 @@ export const TopicListPage = () => {
   const [category, setCategory] = useState('전체');
   const [useYN, setUseYN] = useState(USE_YN_FILTER[0]);
   const [categories, setCategories] = useState<ICategory[]>([]);
+  const [pageUnit, setPageUnit] = useState(PAGE_UNITS[0]);
+
+  const listSize = useMemo(() => Number(pageUnit), [pageUnit]);
 
   const initRequest = async () => {
     const listData = await categoryAPI.list({
@@ -64,7 +67,7 @@ export const TopicListPage = () => {
 
     const { list, totalDocuments } = await topicAPI.list({
       page: currentPage,
-      listSize: 10,
+      listSize,
       category: listData.list.find((item) => item.name === category)?.id,
       useYN,
     });
@@ -80,7 +83,7 @@ export const TopicListPage = () => {
       position?: number;
     }[] = list.map((item, idx) => ({
       key: item.id,
-      no: totalDocuments - (currentPage - 1) * 10 - idx,
+      no: totalDocuments - (currentPage - 1) * listSize - idx,
       title: item.title,
       category: item.categoryName,
       useYN: item.useYN,
@@ -100,6 +103,10 @@ export const TopicListPage = () => {
 
   const handleUseYNChange = (value: string) => {
     setUseYN(value);
+  };
+
+  const handlePageUnitChange = (value: string) => {
+    setPageUnit(value);
   };
 
   const handleRow = (data: any) => {
@@ -155,7 +162,7 @@ export const TopicListPage = () => {
 
   useEffect(() => {
     initRequest();
-  }, [currentPage, category, useYN]);
+  }, [currentPage, category, useYN, listSize]);
 
   return (
     <ListPageTemplate
@@ -170,6 +177,7 @@ export const TopicListPage = () => {
       isDnd={true}
       onDragEnd={handleDragEnd}
       onUpdateSort={handleUpdateSort}
+      defaultPageSize={listSize}
     >
       <S.formWrapper>
         <S.formItemWrapper>
@@ -187,6 +195,15 @@ export const TopicListPage = () => {
               value={useYN}
               onChange={handleUseYNChange}
               items={USE_YN_FILTER}
+            />
+          </FHFormItem>
+        </S.formItemWrapper>
+        <S.formItemWrapper>
+          <FHFormItem direction="horizontal" label="페이지단위">
+            <FHSelect
+              value={pageUnit}
+              onChange={handlePageUnitChange}
+              items={PAGE_UNITS}
             />
           </FHFormItem>
         </S.formItemWrapper>
