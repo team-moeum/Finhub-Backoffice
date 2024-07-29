@@ -19,7 +19,7 @@ export const FHTable = ({
   currentPage = 1,
   onTablePageChange,
   onRow,
-  defaultPageSize,
+  defaultPageSize = 10,
   rowKey,
   components,
 }: TableProps) => {
@@ -32,7 +32,7 @@ export const FHTable = ({
         position: ['bottomCenter'],
         total: totalDocuments,
         current: currentPage,
-        defaultPageSize,
+        pageSize: defaultPageSize,
       }}
       onRow={onRow}
       rowKey={rowKey}
