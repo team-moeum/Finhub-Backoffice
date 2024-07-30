@@ -1,19 +1,18 @@
 name: Development Deployment
 env:
   AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: finhub-backoffice-dev
+  ECR_REPOSITORY: finhub-backoffice
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
-  EC2_HOST: ${{ secrets.EC2_HOST_DEV }}
+  EC2_HOST: ${{ secrets.EC2_HOST }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY_DEV }}
+  EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   SERVICE_NAME: backoffice
 on:
   push:
     branches:
-      - develop
-      - feature/build
+      - main
 jobs:
   Deploy-Development:
     runs-on: ubuntu-latest
@@ -22,9 +21,9 @@ jobs:
 
       - name: Generate Environment Variables File
         run: |
-          echo "$REACT_SECRET_DEV" >> .env
+          echo "$REACT_SECRET" >> .env
         env:
-          REACT_SECRET_DEV: ${{ secrets.REACT_SECRET_DEV }}
+          REACT_SECRET: ${{ secrets.REACT_SECRET }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
