@@ -140,7 +140,7 @@ export const TopicDetailPage = () => {
     return list.find((item) => item.id === id);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title) {
       alert('주제명을 입력해주세요');
       return;
@@ -155,7 +155,7 @@ export const TopicDetailPage = () => {
     }
 
     if (window.confirm('주제 저장하시겠습니까?')) {
-      topicAPI.update({
+      await topicAPI.update({
         topicId,
         title,
         definition,
@@ -181,6 +181,7 @@ export const TopicDetailPage = () => {
       });
 
       message.success('정상 반영되었습니다');
+      initRequest();
     }
   };
 
