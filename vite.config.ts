@@ -18,11 +18,26 @@ export default defineConfig(({ mode }) => {
     preview: {
       port: 3001,
       strictPort: true,
+      host: true,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        },
+      },
     },
     server: {
       port: 3001,
       strictPort: true,
       host: true,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_BASE_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, '/api/v1'),
+        },
+      },
     },
     resolve: {
       alias: {
