@@ -16,6 +16,7 @@ import { CommentModal } from '@finhub/components/organisms/CommentModal';
 import { IComment } from '@finhub/types/Comment';
 import { ReportReasonModal } from '@finhub/components/organisms/ReportReasonModal';
 import { LoadingTemplate } from '@finhub/components/templates/Loading/Loading';
+import { FHEditor } from '@finhub/components/organisms/Editor';
 
 export const ColumnDetailPage = () => {
   const { id } = useParams();
@@ -48,10 +49,12 @@ export const ColumnDetailPage = () => {
         setTitle(value);
       } else if (type === 'summary') {
         setSummary(value);
-      } else if (type === 'content') {
-        setContent(value);
       }
     };
+
+  const handleEditorChange = (value: string) => {
+    setContent(value);
+  };
 
   const initRequest = async () => {
     const showData = await columnAPI.show({ id: columnId });
@@ -194,7 +197,7 @@ export const ColumnDetailPage = () => {
               생성
             </FHButton>
           </S.formRowWrapper>
-          <FHTextArea value={content} onChange={handleTextChange('content')} />
+          <FHEditor data={content} onChange={handleEditorChange} />
         </S.formItemWrapper>
         <S.formItemWrapper>
           <FHFormItem direction="vertical" label="관련 토픽">
