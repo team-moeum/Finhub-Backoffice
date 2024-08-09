@@ -27,7 +27,6 @@ export const AuthHoc = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log(import.meta.env);
     const timerId = setTimeout(() => {
       const handleVerfiedToken = async () => {
         try {
