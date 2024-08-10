@@ -3,6 +3,7 @@ import { Global } from '@emotion/react';
 import { GlobalStyles } from './styles/global';
 import { AuthHoc } from './components/hocs/AuthHoc';
 import { AppRouter } from './configs/Router';
+import './App.css';
 
 import locale from 'antd/lib/locale/ko_KR';
 import { ConfigProvider } from 'antd';
