@@ -43,7 +43,14 @@ export const QuizModal = ({
     setQuestion(data.quizInfo.question);
     setComment(data.quizInfo.comment);
     setAnswer(data.quizInfo.answer);
-    setTopicList(data.quizInfo.topicList);
+    setTopicList(
+      data.quizInfo.topicList.map(
+        (topic: { topicId: number; title: string; categoryId: number }) => ({
+          id: topic.topicId,
+          title: topic.title,
+        }),
+      ),
+    );
   };
 
   const handleRadioChange = (e: RadioChangeEvent) => {
