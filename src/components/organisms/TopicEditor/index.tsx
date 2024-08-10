@@ -1,6 +1,6 @@
 import { Flex, Tag, Tooltip, message } from 'antd';
 import { FHSelect } from '@finhub/components/atoms/Select';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { topicAPI } from '@finhub/api/topic';
 import { ITopic } from '@finhub/types/Topic';
 import { MAX_LIST_SIZE } from '@finhub/api/common';
@@ -24,7 +24,6 @@ export const TopicEditor = ({
     });
 
     setTopics(listData.list);
-    setTopic(listData.list.length ? listData.list[0].title : '');
   };
 
   const handleClose = (removedTag: { id: number; title: string }) => {
@@ -63,7 +62,6 @@ export const TopicEditor = ({
           const isLongTag = topic.title.length > 20;
           const tagElem = (
             <Tag
-              key={topic.id}
               closable
               style={{ userSelect: 'none', height: '100%' }}
               onClose={() => handleClose(topic)}
@@ -78,7 +76,7 @@ export const TopicEditor = ({
               {tagElem}
             </Tooltip>
           ) : (
-            tagElem
+            <Fragment key={topic.id}>{tagElem}</Fragment>
           );
         })}
       </Flex>
