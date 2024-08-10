@@ -8,7 +8,13 @@ export interface SelectProps {
 
 export const FHSelect = ({ items = [], value, onChange }: SelectProps) => {
   return (
-    <Select value={value} style={{ minWidth: '124px' }} onChange={onChange}>
+    <Select
+      value={value || null}
+      style={{ minWidth: '124px' }}
+      onChange={onChange}
+      placeholder="선택"
+      allowClear
+    >
       {items.map((v) => {
         return (
           <option key={v} value={v}>

@@ -10,7 +10,7 @@ export const editorWrapper = styled.div`
     border: 1px solid #4096ff;
     transition: all 0.2s;
   }
-
+  
   *,
   *:before,
   *:after {
