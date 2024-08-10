@@ -23,7 +23,9 @@ export function FHEditor({
   });
 
   useEffect(() => {
-    editor?.commands.setContent(data);
+    if (editor && editor.getHTML() !== data) {
+      editor.commands.setContent(data);
+    }
   }, [editor, data]);
 
   return (
