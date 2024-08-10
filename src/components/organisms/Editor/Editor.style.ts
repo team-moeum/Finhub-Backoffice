@@ -16,6 +16,14 @@ export const editorWrapper = styled.div`
       margin-top: 0;
     }
 
+    em {
+      font-style: italic;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+
     p {
       line-height: 1.6;
     }
