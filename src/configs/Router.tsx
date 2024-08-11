@@ -25,6 +25,8 @@ import { ColumnCreatePage } from '@finhub/pages/ColumnPage/Create';
 import { ColumnDetailPage } from '@finhub/pages/ColumnPage/Detail';
 import { ColumnCommentReportPage } from '@finhub/pages/ColumnPage/CommentReportPage';
 import { FCMTestPage } from '@finhub/pages/FCMTestPage';
+import { FeedbackListPage } from '@finhub/pages/FeedbackPage';
+import { FeedbackDetailPage } from '@finhub/pages/FeedbackPage/Detail';
 
 export const FHPath: { [key: string]: { label: string; link: string } } = {
   dashboard: { label: '대시보드', link: '/' },
@@ -72,6 +74,14 @@ export const FHPath: { [key: string]: { label: string; link: string } } = {
   fcm: {
     label: 'FCM 테스트',
     link: '/services/fcm',
+  },
+  feedback: {
+    label: 'VOC',
+    link: '/services/feedback',
+  },
+  feedbackDetail: {
+    label: 'VOC 상세',
+    link: '/services/feedback/:id',
   },
 };
 
@@ -125,6 +135,11 @@ export const AppRouter = () => {
           element={<ColumnCommentReportPage />}
         />
         <Route path={FHPath.fcm.link} element={<FCMTestPage />} />
+        <Route path={FHPath.feedback.link} element={<FeedbackListPage />} />
+        <Route
+          path={FHPath.feedbackDetail.link}
+          element={<FeedbackDetailPage />}
+        />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
