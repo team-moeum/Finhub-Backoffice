@@ -27,7 +27,7 @@ export const FeedbackDetailPage = () => {
     if (data) {
       setContext(
         data.reply === 'T'
-          ? data.context
+          ? data.adminResponse
           : `<b>안녕하세요, ${data.email}님.</b>
             <p>
               핀허브 고객센터입니다. 고객님께서 문의해 주신 사항에 대해 답변 드리겠습니다.
