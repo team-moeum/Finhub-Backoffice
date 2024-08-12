@@ -28,7 +28,7 @@ export const FeedbackDetailPage = () => {
       setContext(
         data.reply === 'T'
           ? data.context
-          : `<b>안녕하세요, @@@님.</b>
+          : `<b>안녕하세요, ${data.email}님.</b>
             <p>
               핀허브 고객센터입니다. 고객님께서 문의해 주신 사항에 대해 답변 드리겠습니다.
             </p>
@@ -63,6 +63,11 @@ export const FeedbackDetailPage = () => {
   };
 
   const handleSubmit = async () => {
+    if (context.includes('[고객님의 문의에 대한 구체적인 답변]')) {
+      message.warning('구체적인 답변을 템플릿에 맞춰 입력해주세요');
+      return;
+    }
+
     if (window.confirm('VOC 답변을 전송하시겠습니까?')) {
       try {
         await feedbackAPI.send({

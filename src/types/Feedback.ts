@@ -3,6 +3,7 @@ export interface FeedbackType {
   email: string;
   context: string;
   reply: string;
+  createdTime: string;
 }
 
 export interface FeedbackItemType extends FeedbackType {

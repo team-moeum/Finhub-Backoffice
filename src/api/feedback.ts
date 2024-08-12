@@ -37,8 +37,7 @@ const list = async ({
 
   return {
     list: dataSource.vocList,
-    // TODO (API 수정 필요)
-    totalDocuments: dataSource.vocList.length,
+    totalDocuments: dataSource.pageInfo.totalElements,
   };
 };
 

@@ -29,12 +29,23 @@ const columns = [
     dataIndex: 'context',
     key: 'context',
   },
+  {
+    title: '요청시간',
+    dataIndex: 'createdTime',
+    key: 'createdTime',
+  },
 ];
 
 export const FeedbackListPage = () => {
   const navigate = useNavigate();
   const [list, setList] = useState<
-    { key?: number; no?: number; name?: string }[]
+    {
+      key?: number;
+      no?: number;
+      reply?: string;
+      context?: string;
+      createdTime?: string;
+    }[]
   >([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalDocuments, setTotalDocuments] = useState(0);
@@ -59,6 +70,7 @@ export const FeedbackListPage = () => {
       no: totalDocuments - (currentPage - 1) * 10 - idx,
       context: item.context,
       reply: item.reply,
+      createdTime: item.createdTime,
     }));
 
     setList(dataSource);
