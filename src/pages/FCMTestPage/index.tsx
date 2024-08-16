@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
-import { message } from 'antd';
+import { message, Tag } from 'antd';
 import { CreatePageTemplate } from '@finhub/components/templates/Create';
 import { FHTextInput } from '@finhub/components/atoms/TextInput';
 import { FHButton } from '@finhub/components/atoms/Button';
 import { FHFormItem } from '@finhub/components/organisms/FormItem';
-import { fcmAPI } from '@finhub/api/fcm';
+import { fcmAPI, SendNotiRequestType } from '@finhub/api/fcm';
 import { FHSelect } from '@finhub/components/atoms/Select';
+import { FCM_TYPES } from '@finhub/types/fcm';
+
+const targetOptions = {
+  [FCM_TYPES.MEMBER]: 0,
+  [FCM_TYPES.ADMIN]: 1,
+  [FCM_TYPES.PUSH_ALLOWED_MEMBER]: 2,
+  [FCM_TYPES.PUSH_ALL_ADMIN]: 3,
+  [FCM_TYPES.ALL]: 4,
+};
 
 export const FCMTestPage = () => {
-  const [target, setTarget] = useState('admin');
+  const [fcmType, setFcmType] = useState({
+    label: FCM_TYPES.MEMBER,
+    value: targetOptions[FCM_TYPES.MEMBER],
+  });
+  const [target, setTarget] = useState<string[]>([]);
   const [targetEmail, setTargetEmail] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [view, setView] = useState('');
 
-  const handleChangeTarget = (value: string) => {
-    setTarget(value);
+  const isTypeEmail = useMemo(
+    () => [FCM_TYPES.MEMBER, FCM_TYPES.ADMIN].includes(fcmType.label),
+    [fcmType],
+  );
+
+  const handleChangeType = (value: string) => {
+    setFcmType({
+      label: value as FCM_TYPES,
+      value: targetOptions[value as FCM_TYPES],
+    });
   };
 
   const handleTextChange =
@@ -36,12 +57,33 @@ export const FCMTestPage = () => {
       }
     };
 
+  const handleAddEmail = () => {
+    if (!targetEmail) {
+      message.warning('이메일을 입력해주세요.');
+      return;
+    }
+    if (!new RegExp('[a-z0-9]+@[a-z]+.[a-z]{2,3}').test(targetEmail)) {
+      message.warning('유효하지 않은 이메일입니다.');
+      return;
+    }
+    if (target.includes(targetEmail)) {
+      message.warning('중복된 이메일입니다.');
+      return;
+    }
+    setTarget([...target, targetEmail]);
+    setTargetEmail('');
+  };
+
+  const handleRemoveEmail = (email: string) => {
+    setTarget(target.filter((currentEmail) => currentEmail !== email));
+  };
+
   const handleSubmit = async () => {
     if (!title) {
       return message.error('제목을 입력해주세요');
     }
 
-    if (target === 'user' && !targetEmail) {
+    if (isTypeEmail && !target.length) {
       return message.error('전송 계정의 이메일을 입력해주세요');
     }
 
@@ -51,12 +93,14 @@ export const FCMTestPage = () => {
 
     try {
       if (window.confirm('전송하시겠습니까?')) {
-        await fcmAPI.sendNoti({
-          target: target === 'user' ? targetEmail : target,
+        const params: SendNotiRequestType = {
+          type: fcmType.value,
           title,
           content,
           view,
-        });
+        };
+        if (isTypeEmail) params.target = target;
+        await fcmAPI.sendNoti(params);
 
         message.success('전송되었습니다.');
       }
@@ -68,20 +112,39 @@ export const FCMTestPage = () => {
   return (
     <CreatePageTemplate label="FCM 테스트">
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="배너타입">
+        <FHFormItem direction="vertical" label="전송타입">
           <S.formItemBoxWrapper>
             <FHSelect
-              value={target}
-              onChange={handleChangeTarget}
-              items={['admin', 'all', 'user']}
+              value={fcmType.label}
+              onChange={handleChangeType}
+              items={Object.keys(targetOptions)}
             />
-            {target === 'user' && (
-              <FHTextInput
-                type="text"
-                placeholder="이메일 입력"
-                value={targetEmail}
-                onChange={(e) => setTargetEmail(e.target.value)}
-              />
+            {isTypeEmail && (
+              <S.emailInputWrapper>
+                <FHTextInput
+                  type="email"
+                  placeholder="이메일 입력해주세요"
+                  value={targetEmail}
+                  onChange={(e) => setTargetEmail(e.target.value)}
+                  onPressEnter={handleAddEmail}
+                />
+                <FHButton onClick={handleAddEmail} type="default">
+                  추가
+                </FHButton>
+              </S.emailInputWrapper>
+            )}
+            {isTypeEmail && (
+              <S.emailTagWrapper>
+                {target.map((email) => (
+                  <Tag
+                    key={email}
+                    closable
+                    onClose={() => handleRemoveEmail(email)}
+                  >
+                    {email}
+                  </Tag>
+                ))}
+              </S.emailTagWrapper>
             )}
           </S.formItemBoxWrapper>
         </FHFormItem>
@@ -132,6 +195,17 @@ const S = {
   formItemBoxWrapper: styled.div`
     display: flex;
     flex-direction: column;
+    gap: 8px;
+  `,
+  emailInputWrapper: styled.div`
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  `,
+  emailTagWrapper: styled.div`
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   `,
 };
