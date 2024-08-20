@@ -10,112 +10,7 @@ export const editorWrapper = styled.div`
     border: 1px solid #4096ff;
     transition: all 0.2s;
   }
-
-  .tiptap {
-    :first-child {
-      margin-top: 0;
-    }
-
-    em {
-      font-style: italic;
-    }
-
-    strong {
-      font-weight: bold;
-    }
-
-    p {
-      line-height: 1.6;
-    }
-
-    /* List styles */
-    ul,
-    ol {
-      list-style-type: unset;
-      padding: 0 1rem;
-      margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-      li p {
-        margin-top: 0.25em;
-        margin-bottom: 0.25em;
-      }
-    }
-
-    /* Heading styles */
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      font-weight: bold;
-      line-height: 1.1;
-      margin-top: 2.5rem;
-      text-wrap: pretty;
-    }
-
-    h1,
-    h2 {
-      margin-top: 3.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    h1 {
-      font-size: 1.4rem;
-    }
-
-    h2 {
-      font-size: 1.2rem;
-    }
-
-    h3 {
-      font-size: 1.1rem;
-    }
-
-    h4,
-    h5,
-    h6 {
-      font-size: 1rem;
-    }
-
-    /* Code and preformatted text styles */
-    code {
-      background-color: rgba(88, 5, 255, 0.05);
-      border-radius: 0.4rem;
-      color: #2e2b29;
-      font-size: 0.85rem;
-      padding: 0.25em 0.3em;
-    }
-
-    pre {
-      background: #2e2b29;
-      border-radius: 0.5rem;
-      color: #fff;
-      font-family: 'JetBrainsMono', monospace;
-      margin: 1.5rem 0;
-      padding: 0.75rem 1rem;
-
-      code {
-        background: none;
-        color: inherit;
-        font-size: 0.8rem;
-        padding: 0;
-      }
-    }
-
-    blockquote {
-      border-left: 3px solid rgba(61, 37, 20, 0.12);
-      margin: 1.5rem 0;
-      padding-left: 1rem;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid rgba(61, 37, 20, 0.08);
-      margin: 2rem 0;
-    }
-  }
-
+  
   *,
   *:before,
   *:after {
@@ -153,13 +48,41 @@ export const editorWrapper = styled.div`
     margin-top: 0;
   }
 
-  .tiptap {
-    caret-color: #1677ff;
-    margin: 0 1.5rem;
+  *,
+  *:before,
+  *:after {
+    box-sizing: border-box;
   }
 
-  .tiptap:focus {
-    outline: none;
+  html {
+    font-family:
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      Segoe UI,
+      Roboto,
+      Helvetica Neue,
+      Arial,
+      Noto Sans,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      Segoe UI Symbol,
+      'Noto Color Emoji';
+    line-height: 1.5;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 25rem;
+    margin: 0;
+  }
+
+  :first-child {
+    margin-top: 0;
   }
 
   ::-webkit-scrollbar {

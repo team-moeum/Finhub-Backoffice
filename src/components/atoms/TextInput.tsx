@@ -1,11 +1,7 @@
-import { Input } from 'antd';
+import { Input, InputProps } from 'antd';
 
-export interface TextInputProps {
-  value: string;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  placeholder?: string;
-  type:
+export interface TextInputProps extends Omit<InputProps, 'type'> {
+  type?:
     | 'button'
     | 'checkbox'
     | 'color'
@@ -32,12 +28,12 @@ export const FHTextInput = ({
   onChange = () => null,
   onBlur = () => null,
   placeholder = '',
-  type,
+  type = 'text',
   ...props
 }: TextInputProps) => {
   return (
     <Input
-      type={type ?? 'text'}
+      type={type}
       value={value}
       onChange={onChange}
       onBlur={onBlur}

@@ -32,6 +32,10 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Upload AWS S3
+        run: |
+          aws s3 cp src/assets/markdown.css s3://finhub-bucket/resources/markdown.css
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1

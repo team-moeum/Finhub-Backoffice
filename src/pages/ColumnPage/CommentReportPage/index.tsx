@@ -22,6 +22,25 @@ export const ColumnCommentReportPage = () => {
       key: 'no',
     },
     {
+      width: 240,
+      align: 'left',
+      title: '댓글내용',
+      dataIndex: 'comment',
+      key: 'comment',
+    },
+    {
+      align: 'left',
+      title: '작성자',
+      dataIndex: 'reportedNickname',
+      key: 'reportedNickname',
+    },
+    {
+      align: 'left',
+      title: '신고자',
+      dataIndex: 'reporterNickname',
+      key: 'reporterNickname',
+    },
+    {
       align: 'left',
       title: '신고사유',
       dataIndex: 'reason',
@@ -80,12 +99,18 @@ export const ColumnCommentReportPage = () => {
         commentId?: number;
         reason?: string;
         useYn?: string;
+        comment?: string;
+        reportedNickname?: string;
+        reporterNickname?: string;
       }[] = list.map((item, idx) => ({
         key: item.id,
         commentId: item.commentId,
         no: totalDocuments - (currentPage - 1) * 10 - idx,
         reason: item.reason,
         useYn: item.useYn,
+        comment: item.comment,
+        reportedNickname: item.reportedNickname,
+        reporterNickname: item.reporterNickname,
       }));
 
       setList(dataSource);
