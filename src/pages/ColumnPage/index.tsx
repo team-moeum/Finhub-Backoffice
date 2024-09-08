@@ -29,8 +29,8 @@ export const ColumnListPage = () => {
   return (
     <LayoutTemplate>
       <S.pageHeaderWrapper>
-        <div>컬럼 목록</div>
-        <FHButton onClick={handleAdd} type="primary">{`컬럼 추가`}</FHButton>
+        <div>칼럼 목록</div>
+        <FHButton onClick={handleAdd} type="primary">{`칼럼 추가`}</FHButton>
       </S.pageHeaderWrapper>
       <S.contentWrapper>
         <FHDivider />
