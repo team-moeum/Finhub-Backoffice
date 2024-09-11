@@ -32,7 +32,7 @@ export const ColumnCreatePage = () => {
 
   const handleSubmit = async () => {
     if (!title) {
-      alert('컬럼명을 입력해주세요');
+      alert('칼럼명을 입력해주세요');
       return;
     }
 
@@ -54,14 +54,14 @@ export const ColumnCreatePage = () => {
   };
 
   return (
-    <CreatePageTemplate label="컬럼 추가">
+    <CreatePageTemplate label="칼럼 추가">
       <S.formItemWrapper>
         <FHFormItem direction="vertical" label="썸네일">
           <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
         </FHFormItem>
       </S.formItemWrapper>
       <S.formItemWrapper>
-        <FHFormItem direction="vertical" label="컬럼명">
+        <FHFormItem direction="vertical" label="칼럼명">
           <FHTextInput
             type="text"
             value={title}
@@ -76,7 +76,7 @@ export const ColumnCreatePage = () => {
       </S.formItemWrapper>
       <S.formItemWrapper>
         <FHButton width="100%" onClick={handleSubmit} type="primary">
-          컬럼 추가
+          칼럼 추가
         </FHButton>
       </S.formItemWrapper>
     </CreatePageTemplate>

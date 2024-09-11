@@ -49,7 +49,7 @@ export const NoWordListPage = () => {
     },
     {
       align: 'center',
-      title: '단어',
+      title: '토픽',
       dataIndex: 'term',
       key: 'term',
     },
@@ -125,7 +125,7 @@ export const NoWordListPage = () => {
 
   return (
     <ListPageTemplate
-      label="없는 단어 요청 목록"
+      label="없는 토픽 요청 목록"
       isCreate={false}
       tableDataSource={list}
       tableColumns={columns}

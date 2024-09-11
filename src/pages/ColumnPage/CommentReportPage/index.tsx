@@ -132,7 +132,7 @@ export const ColumnCommentReportPage = () => {
   return (
     <ListPageTemplate
       isCreate={false}
-      label="GPT 컬럼 댓글 신고 목록"
+      label="GPT 칼럼 댓글 신고 목록"
       tableDataSource={list}
       tableColumns={columns}
       totalDocuments={totalDocuments}
