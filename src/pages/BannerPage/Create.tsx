@@ -103,7 +103,7 @@ export const BannerCreatePage = () => {
           <FHSelect
             value={bannerType}
             onChange={handleBannerChange}
-            items={['기타', '토픽', 'gpt컬럼']}
+            items={['기타', '토픽', 'gpt칼럼']}
           />
         </FHFormItem>
       </S.formItemWrapper>

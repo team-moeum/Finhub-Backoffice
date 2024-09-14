@@ -72,17 +72,17 @@ export const ColumnDetailPage = () => {
 
   const handleSubmit = () => {
     if (!title) {
-      alert('컬럼명을 입력해주세요');
+      alert('칼럼명을 입력해주세요');
       return;
     }
 
     if (!summary) {
-      alert('컬럼요약을 입력해주세요');
+      alert('칼럼요약을 입력해주세요');
       return;
     }
 
     if (!content) {
-      alert('컬럼내용을 입력해주세요');
+      alert('칼럼내용을 입력해주세요');
       return;
     }
 
@@ -103,7 +103,7 @@ export const ColumnDetailPage = () => {
     });
 
     message.success('반영되었습니다.');
-    onConfirm('컬럼목록으로 이동하시겠습니까?');
+    onConfirm('칼럼목록으로 이동하시겠습니까?');
   };
 
   const handleUseYNChange = (value: boolean) => {
@@ -111,7 +111,7 @@ export const ColumnDetailPage = () => {
   };
 
   const handleClickSummaryGPT = async () => {
-    if (window.confirm('GPT 컬럼 요약을 생성하시겠습니까?')) {
+    if (window.confirm('GPT 칼럼 요약을 생성하시겠습니까?')) {
       try {
         setLoading(true);
         const data = await columnAPI.generateSummary({ title });
@@ -124,7 +124,7 @@ export const ColumnDetailPage = () => {
   };
 
   const handleClickContentGPT = async () => {
-    if (window.confirm('GPT 컬럼 내용을 생성하시겠습니까?')) {
+    if (window.confirm('GPT 칼럼 내용을 생성하시겠습니까?')) {
       try {
         setLoading(true);
         const data = await columnAPI.generateContent({ title });
@@ -153,7 +153,7 @@ export const ColumnDetailPage = () => {
   };
 
   const handleDelete = async () => {
-    if (window.confirm('컬럼을 삭제하시겠습니까?')) {
+    if (window.confirm('칼럼을 삭제하시겠습니까?')) {
       await columnAPI.remove({ id: columnId });
       message.success('반영되었습니다.');
       navigate(`/services/columns`);
@@ -166,14 +166,14 @@ export const ColumnDetailPage = () => {
 
   return (
     <LoadingTemplate loading={loading}>
-      <CreatePageTemplate label="컬럼 수정">
+      <CreatePageTemplate label="칼럼 수정">
         <S.formItemWrapper>
           <FHFormItem direction="vertical" label="썸네일">
             <FHUploader thumbnail={thumbnail} setThumbnail={setThumbnail} />
           </FHFormItem>
         </S.formItemWrapper>
         <S.formItemWrapper>
-          <FHFormItem direction="vertical" label="컬럼명">
+          <FHFormItem direction="vertical" label="칼럼명">
             <FHTextInput
               type="text"
               value={title}
@@ -183,7 +183,7 @@ export const ColumnDetailPage = () => {
         </S.formItemWrapper>
         <S.formItemWrapper>
           <S.formRowWrapper>
-            <S.rowLabelWrapper>컬럼요약</S.rowLabelWrapper>
+            <S.rowLabelWrapper>칼럼요약</S.rowLabelWrapper>
             <FHButton type="default" onClick={handleClickSummaryGPT}>
               생성
             </FHButton>
@@ -192,7 +192,7 @@ export const ColumnDetailPage = () => {
         </S.formItemWrapper>
         <S.formItemWrapper>
           <S.formRowWrapper>
-            <S.rowLabelWrapper>컬럼내용</S.rowLabelWrapper>
+            <S.rowLabelWrapper>칼럼내용</S.rowLabelWrapper>
             <FHButton type="default" onClick={handleClickContentGPT}>
               생성
             </FHButton>
@@ -228,10 +228,10 @@ export const ColumnDetailPage = () => {
         </S.formItemWrapper>
         <S.buttonWrapper>
           <FHButton width="100%" onClick={handleDelete} type="default">
-            컬럼 삭제
+            칼럼 삭제
           </FHButton>
           <FHButton width="100%" onClick={handleSubmit} type="primary">
-            컬럼 수정
+            칼럼 수정
           </FHButton>
         </S.buttonWrapper>
       </CreatePageTemplate>
