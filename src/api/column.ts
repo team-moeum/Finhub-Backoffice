@@ -2,6 +2,7 @@ import { ApiResposne, client } from '@finhub/api/client';
 import { IColumnListItem } from '@finhub/types/Column';
 import { commonAPI } from './common';
 import { ICommentReport } from '@finhub/types/CommentReport';
+import { COMMENT_REPORT_STATUS } from '@finhub/configs/constants';
 
 const prefix = '/admin/gpt-column';
 
@@ -229,9 +230,16 @@ const updateReportReason = async ({
   return dataSource;
 };
 
-const confirmComment = async ({ id }: { id: number }) => {
+const confirmComment = async ({
+  id,
+  approvalStatus,
+}: {
+  id: number;
+  approvalStatus: COMMENT_REPORT_STATUS;
+}) => {
   const response: ApiResposne = await client.post('/admin/report/comment', {
     id,
+    approvalStatus,
   });
 
   if (response.status === 'FAIL') {
@@ -246,18 +254,24 @@ const confirmComment = async ({ id }: { id: number }) => {
 };
 
 const listCommentReport = async ({
+  columnId,
   page,
   listSize,
-  useYn,
+  isProcessed,
 }: {
+  columnId: string;
   page: number;
   listSize: number;
-  useYn: string;
+  isProcessed: string;
 }) => {
-  let url = `/admin/report/comment?page=${page}&size=${listSize}`;
-  if (useYn !== '전체') {
-    url += `&useYN=${useYn}`;
+  const params = new URLSearchParams();
+  params.append('page', page.toString());
+  params.append('size', listSize.toString());
+
+  if (isProcessed !== '전체') {
+    params.append('useYN', isProcessed);
   }
+  const url = `/admin/report/comment/${columnId}?${params}`;
   const response: ApiResposne = await client.get(url);
 
   if (response.status === 'FAIL') {
