@@ -140,6 +140,7 @@ export const ColumnCommentReportPage = () => {
         reportedNickname: item.reportedNickname,
         reporterNickname: item.reporterNickname,
         approvalStatus: item.approvalStatus,
+        useYn: item.useYn,
       }),
     );
 

@@ -5,7 +5,6 @@ import {
   LikeOutlined,
 } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import { FHButton } from '@finhub/components/atoms/Button';
 import { IComment } from '@finhub/types/Comment';
 import { Avatar, List, Space } from 'antd';
 import React, { ReactNode } from 'react';
@@ -17,13 +16,8 @@ const IconText = ({ icon, text }: { icon: React.FC; text: ReactNode }) => (
   </Space>
 );
 
-export const CommentList = ({
-  data,
-  confirm,
-}: {
-  data: IComment[];
-  confirm: (id: number) => void;
-}) => {
+export const CommentList = ({ data }: { data: IComment[] }) => {
+  console.log(data);
   return (
     <List
       itemLayout="vertical"
@@ -50,13 +44,7 @@ export const CommentList = ({
                   style={{ color: item.reportedYn === 'Y' ? '#F00' : '' }}
                 />
               )}
-              text={
-                item.reportedYn === 'Y' && (
-                  <FHButton type="primary" onClick={() => confirm(item.id)}>
-                    신고처리
-                  </FHButton>
-                )
-              }
+              text=""
               key="list-vertical-like-o"
             />,
           ]}
