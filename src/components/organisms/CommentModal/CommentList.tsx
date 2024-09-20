@@ -17,7 +17,6 @@ const IconText = ({ icon, text }: { icon: React.FC; text: ReactNode }) => (
 );
 
 export const CommentList = ({ data }: { data: IComment[] }) => {
-  console.log(data);
   return (
     <List
       itemLayout="vertical"
