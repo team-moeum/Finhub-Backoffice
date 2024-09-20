@@ -1,7 +1,8 @@
 export interface ICommentReport {
   id: number;
   reason: string;
-  isProcessed: string;
+  useYn: string;
+  isProcessed?: string;
   commentId?: number;
   comment?: string;
   reportedNickname?: string;
