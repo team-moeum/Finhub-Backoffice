@@ -269,7 +269,7 @@ const listCommentReport = async ({
   params.append('size', listSize.toString());
 
   if (isProcessed !== '전체') {
-    params.append('useYN', isProcessed);
+    params.append('isProcessed', isProcessed);
   }
   const url = `/admin/report/comment/${columnId}?${params}`;
   const response: ApiResposne = await client.get(url);
