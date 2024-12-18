@@ -11,11 +11,12 @@ env:
   SERVICE_NAME: backoffice
   WORKSPACE: packages/finhub-backoffice
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-     - 'packages/finhub-backoffice/**'
+      - 'packages/finhub-backoffice/**'
 jobs:
   Deploy-Development:
     runs-on: ubuntu-latest

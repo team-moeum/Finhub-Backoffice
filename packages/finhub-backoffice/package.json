@@ -1,5 +1,5 @@
 {
-  "name": "findhub-admin",
+  "name": "finhub-backoffice",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -31,6 +31,7 @@
     "@tiptap/starter-kit": "^2.5.9",
     "antd": "^5.13.1",
     "axios": "^1.6.5",
+    "dayjs": "^1.11.13",
     "immer": "^10.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
