@@ -30,7 +30,7 @@
     "@tiptap/react": "^2.5.9",
     "@tiptap/starter-kit": "^2.5.9",
     "antd": "^5.13.1",
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "immer": "^10.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
